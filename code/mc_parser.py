@@ -39,9 +39,9 @@ def make_quiz(source, destination):
     xml_mul = ""
     for answer in answer_list:
         if answer == correct_answer:
-            xml_mul += "<    choice correct=\"true\">" + str(answer) + "</choice>\n"
+            xml_mul += "<choice correct=\"true\">" + str(answer) + "</choice>\n"
         else:
-            xml_mul += "<    choice correct=\"false\">" + str(answer) + "</choice>\n"
+            xml_mul += "<choice correct=\"false\">" + str(answer) + "</choice>\n"
 
     xml_out =     "<problem>\n" + \
                 "<p>" + str(prompt) + "</p>\n" + \
