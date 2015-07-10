@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 from bs4 import BeautifulSoup
+import xml.etree.ElementTree as ET
 
 
 def make_quiz(source, destination):
@@ -19,7 +20,7 @@ def make_quiz(source, destination):
     if soup.find("div", { "class" : "prompt" }) == None:
         return
 
-    prompt = ((soup.find("div", { "class" : "prompt" }).get_text()).encode('utf-8', "ignore")).strip()
+    prompt_text = ((soup.find("div", { "class" : "prompt" }).get_text()).encode('utf-8', "ignore")).strip()
     correct_answer_tag = soup.find("div", { "class" : "correctResponse" })
     correct_answer = ((soup.find(identifier=correct_answer_tag['identifier']).find("div", { "class" : "text" }).get_text()).encode('utf-8', "ignore")).strip()
     answer_list_unf = soup.findAll("div", { "class" : "text" })
@@ -36,7 +37,10 @@ def make_quiz(source, destination):
     Formatting for xml
     """
 
-    xml_mul = ""
+    problem = ET.Element("problem")
+    prompt = ET.SubElement(problem, "p")
+    prompt.text = prompt_text
+    
     for answer in answer_list:
         if answer == correct_answer:
             xml_mul += "<choice correct=\"true\">" + str(answer) + "</choice>\n"
@@ -44,7 +48,7 @@ def make_quiz(source, destination):
             xml_mul += "<choice correct=\"false\">" + str(answer) + "</choice>\n"
 
     xml_out =     "<problem>\n" + \
-                "<p>" + str(prompt) + "</p>\n" + \
+                "<p>" + str(prompt_text) + "</p>\n" + \
                 "<multiplechoiceresponse>\n" + \
                 "  <choicegroup type=\"MultipleChoice\">\n" + \
                 str(xml_mul) + \
