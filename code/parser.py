@@ -126,26 +126,18 @@ def main():
     args = parser.parse_args()
 
 
-    if os.exists(args.source):
+    if not os.path.exists(args.source):
         print("Source folder {} not found in current directory.".format(args.source))
         print("Exiting.")
         sys.exit(1)
-    if args.destination not in os.listdir('.'):
-        y, n = True, False
-        temp = input("edX course folder '" + args.destination + "' not found. Create new folder in this directory? (y/n)")
-        print(temp)
-        if temp:
-            os.mkdir(args.destination)
-        else:
-            print("edX course folder not found in current directory. Parsing cancelled.")
-            sys.exit(1)
+    if not os.path.exists(args.destination):
+        os.mkdir(args.destination)
+        print("Creating Output Folder: %s" % args.destination)
 
 
     files = []
     stage_files(source, args.file, files)
 
-
-    # call parser
     llab_to_edx(args.source, args.destination, files)
 
 
