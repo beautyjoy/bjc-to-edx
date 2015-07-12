@@ -12,6 +12,7 @@ def make_quiz(source, destination):
     filename = source.rsplit('/', 1)[1]
     test_path = source
     soup = BeautifulSoup(open(test_path))
+    #import pdb; pdb.set_trace()
 
     """
     make sure this is a multiple choice quiz
@@ -20,7 +21,7 @@ def make_quiz(source, destination):
     if soup.find("div", { "class" : "prompt" }) == None:
         return
 
-    prompt_text = ((soup.find("div", { "class" : "prompt" }).get_text()).encode('utf-8', "ignore")).strip()
+    prompt_text = soup.find("div", { "class" : "prompt" }).get_text()#.encode('utf-8', "ignore").strip()
     correct_answer_tag = soup.find("div", { "class" : "correctResponse" })
     correct_answer = ((soup.find(identifier=correct_answer_tag['identifier']).find("div", { "class" : "text" }).get_text()).encode('utf-8', "ignore")).strip()
     answer_list_unf = soup.findAll("div", { "class" : "text" })
@@ -40,36 +41,37 @@ def make_quiz(source, destination):
     problem = ET.Element("problem")
     prompt = ET.SubElement(problem, "p")
     prompt.text = prompt_text
+    choices = ET.SubElement(ET.SubElement(problem, "multiplechoiceresponse"), "choicegroup",
+                            type = "MultipleChoice")
+    solution = ET.SubElement(ET.SubElement(problem, "solution"), "div",
+                             attrib = {"class": "detailed-solution"})
+    p1 = ET.SubElement(solution, "p")
+    p1.text = "Explanation"
+    p2 = ET.SubElement(solution, "p")
+    p2.text = str(feedback_list[answer_list.index(correct_answer)])
     
     for answer in answer_list:
         if answer == correct_answer:
-            xml_mul += "<choice correct=\"true\">" + str(answer) + "</choice>\n"
+            #xml_mul += "<choice correct=\"true\">" + str(answer) + "</choice>\n"
+            choice = ET.SubElement(choices, "choice", correct = "true")
+            choice.text = str(answer)
         else:
-            xml_mul += "<choice correct=\"false\">" + str(answer) + "</choice>\n"
-
-    xml_out =     "<problem>\n" + \
-                "<p>" + str(prompt_text) + "</p>\n" + \
-                "<multiplechoiceresponse>\n" + \
-                "  <choicegroup type=\"MultipleChoice\">\n" + \
-                str(xml_mul) + \
-                "  </choicegroup>\n" + \
-                "</multiplechoiceresponse>\n\n" + \
-                "<solution>\n" + \
-                "<div class=\"detailed-solution\">\n" + \
-                "<p>Explanation</p>\n" + \
-                "<p>" + str(feedback_list[answer_list.index(correct_answer)]) + "</p>\n" + \
-                "</div>\n" + \
-                "</solution>\n" + \
-                "</problem>\n"
+            #xml_mul += "<choice correct=\"false\">" + str(answer) + "</choice>\n"
+            choice = ET.SubElement(choices, "choice", correct = "false")
+            choice.text = str(answer)
 
 
+    ##################
     output = destination + '/problem/' + filename[:-5] + ".xml"
     # print(output)
     with open(output, 'w+') as xml_file:
-        xml_file.write(xml_out)
+    #    xml_file.write(xml_out)
+        tree = ET.ElementTree(problem)
+        ET.dump(tree)
+        tree.write(xml_file, encoding = "unicode")
 
 
-# make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
+make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
 
 
 
