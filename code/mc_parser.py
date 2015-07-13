@@ -2,7 +2,9 @@
 
 from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
-
+import pdb
+debug = pdb.set_trace
+import codecs
 
 def make_quiz(source, destination):
     """
@@ -12,8 +14,7 @@ def make_quiz(source, destination):
     filename = source.rsplit('/', 1)[1]
     test_path = source
     soup = BeautifulSoup(open(test_path))
-    #import pdb; pdb.set_trace()
-
+    
     """
     make sure this is a multiple choice quiz
     """
@@ -21,7 +22,9 @@ def make_quiz(source, destination):
     if soup.find("div", { "class" : "prompt" }) == None:
         return
 
-    prompt_text = soup.find("div", { "class" : "prompt" }).get_text()#.encode('utf-8', "ignore").strip()
+    #prompt_text = soup.find("div", { "class" : "prompt" }).get_text()#.encode('utf-8', "ignore").strip()
+    prompt_text = soup.find("div", { "class" : "prompt" }).prettify(formatter=None) #.encode("utf-8", "ignore")
+    #debug()
     correct_answer_tag = soup.find("div", { "class" : "correctResponse" })
     correct_answer = ((soup.find(identifier=correct_answer_tag['identifier']).find("div", { "class" : "text" }).get_text()).encode('utf-8', "ignore")).strip()
     answer_list_unf = soup.findAll("div", { "class" : "text" })
@@ -41,6 +44,7 @@ def make_quiz(source, destination):
     problem = ET.Element("problem")
     prompt = ET.SubElement(problem, "p")
     prompt.text = prompt_text
+    print(prompt.text)
     choices = ET.SubElement(ET.SubElement(problem, "multiplechoiceresponse"), "choicegroup",
                             type = "MultipleChoice")
     solution = ET.SubElement(ET.SubElement(problem, "solution"), "div",
@@ -52,23 +56,22 @@ def make_quiz(source, destination):
     
     for answer in answer_list:
         if answer == correct_answer:
-            #xml_mul += "<choice correct=\"true\">" + str(answer) + "</choice>\n"
             choice = ET.SubElement(choices, "choice", correct = "true")
             choice.text = str(answer)
         else:
-            #xml_mul += "<choice correct=\"false\">" + str(answer) + "</choice>\n"
             choice = ET.SubElement(choices, "choice", correct = "false")
             choice.text = str(answer)
 
 
     ##################
     output = destination + '/problem/' + filename[:-5] + ".xml"
+    xml_file = output
     # print(output)
-    with open(output, 'w+') as xml_file:
+    #with open(output, 'w+') as xml_file:
     #    xml_file.write(xml_out)
-        tree = ET.ElementTree(problem)
-        ET.dump(tree)
-        tree.write(xml_file, encoding = "unicode")
+    tree = ET.ElementTree(problem)
+    ET.dump(tree)
+    tree.write(xml_file, method = "html")
 
 
 make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
