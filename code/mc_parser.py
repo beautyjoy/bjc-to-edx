@@ -23,7 +23,8 @@ def make_quiz(source, destination):
         return
 
     #prompt_text = soup.find("div", { "class" : "prompt" }).get_text()#.encode('utf-8', "ignore").strip()
-    prompt_text = soup.find("div", { "class" : "prompt" }).prettify(formatter=None) #.encode("utf-8", "ignore")
+    #prompt_text = soup.find("div", { "class" : "prompt" }).prettify(formatter = None)
+    prompt_text = "\n".join(str(s) for s in soup.find("div", { "class" : "prompt" }).contents)#.encode("utf-8", "ignore")
     #debug()
     correct_answer_tag = soup.find("div", { "class" : "correctResponse" })
     correct_answer = ((soup.find(identifier=correct_answer_tag['identifier']).find("div", { "class" : "text" }).get_text()).encode('utf-8', "ignore")).strip()
@@ -45,6 +46,7 @@ def make_quiz(source, destination):
     prompt = ET.SubElement(problem, "p")
     prompt.text = prompt_text
     print(prompt.text)
+    #debug()
     choices = ET.SubElement(ET.SubElement(problem, "multiplechoiceresponse"), "choicegroup",
                             type = "MultipleChoice")
     solution = ET.SubElement(ET.SubElement(problem, "solution"), "div",
@@ -70,8 +72,7 @@ def make_quiz(source, destination):
     #with open(output, 'w+') as xml_file:
     #    xml_file.write(xml_out)
     tree = ET.ElementTree(problem)
-    ET.dump(tree)
-    tree.write(xml_file, method = "html")
+    tree.write(xml_file, method = "xml")
 
 
 make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
