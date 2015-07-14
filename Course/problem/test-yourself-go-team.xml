@@ -1,36 +1,70 @@
-<problem><p><div class="prompt">
-<p>
-                    Without trying this in <span class="snap">snap</span>, try to answer the following question:
+<problem><p><p>
+                    Without trying this in Snap, try to answer the following question:
                     <br/>
 <br/>
                     What does the following set of scripts do when the <code>Turn1</code> message is broadcast?
                 </p>
+
+
 <p><img alt="receive turn1 broadcast script" src="/bjc-r/img/prog/receive-turn1-broadcast.png"/>     
                     <img alt="receive turn2 broadcast script" src="/bjc-r/img/prog/receive-turn2-broadcast.png"/>
 </p>
+
+
 <p>
                     Choose one:
-                </p>
-</div></p><multiplechoiceresponse><choicegroup type="MultipleChoice"><choice correct="false"><div class="text">
-                    The sprite says "Go!" and then "Team!" and then stops.
-                </div></choice><choice correct="true"><div class="text">
-                    The sprite repeatedly says "Go!" and then "Team!" until you hit the red Stop button.
-                </div></choice><choice correct="false"><div class="text">
-                    Nothing happens - the script does not work.
-                </div></choice><choice correct="false"><div class="text">
-                    The sprite says "Go!" and then "Team!", repeating a few times, and then stops by itself.
-                </div></choice></choicegroup></multiplechoiceresponse><solution><div class="detailed-solution"><p>Explanation</p><p><div class="feedback">
-<p>
+                </p></p><multiplechoiceresponse><choicegroup type="MultipleChoice"><choice correct="false">The sprite says "Go!" and then "Team!" and then stops.<choicehint>No, the
+broadcast Turn1 and wait
+block after the
+say Team! ...
+block will execute.
+Snap
+will blindly follow its script.</choicehint></choice><choice correct="true">The sprite repeatedly says "Go!" and then "Team!" until you hit the red Stop button.<choicehint>Right!
+                        Here, we see an
+infinite loop,
+or a never-ending loop. 
+                        Whenever this happens in Snap
+!
+, we can always stop it by 
+                        pressing the Stop button at the top right of the window, just above the stage.
+Why does this happen? Well, when you the
+Turn1
+message is first broadcast,
+                        the sprite says
+Go!
+for half a second, and then broadcasts a
+Turn2
+message.
+If there is any character that has a script that responds to the
+Turn2
+message, it will perform that script. 
+                        In this case, the same sprite has a script that responds to the
+Turn2
+message, and so it will run the corresponding script. It says
+Team!
+and then broadcasts a
+Turn1
+message. But, it also has a script that responds to the
+Turn1
+message, which in turn sends a
+Turn2
+message, and so on. This continues until the scripts are forced to stop.</choicehint></choice><choice correct="false">Nothing happens - the script does not work.<choicehint>No, the script here definitely does something when receiving the
+Turn1
+script.</choicehint></choice><choice correct="false">The sprite says "Go!" and then "Team!", repeating a few times, and then stops by itself.<choicehint>No.  The computer can't just decide to stop itself; rather, it will blindly follow the script.</choicehint></choice></choicegroup></multiplechoiceresponse><solution><div class="detailed-solution"><p>Explanation</p><p><p>
                         Right!
                         Here, we see an <em>infinite loop,</em> or a never-ending loop. 
                         Whenever this happens in Snap<em>!</em>, we can always stop it by 
                         pressing the Stop button at the top right of the window, just above the stage.
                     </p>
+
+
 <p>
                         Why does this happen? Well, when you the <code>Turn1</code> message is first broadcast,
                         the sprite says <code> Go!</code>
                         for half a second, and then broadcasts a <code>Turn2</code> message.
                     </p>
+
+
 <p>
                         If there is any character that has a script that responds to the <code>Turn2</code>
                         message, it will perform that script. 
@@ -40,5 +74,4 @@
                         message. But, it also has a script that responds to the <code>Turn1</code>
                         message, which in turn sends a <code>Turn2</code>
                         message, and so on. This continues until the scripts are forced to stop.
-                    </p>
-</div></p></div></solution></problem>
+                    </p></p></div></solution></problem>
