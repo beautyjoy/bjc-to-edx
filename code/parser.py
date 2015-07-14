@@ -136,7 +136,7 @@ def main():
 
 
     files = []
-    stage_files(source, args.file, files)
+    stage_files(args.source, args.file, files)
 
     llab_to_edx(args.source, args.destination, files)
 
