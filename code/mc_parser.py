@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 import pdb
 debug = pdb.set_trace
-import codecs
+import io
 
 def make_quiz(source, destination):
     """
@@ -13,7 +13,7 @@ def make_quiz(source, destination):
 
     filename = source.rsplit('/', 1)[1]
     test_path = source
-    soup = BeautifulSoup(open(test_path))
+    soup = BeautifulSoup(open(test_path), "html.parser")
     
     """
     make sure this is a multiple choice quiz
@@ -22,31 +22,48 @@ def make_quiz(source, destination):
     if soup.find("div", { "class" : "prompt" }) == None:
         return
 
-    #prompt_text = soup.find("div", { "class" : "prompt" }).get_text()#.encode('utf-8', "ignore").strip()
-    #prompt_text = soup.find("div", { "class" : "prompt" }).prettify(formatter = None)
-    prompt_text = "\n".join(str(s) for s in soup.find("div", { "class" : "prompt" }).contents)#.encode("utf-8", "ignore")
-    #debug()
+    def content_string(tag):
+        return "\n".join(str(s) for s in tag.contents)
+
+    #prompt_text = content_string(soup.find("div", { "class" : "prompt" }))
+    prompt_text = str(soup.find("div", { "class" : "prompt" })).strip()
     correct_answer_tag = soup.find("div", { "class" : "correctResponse" })
-    correct_answer = ((soup.find(identifier=correct_answer_tag['identifier']).find("div", { "class" : "text" }).get_text()).encode('utf-8', "ignore")).strip()
+    # TODO: get_text is problematic b/c it strips out html tags -- fix with content_string function?
+    correct_answer = str(soup.find(identifier=correct_answer_tag['identifier']).find("div", { "class" : "text" })).strip()
     answer_list_unf = soup.findAll("div", { "class" : "text" })
     answer_list = []
     for a in answer_list_unf:
-        answer_list.append(((a.get_text()).encode('utf-8', "ignore")).strip())
+        answer_list.append(str(a).strip())
 
     feedback_list_unf = soup.findAll("div", { "class" : "feedback" })
     feedback_list = []
     for f in feedback_list_unf:
-        feedback_list.append(((f.get_text()).encode('utf-8', "ignore")).strip())
+        feedback_list.append(str(f).strip())
 
     """
-    Formatting for xml
+    Building xml output
     """
+
+    def temp_html(i):
+        return "--- HTML TEXT {} ---".format(i)
+
+    index = -1
+    def get_temp_html():
+        nonlocal index
+        index += 1
+        return temp_html(index)
+
+    def fill_html(s, l):
+        for i in range(len(l)):
+            s = s.replace(temp_html(i), l[i])
+        return s
+
+    html_fill_list = []
 
     problem = ET.Element("problem")
     prompt = ET.SubElement(problem, "p")
-    prompt.text = prompt_text
-    print(prompt.text)
-    #debug()
+    prompt.text = get_temp_html()
+    html_fill_list.append(prompt_text)
     choices = ET.SubElement(ET.SubElement(problem, "multiplechoiceresponse"), "choicegroup",
                             type = "MultipleChoice")
     solution = ET.SubElement(ET.SubElement(problem, "solution"), "div",
@@ -54,25 +71,29 @@ def make_quiz(source, destination):
     p1 = ET.SubElement(solution, "p")
     p1.text = "Explanation"
     p2 = ET.SubElement(solution, "p")
-    p2.text = str(feedback_list[answer_list.index(correct_answer)])
+    p2.text = get_temp_html() # str(feedback_list[answer_list.index(correct_answer)])
+    html_fill_list.append(str(feedback_list[answer_list.index(correct_answer)]))
     
     for answer in answer_list:
         if answer == correct_answer:
             choice = ET.SubElement(choices, "choice", correct = "true")
-            choice.text = str(answer)
         else:
             choice = ET.SubElement(choices, "choice", correct = "false")
-            choice.text = str(answer)
+        
+        choice.text = get_temp_html() # str(answer)
+        html_fill_list.append(str(answer))
 
+    #debug()
 
-    ##################
-    output = destination + '/problem/' + filename[:-5] + ".xml"
-    xml_file = output
-    # print(output)
-    #with open(output, 'w+') as xml_file:
-    #    xml_file.write(xml_out)
     tree = ET.ElementTree(problem)
-    tree.write(xml_file, method = "xml")
+    temp_string = io.BytesIO()
+    tree.write(temp_string)
+    output_string = fill_html(temp_string.getvalue().decode(), html_fill_list)
+    print(output_string)
+    ##################
+    output_dest = destination + '/problem/' + filename[:-5] + ".xml"
+    with open(output_dest, "w+") as output_file:
+        output_file.write(output_string)
 
 
 make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
