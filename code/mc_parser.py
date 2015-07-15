@@ -13,14 +13,18 @@ def make_quiz(source, destination):
 
     filename = source.rsplit('/', 1)[1]
     test_path = source
-    soup = BeautifulSoup(open(test_path), "html.parser")
+    try:
+        soup = BeautifulSoup(open(test_path), "html.parser")
+    except FileNotFoundError:
+        sys.exit(1)
+    
     
     """
     make sure this is a multiple choice quiz
     """
 
     if soup.find("div", { "class" : "prompt" }) == None:
-        return
+        sys.exit(1)
 
     exclamation_point = soup.new_tag("i")
     exclamation_point.append("!")
@@ -32,10 +36,8 @@ def make_quiz(source, destination):
     def content_string(tag):
         return "\n".join(str(s) for s in tag.contents).strip()
 
-    #prompt_text = content_string(soup.find("div", { "class" : "prompt" }))
     prompt_text = content_string(soup.find("div", { "class" : "prompt" }))
     correct_answer_tag = soup.find("div", { "class" : "correctResponse" })
-    # TODO: get_text is problematic b/c it strips out html tags -- fix with content_string function?
     correct_answer = content_string(soup.find(identifier=correct_answer_tag['identifier']).find("div", { "class" : "text" }))
     answer_list_unf = soup.findAll("div", { "class" : "text" })
     answer_list = []
@@ -79,8 +81,7 @@ def make_quiz(source, destination):
     p1 = ET.SubElement(solution, "p")
     p1.text = "Explanation"
     p2 = ET.SubElement(solution, "p")
-    p2.text = get_temp_html() # str(feedback_list[answer_list.index(correct_answer)])
-    # TODO: change this to using a variable
+    p2.text = get_temp_html()
     html_fill_list.append(full_explanation)
     
     for answer in answer_list:
@@ -88,26 +89,24 @@ def make_quiz(source, destination):
             choice = ET.SubElement(choices, "choice", correct = "true")
         else:
             choice = ET.SubElement(choices, "choice", correct = "false")
-        choice.text = get_temp_html() # str(answer)
+        choice.text = get_temp_html()
         html_fill_list.append(str(answer))
         feedback = ET.SubElement(choice, "choicehint")
         feedback.text = get_temp_html()
         html_fill_list.append(feedback_list[answer_list.index(answer)])
 
-    #debug()
-
     tree = ET.ElementTree(problem)
     temp_string = io.BytesIO()
     tree.write(temp_string)
     output_string = fill_html(temp_string.getvalue().decode(), html_fill_list)
-    print(output_string)
     ##################
     output_dest = destination + '/problem/' + filename[:-5] + ".xml"
     with open(output_dest, "w+") as output_file:
         output_file.write(output_string)
 
 
-make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
+if __name__ == '__main__':
+    make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
 
 
 
