@@ -119,7 +119,7 @@ def main():
             type=str,
             default="curriculum/bjc-r",
             help="name of source folder")
-    parser.add_argument("-O", "--destination", type=str, default="2014_2",
+    parser.add_argument("-D", "--destination", type=str, default="2014_2",
             help="name of the destination folder")
     parser.add_argument("-F", "--file", type=str, nargs='+', default="",
             help="files to parse")
@@ -127,7 +127,7 @@ def main():
 
 
     if not os.path.exists(args.source):
-        print("Source folder {} not found in current directory.".format(args.source))
+        print("Source folder %s not found in current directory." % args.source)
         print("Exiting.")
         sys.exit(1)
     if not os.path.exists(args.destination):
