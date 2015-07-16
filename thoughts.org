@@ -1,0 +1,5 @@
+* Ideas/thoughts
+** Surveys
+*** Edx survey/poll tool
+    Doesn't look very good.
+    Style is weird (json embedded into xml??)
