@@ -5,6 +5,8 @@ import xml.etree.ElementTree as ET
 import pdb
 debug = pdb.set_trace
 import io
+import sys
+import util
 
 def make_quiz(source, destination):
     """
@@ -12,9 +14,8 @@ def make_quiz(source, destination):
     """
 
     filename = source.rsplit('/', 1)[1]
-    test_path = source
     try:
-        soup = BeautifulSoup(open(test_path), "html.parser")
+        soup = BeautifulSoup(open(source), "html.parser")
     except FileNotFoundError:
         sys.exit(1)
     
@@ -25,6 +26,10 @@ def make_quiz(source, destination):
 
     if soup.find("div", { "class" : "prompt" }) == None:
         sys.exit(1)
+
+    for img in soup.find_all("img"):        
+        img["src"] = util.edx_image_location(img.get("src"))
+        print(img)
 
     exclamation_point = soup.new_tag("i")
     exclamation_point.append("!")
@@ -106,7 +111,11 @@ def make_quiz(source, destination):
 
 
 if __name__ == '__main__':
-    make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
+    if sys.argv[1] == "-t":
+        make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
+    elif len(sys.argv) >= 3:
+        make_quiz(sys.argv[1], sys.argv[2])
+        
 
 
 
