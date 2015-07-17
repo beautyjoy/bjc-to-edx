@@ -1,21 +1,58 @@
+#+STARTUP: logdone
+
 * Ideas/thoughts
 ** Surveys
 *** Edx survey/poll tool
-    con: Doesn't look very good.
-    con: Style is weird (json embedded into xml??).
-    con: Only has aggregated results?
+**** con: Doesn't look very good.
+**** con: Style is weird (json embedded into xml??).
+**** con: Only has aggregated results?
 *** Edx ungraded (quiz) questions
-    When can we get exports from this?
-    Option for "do not show answers" not available in ruql. Add this
+**** q: When can we get exports from this?
+**** q: Option for "do not show answers" not available in ruql. Add this
     functionality and make a pull request?
 *** External tool like Qualtrics
-    pro: +Possibly+ has integration into edX.
-    pro: Does have a data format and is included in ruql!!!!
-    q: Might need to pay. (don't think so because Berkeley account)
-    pro: data export available at all times
-    instructions: https://docs.google.com/document/d/1fZkZ-EWyQy1q9CF6tOXNllcbddXGcRElcG7lLxnTMRU/edit#heading=h.9itf2oatckgb
+**** pro: +Possibly+ has integration into edX.
+**** pro: Does have a data format and is included in ruql!!!!
+**** q: Might need to pay. (don't think so because Berkeley account)
+**** pro: data export available at all times
+**** instructions: https://docs.google.com/document/d/1fZkZ-EWyQy1q9CF6tOXNllcbddXGcRElcG7lLxnTMRU/edit#heading=h.9itf2oatckgb
     and http://sites.cognitivescience.co/qualtrics/linking-to-mturk/openedx
     
-*** Notes on survey design article
-
-*** Notes on MOOC data collection articles
+*** Notes on survey design article (https://zapier.com/learn/ultimate-guide-to-forms-and-surveys/design-analyze-survey/)
+**** "It's better to send out a few rounds of improving surveys than a huge blast that misses the mark" 
+*** Notes on MOOC data collection articles (http://www.edtechresearcher.com/blog-archive/)
+**** Article 1: Student Diversity
+***** Participants (especially those who complete the course) tend to be relatively affluent
+***** Community support structures can help improve participation/success
+**** Article 2: Flexibility and Stickiness
+***** Students get *more* behind if course is released in phases (as opposed to all at once).
+      However, they greatly benefit from frequent (i.e. weekly/daily) engagement.
+      How can we encourage this? Piazza? Reminder emails?
+***** Students who do more smaller, spaced out study sessions tend to do better
+**** Article 3: Persistence and Activity
+***** Overall completion rates are poor. However, things look better after
+      controlling for student intentions. Not all students intend to receive a certificate.
+      *This is something we should survey!*
+***** Once students start the course, predicting continuation week to week
+      and completion is fairly easy (people have built successful
+      models). "The more interesting question is
+      whether course teams can partner with researchers to create
+      interventions that actually change a student’s predicted
+      trajectory for the better. At present, for all of our skill at
+      prediction, within MOOCs we have yet to develop instructional
+      approaches for supporting students that take advantage of those
+      predictions to improve student learning."
+**** Article 4: Helping Busy Students Stick to Plans
+***** Surveys are great, but even if we force enrolled students to take them,
+      that doesn't help us with dropouts.
+***** Surveying dropouts can help us proactively help people stay in the course
+      What can we do for them?
+***** Models exist for guessing if someone is a dropout. Can we send targeted
+      surveys to these people and find out why they left?
+* Todo List
+** DONE Read survey design article
+** TODO Read MOOC data articles 1-4
+** TODO Check back for 5-7, probably around July 20, 24, 28
+** DONE Email Will and Peitian about BJCx stuff
+   CLOSED: [2015-07-17 Fri 12:45]
+** TODO Attempt to set up a qualtrics survey and integrate into edX. See 
