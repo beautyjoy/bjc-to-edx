@@ -4,6 +4,10 @@
 *.tar.gz
 tmp/
 __pycache__
+
+# This is the odd name of the defaults.
+2014_2/
+
 # This file will include passwords -- DONT COMMIT THEM
 # Also fix that little issue...
 util/config.py
