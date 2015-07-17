@@ -4,8 +4,8 @@ from reading_parser import *
 from tar_file import *
 import shutil, os, argparse
 
-def stage_files(args, lst):
-    path = "curriculum/bjc-r/topic/berkeley_bjc/"
+def stage_files(path, args, lst):
+    # path = "curriculum/bjc-r/topic/berkeley_bjc/"
     found = False
     if args == "":
         for folder in os.listdir(path):
@@ -31,9 +31,9 @@ def stage_files(args, lst):
                         lst.append(path + f + "/" + filename)
                 else:
                     print("---directory '" + f + "' not found.")
-                    print("Closing program...")
-                    sys.exit()
+                    sys.exit(1)
     return lst
+
 
 def stage_course(destination):
     dir_contents = os.listdir(destination)
@@ -77,7 +77,8 @@ def stage_course(destination):
     if 'vertical' not in dir_contents:
         os.mkdir(destination + '/vertical')
 
-def bjc_to_edx(source, destination, files):
+
+def llab_to_edx(source, destination, files):
     stage_course(destination)
     convert_readings(destination)
     for f in files:
@@ -106,6 +107,7 @@ def bjc_to_edx(source, destination, files):
 
 
 
+
 def main():
     """
     Parses command line arguments and runs the script appropriately.
@@ -117,34 +119,26 @@ def main():
             type=str,
             default="curriculum/bjc-r",
             help="name of source folder")
-    parser.add_argument("-O", "--destination", type=str, default="2014_2",
+    parser.add_argument("-D", "--destination", type=str, default="2014_2",
             help="name of the destination folder")
     parser.add_argument("-F", "--file", type=str, nargs='+', default="",
             help="files to parse")
     args = parser.parse_args()
 
 
-    if args.source not in os.listdir('.'):
-        print("Source folder {} not found in current directory.".format(args.source))
+    if not os.path.exists(args.source):
+        print("Source folder %s not found in current directory." % args.source)
         print("Exiting.")
         sys.exit(1)
-    if args.destination not in os.listdir('.'):
-        y, n = True, False
-        temp = input("edX course folder '" + args.destination + "' not found. Create new folder in this directory? (y/n)")
-        print(temp)
-        if temp:
-            os.mkdir(args.destination)
-        else:
-            print("edX course folder not found in current directory. Parsing cancelled.")
-            sys.exit(1)
+    if not os.path.exists(args.destination):
+        os.mkdir(args.destination)
+        print("Creating Output Folder: %s" % args.destination)
 
 
     files = []
-    stage_files(args.file, files)
+    stage_files(args.source, args.file, files)
 
-
-    # call parser
-    bjc_to_edx(args.source, args.destination, files)
+    llab_to_edx(args.source, args.destination, files)
 
 
 
