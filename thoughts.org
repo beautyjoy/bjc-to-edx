@@ -9,10 +9,13 @@
     Option for "do not show answers" not available in ruql. Add this
     functionality and make a pull request?
 *** External tool like Qualtrics
-    pro: Possibly has integration into edX.
+    pro: +Possibly+ has integration into edX.
     pro: Does have a data format and is included in ruql!!!!
     q: Might need to pay. (don't think so because Berkeley account)
     pro: data export available at all times
     instructions: https://docs.google.com/document/d/1fZkZ-EWyQy1q9CF6tOXNllcbddXGcRElcG7lLxnTMRU/edit#heading=h.9itf2oatckgb
     and http://sites.cognitivescience.co/qualtrics/linking-to-mturk/openedx
     
+*** Notes on survey design article
+
+*** Notes on MOOC data collection articles
