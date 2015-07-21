@@ -1,0 +1,51 @@
+# Public, main course name
+name: 
+# edX Course ID
+id: 
+  
+  course:
+      name: 'Computer Science'
+      number: '80169'
+ 
+      # The following two get concatenated to obtain the url_name 
+      year: '2014'
+      season: 'spring'
+ 
+      # Important dates (use JS's native Date parsing) 
+      start: 'March 1, 2015 8:00'
+      end: 'June 3, 2015'
+ 
+      enrollment_start: 'Feb 1, 2015'
+      enrollment_end: 'Feb 1, 2015'
+ 
+      # This is always relative to the 'DIR/_assets' directory 
+      image: 'course-image.jpg'
+ 
+  organization:
+      name: 'EXAMPLE-ORGNAME'
+ 
+  assets:
+      # The following are always relative to the 'DIR/_assets' directory 
+      # They are included in each vertical. 
+      js: 'client.js'
+      css: 'client.css'
+ 
+  info:
+      about: |
+          You can use **markdown** here
+ 
+      prerequisites: |
+          You can use **markdown** here
+ 
+      course-staff:
+ 
+        - name: 'John Doe'
+          image: 'http://www.dropbox.com/u/3989328983232y/image.jpg'
+          bio: 'xlkxz xz lxzlk'
+ 
+      faq:
+        - question: 'Silly question?'
+          answer: 'yes'
+ 
+  short-description: |
+      150 characters of course description.
