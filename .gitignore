@@ -1,13 +1,22 @@
 .DS_Store
 *~
+
+# Python Stuff
 *.pyc
-*.tar.gz
-tmp/
 __pycache__
 
+# Build System / edX-y things
 # This is the odd name of the defaults.
 2014_2/
+*.tar.gz
+tmp/
+
 
 # This file will include passwords -- DONT COMMIT THEM
 # Also fix that little issue...
 util/config.py
+
+
+# NodeJS Stuff
+node_modules/
+npm-debug.log
