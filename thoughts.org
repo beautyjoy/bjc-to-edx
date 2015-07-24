@@ -51,8 +51,18 @@
       surveys to these people and find out why they left?
 * Todo List
 ** DONE Read survey design article
-** TODO Read MOOC data articles 1-4
+   CLOSED: [2015-07-20 Mon 12:35]
+** DONE Read MOOC data articles 1-4
+   CLOSED: [2015-07-20 Mon 12:35]
 ** TODO Check back for 5-7, probably around July 20, 24, 28
+*** TODO 5
+*** TODO 6
+*** TODO 7
 ** DONE Email Will and Peitian about BJCx stuff
    CLOSED: [2015-07-17 Fri 12:45]
-** TODO Attempt to set up a qualtrics survey and integrate into edX. See 
+** DONE Attempt to set up a qualtrics survey and integrate into edX
+   CLOSED: [2015-07-22 Wed 15:26]
+** DONE Talk to Max about javascript problem for "grading" survey completion
+   CLOSED: [2015-07-22 Wed 15:26]
+** TODO Attempt to implement ^^
+** TODO 
