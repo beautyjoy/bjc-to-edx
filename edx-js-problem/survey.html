@@ -1,16 +1,38 @@
 <!DOCTYPE html>
 <html>
     <head>
-	<link rel="stylesheet" type="text/css" href="survey.css">
-	<script src="survey.js" defer='defer'></script>
+        <link rel="stylesheet" type="text/css" href="survey.css">
+        <script src="survey.js" defer='defer'></script>
     </head>
     <body>
-	<div id="container">
-	    <iframe id="qualtrics"
-		    src="https://berkeley.qualtrics.com/SE/?SID=SV_8IbADPPaBrB6a8Z&uid=%%USER_ID%%"
-		    width="100%" height="600" marginwidth="0" marginheight="0" frameborder="0" scrolling="yes">
-		Iframes are evil!!
-	    </iframe>
-	</div>
+        <div id="container">
+            <iframe id="qualtrics"
+                    src="https://berkeley.qualtrics.com/SE/?SID=SV_8IbADPPaBrB6a8Z&uid=%%USER_ID%%"
+                    width="100%" height="600" marginwidth="0" marginheight="0" frameborder="0" scrolling="yes">
+                Iframes are evil!!
+            </iframe>
+        </div>
+	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script type="text/javascript">
+        var survey = document.getElementById("qualtrics");
+	var checkFunction = function() {
+	    if (JSON.parse(Survey.getState()).complete) {
+                if(survey.parentNode !== null) {
+                    console.log("complete!");
+                    var container = survey.parentNode;
+                    var completionMessage = document.createElement("p");
+                    completionMessage.innerHTML = "Thanks for taking the survey!";
+                    container.replaceChild(completionMessage, survey);
+	            jQuery(container).height(jQuery(completionMessage).height());
+	            jQuery(container.parentNode).height(jQuery(completionMessage).height());
+                }
+            } else {
+                survey.contentWindow.postMessage("hello", "*");
+            }
+	};
+	setTimeout(checkFunction, 500);
+	setInterval(checkFunction, 1000);
+        </script>
     </body>
 </html>
