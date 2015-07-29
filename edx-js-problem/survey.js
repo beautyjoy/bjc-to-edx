@@ -1,34 +1,34 @@
 var Survey = (function() {
 
+    var LOGGING = false;
+    function LOG(string) {
+	if (LOGGING) {
+	    console.log(string);
+	}
+    }
+
     var state = {'complete': false};
     var survey = document.getElementById("qualtrics");
-    console.log(survey);
-    // survey.onload = function() {
-    // 	var complete = 
-    // }
 
     function receiveMessage(event) {
-	console.log("edx received message");
-	console.log(event.data);
+	LOG("Message received");
 	state.complete = event.data.complete;
     };
 
     window.addEventListener("message", receiveMessage, false);
 
-    // Might need RPC/SOP stuff here - see webGLDemo.js
-
     function getGrade() {
-	messageSurvey();
+	LOG("getting grade...");
+	LOG(state);
 	return JSON.stringify(state['complete']);
     }
 
-    function messageSurvey() {
-	console.log("messaging qualtrics");
+    /*function messageSurvey() {
+	LOG("messaging survey");
 	survey.contentWindow.postMessage("hello", "*"); //"https://berkeley.qualtrics.com");
-    }
+    }*/
 
     function getState() {
-	messageSurvey();
 	return JSON.stringify(state);
     }
 
@@ -37,9 +37,11 @@ var Survey = (function() {
 	// unnecessarily displayed
         stateStr = arguments.length === 1 ? arguments[0] : arguments[1];
         state = JSON.parse(stateStr);
+	LOG("setting state");
+	LOG(stateStr);
     }
 
-    survey.onload = messageSurvey;
+    //messageSurvey();
 
     return {
         getState: getState,
