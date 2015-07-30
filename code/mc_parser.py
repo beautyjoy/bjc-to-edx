@@ -8,7 +8,7 @@ import io
 import sys
 import util
 
-def make_quiz(source, destination):
+def make_quiz(source, destination=None):
     """
     Extracting from bjc file
     """
@@ -16,14 +16,13 @@ def make_quiz(source, destination):
     filename = source.rsplit('/', 1)[1]
     try:
         soup = BeautifulSoup(open(source), "html.parser")
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError):
         if len(source) > 0:
             try:
                 soup = BeautifulSoup(source, "html.parser")
             except:
                 sys.exit(1)
-        sys.exit(1)
-
+        
 
     """
     make sure this is a multiple choice quiz
@@ -110,14 +109,19 @@ def make_quiz(source, destination):
     tree.write(temp_string)
     output_string = fill_html(temp_string.getvalue().decode(), html_fill_list)
     ##################
-    output_dest = destination + '/problem/' + filename[:-5] + ".xml"
-    with open(output_dest, "w+") as output_file:
-        output_file.write(output_string)
+    if destination:
+        output_dest = destination + '/problem/' + filename[:-5] + ".xml"
+        with open(output_dest, "w+") as output_file:
+            output_file.write(output_string)
+    else:
+        sys.stdout.write(output_string)
 
 
 if __name__ == '__main__':
     if sys.argv[1] == "-t":
         make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
+    elif len(sys.argv) == 2:
+        make_quiz(sys.argv[1])
     elif len(sys.argv) >= 3:
         make_quiz(sys.argv[1], sys.argv[2])
 
