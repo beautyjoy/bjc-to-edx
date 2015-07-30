@@ -1,4 +1,5 @@
-
+/*  LLAB AUTOBUILD WIP SCRIPT
+ */
 
 fs = require('fs');
 path = require('path');
@@ -12,7 +13,7 @@ util = require('./code/util');
 
 
 curFolder = 'curriculum/edc/'
-output = './tmp/U2/';
+output = './tmp/U1/';
 topic1 = 'nyc_bjc/1-intro-loops.topic';
 topic2 = 'nyc_bjc/2-conditionals-abstraction.topic';
 
@@ -91,20 +92,33 @@ function parseSection (section) {
             quizzes = $('div.assessment-data');
             console.log('Found ', quizzes.length, ' quizzes.');
             quizzes.each(function(index, elm) {
+                console.log((new Array(50)).join('='));
+                console.log('QUESTION NUM:', index);
                 qzHTML = $.html(elm); // like a call to outerHTML()
+                console.log(qzHTML);
+                console.log('\n\n\n\n\n');
                 var idx = text.indexOf(qzHTML);
-                parts.push(text.slice(0, idx)); // part before quiz
+                var before = text.slice(0, idx).trim();
+                console.log('BEFORE');
+                console.log(before);
+                console.log('\n\n\n\n\n\n');
+
+                if (before.length) {
+                    parts.push(before); // part before quiz
+                }
                 parts.push(qzHTML); // push quiz
                 text = text.slice(idx + qzHTML.length);
+                console.log('PARTS LENGTH: ', parts.length);
+                console.log((new Array(50)).join('='));
             });
 
-            parts = parts.filter(function(item) {
-                return item.trim().length != 0;
-            });
+            // parts = parts.filter(function(item) {
+            //     return item.trim().length != 0;
+            // });
 
             if (parts.length > 0) {
                 parts.forEach(function (item, idx, array) {
-                    data = cssString + text;
+                    data = cssString + item;
                     fs.writeFileSync(dir + '/' + count + '-' + idx +
                                         '-curriculum.html', data);
                 });
@@ -117,7 +131,4 @@ function parseSection (section) {
     }
 }
 
-// require('repl').start('> ');
-
-
-// QUIZ_REGEX = /(?=<div[.*?\n]class=["']assessment-data["'][.*?\n]>[.*?\n]</div>)/ig
+require('repl').start('> ');
