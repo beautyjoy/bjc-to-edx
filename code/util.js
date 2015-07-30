@@ -6,17 +6,17 @@ var util = {};
 
 // TODO: migrate to llab.
 /* Retun the path to a topic file.
-    
+
  */
 util.topicPath = function (baseURL, topicURL) {
     return baseURL + 'topic/' + topicURL;
 }
 
-
+/*
+ *
+ */
 util.edXPath = function (url) {
-    if (url[0] == '/') {
-        url = url.slice(1)
-    }
+    url = url[0] == '/' ? url.slice(1) : url;
     return '/static/' + url.replace(/\//g, '_');
 }
 
@@ -38,7 +38,7 @@ util.transformURL = function (baseURL, filePath, url) {
             url = path.relative('./', url);
         }
     }
-    
+
     return util.edXPath(url);
 }
 
