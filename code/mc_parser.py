@@ -17,9 +17,14 @@ def make_quiz(source, destination):
     try:
         soup = BeautifulSoup(open(source), "html.parser")
     except FileNotFoundError:
+        if len(source) > 0:
+            try:
+                soup = BeautifulSoup(source, "html.parser")
+            except:
+                sys.exit(1)
         sys.exit(1)
-    
-    
+
+
     """
     make sure this is a multiple choice quiz
     """
@@ -27,7 +32,7 @@ def make_quiz(source, destination):
     if soup.find("div", { "class" : "prompt" }) == None:
         sys.exit(1)
 
-    for img in soup.find_all("img"):        
+    for img in soup.find_all("img"):
         img["src"] = util.edx_image_location(img.get("src"))
         print(img)
 
@@ -37,7 +42,7 @@ def make_quiz(source, destination):
         snap.replace_with("Snap")
         snap.append(exclamation_point)
 
-            
+
     def content_string(tag):
         return "\n".join(str(s) for s in tag.contents).strip()
 
@@ -88,7 +93,7 @@ def make_quiz(source, destination):
     p2 = ET.SubElement(solution, "p")
     p2.text = get_temp_html()
     html_fill_list.append(full_explanation)
-    
+
     for answer in answer_list:
         if answer == correct_answer:
             choice = ET.SubElement(choices, "choice", correct = "true")
@@ -115,7 +120,7 @@ if __name__ == '__main__':
         make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
     elif len(sys.argv) >= 3:
         make_quiz(sys.argv[1], sys.argv[2])
-        
+
 
 
 
