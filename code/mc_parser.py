@@ -31,7 +31,7 @@ def make_quiz(source, destination):
         img["src"] = util.edx_image_location(img.get("src"))
         print(img)
 
-    exclamation_point = soup.new_tag("i")
+    exclamation_point = soup.new_tag("em")
     exclamation_point.append("!")
     for snap in soup.find_all("span", {"class" : "snap"}):
         snap.replace_with("Snap")
