@@ -98,6 +98,10 @@ function parseSection (section) {
                 text = text.slice(idx + qzHTML.length);
             });
 
+            parts = parts.filter(function(item) {
+                return item.trim().length != 0;
+            });
+
             if (parts.length > 0) {
                 parts.forEach(function (item, idx, array) {
                     data = cssString + text;
