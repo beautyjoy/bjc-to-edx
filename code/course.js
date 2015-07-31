@@ -1,15 +1,30 @@
 
 fs   = require('fs');
 var yaml = require('js-yaml');
-var xml2js = require('xml2js');
+var et = require('elementtree');
 
 var course = {};
+var config, outline;
 
-var build = function(courseOutline) {
-    var parsedOutline = yaml.load(courseOutline);
+var buildCourse = function(courseDirectory, options) {
+    config = yaml.load(fs.readFileSync(courseDirectory + 'config.yml'));
+    outline = yaml.load(fs.readFileSync(courseDirectory + 'outline.yml'));
+    var parsedOutline = yaml.load(outline);
+    
+    parsedOutline.chapters.forEach(buildChapter);
+};
+course.buildCourse = buildCourse;
+
+var buildChapter = function(chapterOutline) {
     
 };
-course.build = build;
 
+var buildSequential = function(sequentialOutline) {
+
+};
+
+var buildVertical = function(verticalOutline) {
+
+};
 
 module.exports = course;
