@@ -3,6 +3,7 @@
 
 fs = require('fs');
 path = require('path');
+exec = require('child_process').execSync;
 
 cheerio = require('cheerio');
 mkdirp = require('mkdirp');
@@ -95,28 +96,33 @@ function parseSection (section) {
                 console.log((new Array(50)).join('='));
                 console.log('QUESTION NUM:', index);
                 qzHTML = $.html(elm); // like a call to outerHTML()
-                console.log(qzHTML);
+                command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
+                xml = exec(command).toString();
                 console.log('\n\n\n\n\n');
                 var idx = text.indexOf(qzHTML);
                 var before = text.slice(0, idx).trim();
-                console.log('BEFORE');
-                console.log(before);
+                // console.log('BEFORE');
+                // console.log(before);
                 console.log('\n\n\n\n\n\n');
 
                 if (before.length) {
                     parts.push(before); // part before quiz
                 }
-                parts.push(qzHTML); // push quiz
+                parts.push(xml); // push quiz
                 text = text.slice(idx + qzHTML.length);
                 console.log('PARTS LENGTH: ', parts.length);
                 console.log((new Array(50)).join('='));
             });
 
             if (parts.length > 0) {
+                parts[0] = cssString + parts[0] // only add CSS once per page.
                 parts.forEach(function (item, idx, array) {
-                    data = cssString + item;
-                    fs.writeFileSync(dir + '/' + count + '-' + idx +
-                                        '-curriculum.html', data);
+                    if (item.indexOf('<problem>') == -1) {
+                        file = '-curriculum.html';
+                    } else {
+                        file = '-quiz.xml';
+                    }
+                    fs.writeFileSync(dir + '/' + count + '-' + idx + file, item);
                 });
             } else {
                 // FIXME.
