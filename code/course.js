@@ -51,12 +51,24 @@ var buildChapter = function(chapterOutline) {
 
 /* Creates and fills in files in sequential/, each of which points to
  * several vertical files. */
-var buildSequential = function(sequentialOutline) {
-
+var buildSequential = function(sequentialOutline) { // TODO: this function is very similar to buildChapter -- can probably generalize
+    // create xml tree with 'sequential' as root node
+    var sequentialTitle = sequentialOutline.title;
+    // set display_name attribute  of 'sequential' to sequentialTitle
+    sequentialOutline.content.forEach(function(vertical) {
+	var verticalLocation = buildVertical(vertical);
+	// create 'vertical' xml node
+	// set url_name attribute to verticalLocation
+	// append to 'sequential' node
+    });
+    var fileName = outputDir + "sequential/" + sequentialTitle + ".xml";
+    var sequentialFile = fs.openSync(fileName);
+    // write xml object out to sequentialFile
+    return fileName;
 };
 
 /* Creates and fills in files in vertical/, each of which points to
- * several curriculum elements (html files, quiz problems, videos,
+ * one or more curriculum elements (html files, quiz problems, videos,
  * etc). */
 var buildVertical = function(verticalOutline) {
     
