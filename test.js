@@ -112,10 +112,6 @@ function parseSection (section) {
                 console.log((new Array(50)).join('='));
             });
 
-            // parts = parts.filter(function(item) {
-            //     return item.trim().length != 0;
-            // });
-
             if (parts.length > 0) {
                 parts.forEach(function (item, idx, array) {
                     data = cssString + item;
