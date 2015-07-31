@@ -14,7 +14,7 @@ util = require('./code/util');
 
 
 curFolder = 'curriculum/edc/'
-output = './tmp/U1/';
+output = './tmp/U2/';
 topic1 = 'nyc_bjc/1-intro-loops.topic';
 topic2 = 'nyc_bjc/2-conditionals-abstraction.topic';
 
