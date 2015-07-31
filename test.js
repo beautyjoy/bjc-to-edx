@@ -32,7 +32,7 @@ CSSFILES = [
 ]
 
 var combinedCSS = CSSFILES.map(function(file) {
-    fs.readFileSync(file).toString();
+    return fs.readFileSync(file).toString();
 }).join('\n\n/******/\n\n');
 
 fs.writeFileSync('./tmp/bjc-edx.css', combinedCSS);
