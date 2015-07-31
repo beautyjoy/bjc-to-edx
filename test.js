@@ -19,8 +19,8 @@ topic1 = 'nyc_bjc/1-intro-loops.topic';
 topic2 = 'nyc_bjc/2-conditionals-abstraction.topic';
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
- topic = fs.readFileSync(util.topicPath(curFolder, topic1));
-//topic = fs.readFileSync(util.topicPath(curFolder, topic2));
+//topic = fs.readFileSync(util.topicPath(curFolder, topic1));
+topic = fs.readFileSync(util.topicPath(curFolder, topic2));
 
 topic = topic.toString();
 data = llab.parse(topic);
