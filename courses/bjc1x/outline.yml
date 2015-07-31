@@ -1,11 +1,15 @@
 chapters:
   - title: Welcome to BJC.1x! # Chapter
-    sections:
-      - title: Introduction # Sequential
+    sections: 
+      - title: Introduction
+        type: file
         file: introduction.md # Vertical
       - title: "Lecture 1: Intro"
+        type: video
         videoId: xxxxxxxxx
-        quiz: path/to/quiz.xml (or RUQL)
+      - title: Quiz 1
+        type: quiz
+        path: path/to/quiz.xml (or RUQL)
   - title: "Week 1: Abstraction"
     sections:
       - type: readings
@@ -17,7 +21,7 @@ chapters:
           - type: external
             title: Program or Be Programmed
             url: https://youtu.be/imV3pPIUy1k
-          - type: reading_quiz
+          - type: quiz
             title: Reading Quiz 1
             path: path/to/ruql.rb # This inserts all quizzes on one page.
       - type: lecture
