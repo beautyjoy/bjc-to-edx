@@ -93,25 +93,25 @@ function parseSection (section) {
             quizzes = $('div.assessment-data');
             console.log('Found ', quizzes.length, ' quizzes.');
             quizzes.each(function(index, elm) {
-                console.log((new Array(50)).join('='));
-                console.log('QUESTION NUM:', index);
+                // console.log((new Array(50)).join('='));
+                // console.log('QUESTION NUM:', index);
                 qzHTML = $.html(elm); // like a call to outerHTML()
                 command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
                 xml = exec(command).toString();
-                console.log('\n\n\n\n\n');
+                // console.log('\n\n\n\n\n');
                 var idx = text.indexOf(qzHTML);
                 var before = text.slice(0, idx).trim();
                 // console.log('BEFORE');
                 // console.log(before);
-                console.log('\n\n\n\n\n\n');
+                // console.log('\n\n\n\n\n\n');
 
                 if (before.length) {
                     parts.push(before); // part before quiz
                 }
                 parts.push(xml); // push quiz
                 text = text.slice(idx + qzHTML.length);
-                console.log('PARTS LENGTH: ', parts.length);
-                console.log((new Array(50)).join('='));
+                // console.log('PARTS LENGTH: ', parts.length);
+                // console.log((new Array(50)).join('='));
             });
 
             if (parts.length > 0) {
@@ -133,4 +133,5 @@ function parseSection (section) {
     }
 }
 
-require('repl').start('> ');
+console.log('Suck it bitches. This content was converted.');
+// require('repl').start('> ');
