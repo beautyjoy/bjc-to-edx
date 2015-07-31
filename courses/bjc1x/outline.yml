@@ -1,9 +1,12 @@
 chapters:
   - title: Welcome to BJC.1x! # Chapter
-    sections: 
-      - title: Introduction
-        type: file
-        file: introduction.md # Vertical
+    sections: # sequential
+      - type: 
+        title:
+        content:
+          - title: Introduction
+            type: file
+            file: introduction.md # Vertical
       - title: "Lecture 1: Intro"
         type: video
         videoId: xxxxxxxxx
