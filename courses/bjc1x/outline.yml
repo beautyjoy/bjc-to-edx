@@ -1,6 +1,6 @@
 chapters:
   - title: Welcome to BJC.1x! # Chapter
-    sections: # sequential
+    sections: # a bunch of sequentials
       - type: other
         title: Introduction
         content:
