@@ -15,7 +15,8 @@ chapters:
             videoId: xxxxxxxxx
           - title: Quiz 1
             type: quiz
-            path: path/to/quiz.xml (or RUQL)
+            quizType: xml
+            path: path/to/quiz.xml # (or RUQL)
   - title: "Week 1: Abstraction"
     sections:
       - type: readings
@@ -28,6 +29,7 @@ chapters:
             title: Program or Be Programmed
             url: https://youtu.be/imV3pPIUy1k
           - type: quiz
+            quizType: ruql
             title: Reading Quiz 1
             path: path/to/ruql.rb # This inserts all quizzes on one page.
       - type: lecture
@@ -39,7 +41,7 @@ chapters:
           - type: quiz
             title: A
             path: something.rb
-            ruql: Question Name
+            quizType: ruql
       - type: lab
         title: "Lab 1: Something"
         content:

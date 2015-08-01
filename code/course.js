@@ -69,6 +69,27 @@ var buildSequential = function(sequentialOutline) { // TODO: this function is ve
  * one or more curriculum elements (html files, quiz problems, videos,
  * etc). */
 var buildVertical = function(verticalOutline) {
+    var verticalXml = new et.ElementTree(et.Element('vertical'));
+    var verticalTitle = verticalOutline.title;
+    verticalXml.getroot().set('display_name', verticalTitle);
+    switch (verticalOutline.type) {
+    case 'file':
+	break;
+
+    case 'quiz':
+	break;
+
+    case 'llab':
+	// 
+	break;
+
+    case 'external':
+	break;
+
+    default:
+	throw 'Error: unrecognized vertical type "' + verticalOutline.type + '"';
+	break;
+    }
     return "woohoo";
 };
 
