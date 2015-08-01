@@ -62,5 +62,7 @@ chapters:
           
       - type: discussion # Sequential
         title: Discussion
-        file: path.html # a vertical
-        embed: https://piazza.url?folder=thingy
+        content:
+          - type: discussion
+            file: path.html # a vertical
+            embed: https://piazza.url?folder=thingy

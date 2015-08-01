@@ -15,18 +15,18 @@ var buildCourse = function(courseDirectory, options) {
 
     // copy the template/ directory
     outputDir = 'output-course/'; // TODO: this should be read from the config
+    child_process.execSync('rm -rf ' + outputDir); // TODO: this can be exploited in the most gristly of ways...
     child_process.execSync('cp -R template ' + outputDir);
     
-    var outlineFile = fs.openSync(outputDir + 'course/outline.xml', 'w+');
-    var outlineXml = et.parse(outlineFile); // something with ElementTrees
+    var outlineFile = outputDir + 'course/outline.xml';
+    var outlineXml = et.parse(fs.readFileSync(outlineFile).toString());
 
     outline.chapters.forEach(function(chapter) {
-	var chapterLoc = buildCourse(chapter);
-	// make new xml 'chapter' node
-	// set node's 'url_name' attribute to chapterLoc
-        // append to outlineXml 'course' node
+	var chapterLoc = buildChapter(chapter);
+	var chapterXml = et.SubElement(outlineXml.getroot(), 'chapter'); // make new xml 'chapter' node, and append to course outline
+	chapterXml.set('url_name', chapterLoc); // set node's 'url_name' attribute to chapterLoc
     });
-    // write back out to outlineFile
+    fs.writeFileSync(outlineFile, outlineXml.write({'xml_declaration': false})); // write back out to outlineFile
 };
 course.buildCourse = buildCourse;
 
@@ -34,36 +34,34 @@ course.buildCourse = buildCourse;
  * several sequential files. Returns the filename of the created
  * chapter. */
 var buildChapter = function(chapterOutline) {
-    // create xml tree with 'chapter' as root node
+    var chapterXml = new et.ElementTree(et.Element('chapter'));
     var chapterTitle = chapterOutline.title;
-    // set display_name attribute  of 'chapter' to chapterTitle
+    chapterXml.getroot().set('display_name', chapterTitle);
     chapterOutline.sections.forEach(function(section) {
 	var sequentialLocation = buildSequential(section);
-	// create 'sequential' xml node
-	// set url_name attribute to sequentialLocation
-	// append to 'chapter' node
+	var sequentialNode = et.SubElement(chapterXml.getroot(), 'sequential');
+	sequentialNode.set('url_name', sequentialLocation);
     });
-    var fileName = outputDir + "chapter/" + chapterTitle + ".xml";
-    var chapterFile = fs.openSync(fileName);
-    // write xml object out to chapterFile
+    var fileName = chapterTitle + '.xml';
+    fs.writeFileSync(outputDir + 'chapter/' + fileName,
+		     chapterXml.write({'xml_declaration': false}));
     return fileName;
 };
 
 /* Creates and fills in files in sequential/, each of which points to
  * several vertical files. */
 var buildSequential = function(sequentialOutline) { // TODO: this function is very similar to buildChapter -- can probably generalize
-    // create xml tree with 'sequential' as root node
+    var sequentialXml = new et.ElementTree(et.Element('sequential'));
     var sequentialTitle = sequentialOutline.title;
-    // set display_name attribute  of 'sequential' to sequentialTitle
+    sequentialXml.getroot().set('display_name', sequentialTitle);
     sequentialOutline.content.forEach(function(vertical) {
 	var verticalLocation = buildVertical(vertical);
-	// create 'vertical' xml node
-	// set url_name attribute to verticalLocation
-	// append to 'sequential' node
+	var verticalNode = et.SubElement(sequentialXml.getroot(), 'vertical');
+	verticalNode.set('url_name', verticalLocation);
     });
-    var fileName = outputDir + "sequential/" + sequentialTitle + ".xml";
-    var sequentialFile = fs.openSync(fileName);
-    // write xml object out to sequentialFile
+    var fileName = sequentialTitle + '.xml';
+    fs.writeFileSync(outputDir + 'sequential/' + fileName,
+		     sequentialXml.write({'xml_declaration': false}));
     return fileName;
 };
 
@@ -71,7 +69,7 @@ var buildSequential = function(sequentialOutline) { // TODO: this function is ve
  * one or more curriculum elements (html files, quiz problems, videos,
  * etc). */
 var buildVertical = function(verticalOutline) {
-    
+    return "woohoo";
 };
 
 module.exports = course;
