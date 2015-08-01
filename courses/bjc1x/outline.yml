@@ -1,18 +1,21 @@
 chapters:
   - title: Welcome to BJC.1x! # Chapter
     sections: # sequential
-      - type: 
-        title:
+      - type: other
+        title: Introduction
         content:
           - title: Introduction
             type: file
             file: introduction.md # Vertical
-      - title: "Lecture 1: Intro"
-        type: video
-        videoId: xxxxxxxxx
-      - title: Quiz 1
-        type: quiz
-        path: path/to/quiz.xml (or RUQL)
+      - type: lecture
+        title: "Lecture 1"
+        content:
+          - title: "Lecture 1: Intro"
+            type: video
+            videoId: xxxxxxxxx
+          - title: Quiz 1
+            type: quiz
+            path: path/to/quiz.xml (or RUQL)
   - title: "Week 1: Abstraction"
     sections:
       - type: readings
