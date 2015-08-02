@@ -73,28 +73,16 @@ function parseSection (section) {
             html = fs.readFileSync(file);
 
             $ = cheerio.load(html);
-            // Fix image URLs
-            imgs = $('img');
-            for (var i = 0; i < imgs.length; i += 1) {
-                url = imgs[i].attribs.src;
-                imgs[i].attribs.src = util.transformURL(BASEURL, relPath, url);
-            }
-
-            // Fix Snap! run links.
-            runs = $('a.run');
-            for (var i = 0; i < runs.length; i += 1) {
-                url = runs[i].attribs.href;
-                runs[i].attribs.href = util.transformURL(BASEURL, relPath, url);
-            }
-
+            
+            // Do basic transforms
+            $ = processHTML($);
+            
             parts = [];
             text = $('body').html()
             // parse quizes separately.
             quizzes = $('div.assessment-data');
             console.log('Found ', quizzes.length, ' quizzes.');
             quizzes.each(function(index, elm) {
-                // console.log((new Array(50)).join('='));
-                // console.log('QUESTION NUM:', index);
                 qzHTML = $.html(elm); // like a call to outerHTML()
                 command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
                 xml = exec(command).toString();
@@ -135,3 +123,28 @@ function parseSection (section) {
 
 console.log('Suck it bitches. This content was converted.');
 // require('repl').start('> ');
+
+/** Does the work to modify a bunch of things to prep for edX
+ *
+ * @param {Cherrio-Object} The contents of the html file
+ *
+ */
+function processHTML ($, outputPath) {
+    var i, imgs, runs, url'
+    '
+    // Fix image URLs
+    imgs = $('img');
+    for (i = 0; i < imgs.length; i += 1) {
+        url = imgs[i].attribs.src;
+        imgs[i].attribs.src = util.transformURL(BASEURL, relPath, url);
+    }
+
+    // Fix Snap! run links.
+    runs = $('a.run');
+    for (i = 0; i < runs.length; i += 1) {
+        url = runs[i].attribs.href;
+        runs[i].attribs.href = util.transformURL(BASEURL, relPath, url);
+    }
+
+    return $;
+}
