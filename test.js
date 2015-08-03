@@ -59,79 +59,46 @@ function parseSection (section) {
         // Make if it doesn't exist.
         mkdirp.sync(dir);
         count = 0;
-        section.contents.forEach(function (item) {
-            if (!item.url) {
-                return;
-            } else if (item.url.indexOf(BASEURL) != 0) {
-                return;
-            }
-
-            count += 1;
-            file = item.url.replace(BASEURL, curFolder);
-            relPath = path.relative(curFolder, file);
-            console.log('FILE: ', file);
-            html = fs.readFileSync(file);
-
-            $ = cheerio.load(html);
-            
-            // Do basic transforms
-            $ = processHTML($);
-            
-            parts = [];
-            text = $('body').html()
-            // parse quizes separately.
-            quizzes = $('div.assessment-data');
-            console.log('Found ', quizzes.length, ' quizzes.');
-            quizzes.each(function(index, elm) {
-                qzHTML = $.html(elm); // like a call to outerHTML()
-                command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
-                xml = exec(command).toString();
-                // console.log('\n\n\n\n\n');
-                var idx = text.indexOf(qzHTML);
-                var before = text.slice(0, idx).trim();
-                // console.log('BEFORE');
-                // console.log(before);
-                // console.log('\n\n\n\n\n\n');
-
-                if (before.length) {
-                    parts.push(before); // part before quiz
-                }
-                parts.push(xml); // push quiz
-                text = text.slice(idx + qzHTML.length);
-                // console.log('PARTS LENGTH: ', parts.length);
-                // console.log((new Array(50)).join('='));
-            });
-
-            if (parts.length > 0) {
-                parts[0] = cssString + parts[0] // only add CSS once per page.
-                parts.forEach(function (item, idx, array) {
-                    if (item.indexOf('<problem>') == -1) {
-                        file = '-curriculum.html';
-                    } else {
-                        file = '-quiz.xml';
-                    }
-                    fs.writeFileSync(dir + '/' + count + '-' + idx + file, item);
-                });
-            } else {
-                // FIXME.
-                data = cssString + text;
-                fs.writeFileSync(dir + '/' + count + '-curriculum.html', data);
-            }
-        })
+        section.contents.forEach(processCurriculumItem)
     }
 }
 
 console.log('Suck it bitches. This content was converted.');
-// require('repl').start('> ');
 
+// GLOBAL -- FIXME
+var relPath;
+var count;
+var dir;
+function processCurriculumItem (item) {
+    if (!item.url) {
+        return;
+    } else if (item.url.indexOf(BASEURL) != 0) {
+        return;
+    }
+
+    count += 1;
+    file = item.url.replace(BASEURL, curFolder);
+    relPath = path.relative(curFolder, file);
+    console.log('FILE: ', file);
+    html = fs.readFileSync(file);
+
+    parts = splitFile(html, count, dir);
+    parts.forEach(function(part, index) {
+        var css = index == 0;
+        var data = processHTML(part.contents, css);
+        fs.writeFileSync(dir + '/' + part.path, data);
+    })
+}
 /** Does the work to modify a bunch of things to prep for edX
  *
  * @param {Cherrio-Object} The contents of the html file
  *
  */
-function processHTML ($, outputPath) {
-    var i, imgs, runs, url'
-    '
+function processHTML (html, includeCSS) {
+    var i, imgs, runs, url, outerHTML, wrap;
+    
+    $ = cheerio.load(html);
+    
     // Fix image URLs
     imgs = $('img');
     for (i = 0; i < imgs.length; i += 1) {
@@ -146,5 +113,72 @@ function processHTML ($, outputPath) {
         runs[i].attribs.href = util.transformURL(BASEURL, relPath, url);
     }
 
-    return $;
+    outerHTML = $.html($);
+    
+    if (includeCSS != false) {
+        outerHTML = cssString + outerHTML;
+    }
+
+    wrap = '<div class="full>CONTENT</div>"';
+    
+    // wrap content in div.full
+    return wrap.replace(/CONTET/, outerHTML);
+}
+
+/** Split a single curriculum page into components to be in a vertical.
+ *
+ * @param {string} the raw HTML file to be processed
+ */
+function splitFile (html, page, dir) {
+    var $, output, title, quizzes, qzHTML, text;
+
+    output = [];
+    $ = cheerio.load(html);
+    
+    title = $('h2')[0].text();
+    
+    text = $('body').html()
+    // parse quizes separately.
+    quizzes = $('div.assessment-data');
+    console.log('Found ', quizzes.length, ' quizzes.');
+    quizzes.each(function(index, elm) {
+        qzHTML = $.html(elm); // like a call to outerHTML()
+        command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
+        xml = exec(command).toString();
+        var idx = text.indexOf(qzHTML);
+        var before = text.slice(0, idx).trim();
+
+        if (before.length) {
+            num = output.length + 1;
+            file = page + '-' + num + '-' + title + '.html';
+            output.push({
+                type: 'html',
+                content: before,
+                path: file
+            }); // part before quiz
+        }
+        
+        num = output.length + 1;
+        file = page + '-' + num + '-' + title + '.xml';
+        output.push({
+            type: 'quiz',
+            content: xml,
+            path: file
+        }); // push quiz
+        text = text.slice(idx + qzHTML.length);
+    });
+    
+    if (quizzes.length == 0) {
+        output.push({
+            type: 'html',
+            content: text,
+            path: page + '-' + title + '.html'
+        });
+    }
+    
+    return output;
+}
+
+module.exports = function(path, section, output) {
+    
 }
