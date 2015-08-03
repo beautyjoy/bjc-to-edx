@@ -14,7 +14,7 @@ util = require('./code/util');
 
 
 curFolder = 'curriculum/edc/'
-output = './tmp/U2/';
+output = './tmp/U1/';
 topic1 = 'nyc_bjc/1-intro-loops.topic';
 topic2 = 'nyc_bjc/2-conditionals-abstraction.topic';
 
@@ -57,21 +57,18 @@ function parseTopic (topic, args) {
     topic.contents.forEach(parseSection, args);
 }
 
-function shouldParse (title, searchTerm) {
-    if (searchTerm) {
-        return title.indexOf(searchTerm.trim());
-    } else {
-        return title.indexOf('Programming Lab') == 0 ||
-        title.indexOf('Investigation') == 0;
-    }
+function shouldParse (title) {
+    return title.indexOf('Programming Lab') == 0 ||
+    title.indexOf('Investigation') == 0;
 }
 
-function parseSection (section, args) {
+function parseSection (section, skip) {
     var title = section.title.trim();
     
-    search = args[0]
-    
-    if (!shouldParse(title, search)) { return; }
+    if (!shouldParse(title) || skip === true) {
+        console.log('skipping:', title);
+        return;
+    }
     
     dir = output + title;
     // Make if it doesn't exist.
@@ -205,13 +202,19 @@ function splitFile (html, page, dir) {
     return output;
 }
 
-module.exports = function(path, section, output) {
+module.exports = function(path, sectionName, directory) {
+    output = directory;
+    var topic, data, result;
     topic = fs.readFileSync(path); // util.topicPath(curFolder, topic1)
     data = llab.parse(topic);
     
-    data.topics.forEach(parseTopic);
+    data.topics.forEach(function (topic) {
+        topic.contents.forEach(function (section) {
+            var title = section.title.trim();
+            skip = title.indexOf(sectionName) == -1;
+            result = parseSection(section, skip);
+        })
+    });
 
-
-    
-    
+    return result
 }
