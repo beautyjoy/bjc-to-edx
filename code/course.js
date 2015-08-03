@@ -22,9 +22,9 @@ var buildCourse = function(courseDirectory, options) {
     var outlineXml = et.parse(fs.readFileSync(outlineFile).toString());
 
     outline.chapters.forEach(function(chapter) {
-	var chapterLoc = buildChapter(chapter);
-	var chapterXml = et.SubElement(outlineXml.getroot(), 'chapter'); // make new xml 'chapter' node, and append to course outline
-	chapterXml.set('url_name', chapterLoc); // set node's 'url_name' attribute to chapterLoc
+    var chapterLoc = buildChapter(chapter);
+    var chapterXml = et.SubElement(outlineXml.getroot(), 'chapter'); // make new xml 'chapter' node, and append to course outline
+    chapterXml.set('url_name', chapterLoc); // set node's 'url_name' attribute to chapterLoc
     });
     fs.writeFileSync(outlineFile, outlineXml.write({'xml_declaration': false})); // write back out to outlineFile
 };
@@ -38,13 +38,13 @@ var buildChapter = function(chapterOutline) {
     var chapterTitle = chapterOutline.title;
     chapterXml.getroot().set('display_name', chapterTitle);
     chapterOutline.sections.forEach(function(section) {
-	var sequentialLocation = buildSequential(section);
-	var sequentialNode = et.SubElement(chapterXml.getroot(), 'sequential');
-	sequentialNode.set('url_name', sequentialLocation);
+    var sequentialLocation = buildSequential(section);
+    var sequentialNode = et.SubElement(chapterXml.getroot(), 'sequential');
+    sequentialNode.set('url_name', sequentialLocation);
     });
     var fileName = chapterTitle + '.xml';
     fs.writeFileSync(outputDir + 'chapter/' + fileName,
-		     chapterXml.write({'xml_declaration': false}));
+             chapterXml.write({'xml_declaration': false}));
     return fileName;
 };
 
@@ -55,15 +55,15 @@ var buildSequential = function(sequentialOutline) { // TODO: this function is ve
     var sequentialTitle = sequentialOutline.title;
     sequentialXml.getroot().set('display_name', sequentialTitle);
     sequentialOutline.content.forEach(function(item) {
-	var verticalLocations = buildVerticals([item]);
-	verticalLocations.forEach(function(verticalLocation) {
-	    var verticalNode = et.SubElement(sequentialXml.getroot(), 'vertical');
-	    verticalNode.set('url_name', verticalLocation);
-	});
+    var verticalLocations = buildVerticals([item]);
+    verticalLocations.forEach(function(verticalLocation) {
+        var verticalNode = et.SubElement(sequentialXml.getroot(), 'vertical');
+        verticalNode.set('url_name', verticalLocation);
+    });
     });
     var fileName = sequentialTitle + '.xml';
     fs.writeFileSync(outputDir + 'sequential/' + fileName,
-		     sequentialXml.write({'xml_declaration': false}));
+             sequentialXml.write({'xml_declaration': false}));
     return fileName;
 };
 
@@ -72,45 +72,45 @@ var buildSequential = function(sequentialOutline) { // TODO: this function is ve
  * etc). */
 var buildVerticals = function(verticalOutlines) {
     verticalOutlines.forEach(function(verticalOutline) {
-	var verticalXml, verticalTitle, itemXml;
-	verticalXml = new et.ElementTree(et.Element('vertical'));
-	verticalTitle = verticalOutline.title;
-	verticalXml.getroot().set('display_name', verticalTitle);
-	switch (verticalOutline.type) {
-	case 'file':
-	    // TODO: this assumes that the path is already xml-ified, which
-	    // will likely not be the case
-	    itemXml = new et.SubElement(verticalXml, "html");
-	    itemXml.set("url_name", verticalOutline.path);
-	    return [verticalTitle];
-	    break;
+    var verticalXml, verticalTitle, itemXml;
+    verticalXml = new et.ElementTree(et.Element('vertical'));
+    verticalTitle = verticalOutline.title;
+    verticalXml.getroot().set('display_name', verticalTitle);
+    switch (verticalOutline.type) {
+    case 'file':
+        // TODO: this assumes that the path is already xml-ified, which
+        // will likely not be the case
+        itemXml = new et.SubElement(verticalXml, "html");
+        itemXml.set("url_name", verticalOutline.path);
+        return [verticalTitle];
+        break;
 
-	case 'quiz':
-	    itemXml = new et.SubElement(verticalXml, "problem");
-	    itemXml.set("url_name", verticalOutline.path);
-	    return [verticalTitle];
-	    break;
+    case 'quiz':
+        itemXml = new et.SubElement(verticalXml, "problem");
+        itemXml.set("url_name", verticalOutline.path);
+        return [verticalTitle];
+        break;
 
-	case 'video':
-	    itemXml = new et.SubElement(verticalXml, "video");
-	    itemXml.set("url_name", verticalOutline.path);
-	    return [verticalTitle]; // TODO: this also needs to write a separate xml file in the 'video' directory
-	    break;
-	    
-	case 'external': // TODO: not sure exactly what this will be
-	    break;
+    case 'video':
+        itemXml = new et.SubElement(verticalXml, "video");
+        itemXml.set("url_name", verticalOutline.path);
+        return [verticalTitle]; // TODO: this also needs to write a separate xml file in the 'video' directory
+        break;
+        
+    case 'external': // TODO: not sure exactly what this will be
+        break;
 
-	case 'llab':
-	    var llabElements = test.michaelsFunction(verticalOutline.path, // TODO: rename once Michael has updated
-						     verticalOutline.section, 
-						     outputDir);
-	    return llabElements.map(buildVerticals);
-	    break;
+    case 'llab':
+        var llabElements = test.michaelsFunction(verticalOutline.path, // TODO: rename once Michael has updated
+                             verticalOutline.section, 
+                             outputDir);
+        return llabElements.map(buildVerticals);
+        break;
 
-	default:
-	    throw 'Error: unrecognized vertical type "' + verticalOutline.type + '"';
-	    break;
-	}
+    default:
+        throw 'Error: unrecognized vertical type "' + verticalOutline.type + '"';
+        break;
+    }
     });
 };
 
