@@ -1,12 +1,13 @@
 chapters:
   - title: Welcome to BJC.1x! # Chapter
-    sections: # sequential
+    sections: # a bunch of sequentials
       - type: other
         title: Introduction
         content:
           - title: Introduction
             type: file
             file: introduction.md # Vertical
+            path: introduction.md # Vertical
       - type: lecture
         title: "Lecture 1"
         content:
@@ -15,19 +16,21 @@ chapters:
             videoId: xxxxxxxxx
           - title: Quiz 1
             type: quiz
-            path: path/to/quiz.xml (or RUQL)
+            quizType: xml
+            path: path/to/quiz.xml # (or RUQL)
   - title: "Week 1: Abstraction"
     sections:
       - type: readings
         title: Readings
         content:
           - type: file
-            title: Brian Harveys Intro to Abstraction
+            title: "Brian Harvey's Intro to Abstraction"
             path: something.html
           - type: external
             title: Program or Be Programmed
             url: https://youtu.be/imV3pPIUy1k
           - type: quiz
+            quizType: ruql
             title: Reading Quiz 1
             path: path/to/ruql.rb # This inserts all quizzes on one page.
       - type: lecture
@@ -39,7 +42,7 @@ chapters:
           - type: quiz
             title: A
             path: something.rb
-            ruql: Question Name
+            quizType: ruql
       - type: lab
         title: "Lab 1: Something"
         content:
@@ -64,3 +67,7 @@ chapters:
         title: Discussion
         file: path.html # a vertical
         embed: https://piazza.url?folder=thingy
+        content:
+          - type: discussion
+            path: path.html # a vertical
+            embed: https://piazza.url?folder=thingy
