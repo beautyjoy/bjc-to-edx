@@ -54,10 +54,12 @@ var buildSequential = function(sequentialOutline) { // TODO: this function is ve
     var sequentialXml = new et.ElementTree(et.Element('sequential'));
     var sequentialTitle = sequentialOutline.title;
     sequentialXml.getroot().set('display_name', sequentialTitle);
-    sequentialOutline.content.forEach(function(vertical) {
-	var verticalLocation = buildVertical(vertical);
-	var verticalNode = et.SubElement(sequentialXml.getroot(), 'vertical');
-	verticalNode.set('url_name', verticalLocation);
+    sequentialOutline.content.forEach(function(item) {
+	var verticalLocations = buildVerticals(item);
+	verticalLocations.forEach(function(verticalLocation) {
+	    var verticalNode = et.SubElement(sequentialXml.getroot(), 'vertical');
+	    verticalNode.set('url_name', verticalLocation);
+	});
     });
     var fileName = sequentialTitle + '.xml';
     fs.writeFileSync(outputDir + 'sequential/' + fileName,
@@ -68,19 +70,26 @@ var buildSequential = function(sequentialOutline) { // TODO: this function is ve
 /* Creates and fills in files in vertical/, each of which points to
  * one or more curriculum elements (html files, quiz problems, videos,
  * etc). */
-var buildVertical = function(verticalOutline) {
-    var verticalXml = new et.ElementTree(et.Element('vertical'));
-    var verticalTitle = verticalOutline.title;
+var buildVerticals = function(verticalOutline) {
+    var verticalXml, verticalTitle, itemXml;
+    verticalXml = new et.ElementTree(et.Element('vertical'));
+    verticalTitle = verticalOutline.title;
     verticalXml.getroot().set('display_name', verticalTitle);
     switch (verticalOutline.type) {
     case 'file':
+	itemXml = new et.SubElement(verticalXml, "html");
+	itemXml.set("url_name", verticalOutline.path);
+	return [verticalTitle];
 	break;
 
     case 'quiz':
+	itemXml = new et.SubElement(verticalXml, "problem");
+	itemXml.set("url_name", verticalOutline.path);
+	return [verticalTitle];
 	break;
 
     case 'llab':
-	// 
+	var llabElements = 
 	break;
 
     case 'external':
