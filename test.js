@@ -85,10 +85,12 @@ function processCurriculumItem (item) {
     parts = splitFile(html, count, dir);
     parts.forEach(function(part, index) {
         var css = index == 0;
-        var data = processHTML(part.contents, css);
+        var data = processHTML(part.content, css);
         fs.writeFileSync(dir + '/' + part.path, data);
-    })
+    });
 }
+
+
 /** Does the work to modify a bunch of things to prep for edX
  *
  * @param {Cherrio-Object} The contents of the html file
@@ -113,16 +115,15 @@ function processHTML (html, includeCSS) {
         runs[i].attribs.href = util.transformURL(BASEURL, relPath, url);
     }
 
-    outerHTML = $.html($);
-    
+    outerHTML = $.html();
     if (includeCSS != false) {
         outerHTML = cssString + outerHTML;
     }
 
-    wrap = '<div class="full>CONTENT</div>"';
+    wrap = '<div class="full">CONTENT</div>';
     
     // wrap content in div.full
-    return wrap.replace(/CONTET/, outerHTML);
+    return wrap.replace(/CONTENT/, outerHTML);
 }
 
 /** Split a single curriculum page into components to be in a vertical.
@@ -134,11 +135,9 @@ function splitFile (html, page, dir) {
 
     output = [];
     $ = cheerio.load(html);
-    
-    console.log($('h2'));
-    
-    title = $('h2')[0].text();
-    
+
+    title = $('h2').first().text();
+
     text = $('body').html()
     // parse quizes separately.
     quizzes = $('div.assessment-data');
