@@ -135,6 +135,8 @@ function splitFile (html, page, dir) {
     output = [];
     $ = cheerio.load(html);
     
+    console.log($('h2'));
+    
     title = $('h2')[0].text();
     
     text = $('body').html()
