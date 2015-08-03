@@ -19,26 +19,32 @@ topic1 = 'nyc_bjc/1-intro-loops.topic';
 topic2 = 'nyc_bjc/2-conditionals-abstraction.topic';
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
-//topic = fs.readFileSync(util.topicPath(curFolder, topic1));
-topic = fs.readFileSync(util.topicPath(curFolder, topic2));
+topic = fs.readFileSync(util.topicPath(curFolder, topic1));
+//topic = fs.readFileSync(util.topicPath(curFolder, topic2));
 
 topic = topic.toString();
 data = llab.parse(topic);
 
-CSSFILES = [
-    'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
-    'curriculum/edc/llab/css/default.css',
-    'curriculum/edc/css/bjc.css'
-]
+function doCSS(path) {
+    path = path || './tmp/';
+    
+    var CSSFILES = [
+        'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
+        'curriculum/edc/llab/css/default.css',
+        'curriculum/edc/css/bjc.css'
+    ];
 
-var combinedCSS = CSSFILES.map(function(file) {
-    return fs.readFileSync(file).toString();
-}).join('\n\n/******/\n\n');
+    var combinedCSS = CSSFILES.map(function(file) {
+        return fs.readFileSync(file).toString();
+    }).join('\n\n/******/\n\n');
+    
+    fs.writeFileSync(path + 'bjc-edx.css', combinedCSS);
+}
 
-fs.writeFileSync('./tmp/bjc-edx.css', combinedCSS);
+doCSS();
 
 cssPath = util.edXPath('bjc-edx.css');
-cssString = '<link rel="stylesheet" href="' + cssPath + '">';
+cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
 
 function loadFile (path) {
 
@@ -47,20 +53,37 @@ function loadFile (path) {
 data.topics.forEach(parseTopic);
 
 
-function parseTopic (topic) {
-    topic.contents.forEach(parseSection);
+function parseTopic (topic, args) {
+    topic.contents.forEach(parseSection, args);
 }
 
-function parseSection (section) {
-    if (section.title.indexOf(' Programming Lab') == 0 ||
-        section.title.indexOf(' Investigation') == 0) {
-
-        dir = output + section.title;
-        // Make if it doesn't exist.
-        mkdirp.sync(dir);
-        count = 0;
-        section.contents.forEach(processCurriculumItem)
+function shouldParse (title, searchTerm) {
+    if (searchTerm) {
+        return title.indexOf(searchTerm.trim());
+    } else {
+        return title.indexOf('Programming Lab') == 0 ||
+        title.indexOf('Investigation') == 0;
     }
+}
+
+function parseSection (section, args) {
+    var title = section.title.trim();
+    
+    search = args[0]
+    
+    if (!shouldParse(title, search)) { return; }
+    
+    dir = output + title;
+    // Make if it doesn't exist.
+    mkdirp.sync(dir);
+    count = 0;
+    results = [];
+    section.contents.forEach(function (item) {
+        // This also writes files...hmmm.
+        results.push(processCurriculumItem(item));
+    });
+    
+    return results;
 }
 
 console.log('Suck it bitches. This content was converted.');
@@ -88,6 +111,8 @@ function processCurriculumItem (item) {
         var data = processHTML(part.content, css);
         fs.writeFileSync(dir + '/' + part.path, data);
     });
+    
+    return parts;
 }
 
 
@@ -181,5 +206,12 @@ function splitFile (html, page, dir) {
 }
 
 module.exports = function(path, section, output) {
+    topic = fs.readFileSync(path); // util.topicPath(curFolder, topic1)
+    data = llab.parse(topic);
+    
+    data.topics.forEach(parseTopic);
+
+
+    
     
 }
