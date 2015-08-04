@@ -64,5 +64,9 @@
    CLOSED: [2015-07-22 Wed 15:26]
 ** DONE Talk to Max about javascript problem for "grading" survey completion
    CLOSED: [2015-07-22 Wed 15:26]
-** TODO Attempt to implement ^^
-** TODO 
+** DONE Attempt to implement ^^
+   CLOSED: [2015-08-03 Mon 12:29]
+** TODO Add pretty picture to survey completion page
+** TODO Get good surveys written - check in with Will and Peitian about their meeting
+** TODO Add surveys to course - hopefully we can autobuild based on outline.yml
+** TODO Add Will to the edge.edx course.

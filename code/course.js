@@ -14,7 +14,7 @@ var config, outline, outputDir;
  * pointers to chapter files. */
 var buildCourse = function(courseDirectory, options) {
     // TODO: Check overrides in options. Store the defaults in some variable.
-    config = yaml.load(fs.readFileSync(courseDirectory + 'config.yml'));
+    config = yaml.load(fs.readFileSync(courseDirectory + 'settings.yml'));
     outline = yaml.load(fs.readFileSync(courseDirectory + 'outline.yml'));
 
     // copy the template/ directory
@@ -42,13 +42,13 @@ var buildChapter = function (chapterOutline) {
     var chapterTitle = chapterOutline.title;
     chapterXml.getroot().set('display_name', chapterTitle);
     chapterOutline.sections.forEach(function(section) {
-    var sequentialLocation = buildSequential(section);
-    var sequentialNode = et.SubElement(chapterXml.getroot(), 'sequential');
-    sequentialNode.set('url_name', sequentialLocation);
+	var sequentialLocation = buildSequential(section);
+	var sequentialNode = et.SubElement(chapterXml.getroot(), 'sequential');
+	sequentialNode.set('url_name', sequentialLocation);
     });
     var fileName = chapterTitle + '.xml';
     fs.writeFileSync(outputDir + 'chapter/' + fileName,
-             chapterXml.write({'xml_declaration': false}));
+		     chapterXml.write({'xml_declaration': false}));
     return fileName;
 };
 
@@ -66,7 +66,7 @@ var buildSequential = function (sequentialOutline) { // TODO: this function is v
     });
     var fileName = sequentialTitle + '.xml';
     fs.writeFileSync(outputDir + 'sequential/' + fileName,
-             sequentialXml.write({'xml_declaration': false}));
+		     sequentialXml.write({'xml_declaration': false}));
     return fileName;
 };
 
@@ -85,24 +85,26 @@ var buildVerticals = function(verticalOutlines) {
         case 'file':
             // TODO: this assumes that the path is already xml-ified, which
             // will likely not be the case
-            itemXml = new et.SubElement(verticalXml, "html");
+            itemXml = new et.SubElement(verticalXml.getroot(), "html");
             itemXml.set("url_name", verticalOutline.path);
+	    console.log("here");
             return [verticalTitle];
             break;
 
         case 'quiz':
-            itemXml = new et.SubElement(verticalXml, "problem");
+            itemXml = new et.SubElement(verticalXml.getroot(), "problem");
             itemXml.set("url_name", verticalOutline.path);
             return [verticalTitle];
             break;
 
         case 'video':
-            itemXml = new et.SubElement(verticalXml, "video");
+            itemXml = new et.SubElement(verticalXml.getroot(), "video");
             itemXml.set("url_name", verticalOutline.path);
             return [verticalTitle]; // TODO: this also needs to write a separate xml file in the 'video' directory
             break;
         
         case 'external': // TODO: not sure exactly what this will be
+	    return ['UNSUPPORTED'];
             break;
 
         case 'llab':
