@@ -119,7 +119,6 @@ function processCurriculumItem (item) {
         console.log('WRITING CONTENT', dir + '/' + part.path);
         // FIXME this is broken.
         thing= (dir + '/' + part.path).split('/').slice(0, -1).join('/')
-        console.log(thing);
         mkdirp.sync(thing);
         fs.writeFileSync(dir + '/' + part.path, data);
     });
@@ -236,10 +235,6 @@ function splitFile (html, page, dir) {
 }
 
 module.exports = function(path, sectionName, directory) {
-    console.log('EXPORTED FUNCTION');
-    console.log('PATH: ', path);
-    console.log('SECTION: ', sectionName);
-    console.log('OUTPUT: ', directory);
     // Globals
     PETER = true;
     // util.topicPath(curFolder, path) == assuming we have some folder.
@@ -250,12 +245,16 @@ module.exports = function(path, sectionName, directory) {
     var topic, data, result;
     
     data.topics.forEach(function (topic) {
-        topic.contents.forEach(function (section) {
+        topic.contents.some(function (section) {
             var title = section.title.trim();
             skip = title.indexOf(sectionName) == -1;
-            result = parseSection(section, skip);
+            tmp = parseSection(section, skip)
+            if (tmp) {
+                result = tmp;
+                return true;
+            }
         })
     });
 
-    return result
+    return result;
 }
