@@ -47,8 +47,8 @@ chapters:
         title: "Lab 1: Something"
         content:
           - type: llab # This inserts llab content in a vertical. 
-            path: unit-1.topic
-            section: "Programming Lab 1: XXXX" # Optional, grabs only a specific group of files in a topic.
+            path: curriculum/edc/topic/nyc_bjc/1-intro-loops.topic
+            section: "Programming Lab 1: Introduction" # Optional, grabs only a specific group of files in a topic.
             autograding:
               - html: llab-page.html
                 starter_file: something.xml
