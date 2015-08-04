@@ -111,6 +111,7 @@ function processCurriculumItem (item) {
     parts.forEach(function(part, index) {
         var css = index == 0;
         var data = processHTML(part.content, css);
+        console.log('WRITING CONTENT', dir + '/' + part.path);
         fs.writeFileSync(dir + '/' + part.path, data);
     });
     
@@ -200,7 +201,7 @@ function splitFile (html, page, dir) {
         num = output.length + 1;
         file = page + '-' + num + '-' + title + '.xml';
         if (PETER) {
-            file = 'xml/' + file;
+            file = 'problem/' + file;
         }
         output.push({
             type: 'quiz',
@@ -226,9 +227,14 @@ function splitFile (html, page, dir) {
 }
 
 module.exports = function(path, sectionName, directory) {
+    console.log('EXPORTED FUNCTION');
+    console.log('PATH: ', path);
+    console.log('SECTION: ', sectionName);
+    console.log('OUTPUT: ', directory);
     // Globals
     PETER = true;
-    topic = fs.readFileSync(path); // util.topicPath(curFolder, topic1)
+    // util.topicPath(curFolder, topic1)
+    topic = fs.readFileSync(path).toString();
     data = llab.parse(topic);
     output = directory;
     
