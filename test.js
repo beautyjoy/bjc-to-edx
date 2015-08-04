@@ -29,6 +29,13 @@ topic = fs.readFileSync(util.topicPath(curFolder, topic));
 topic = topic.toString();
 data = llab.parse(topic);
 
+// GLOBAL -- FIXME
+var relPath;
+var count;
+var dir;
+var PETER = false;
+
+
 function doCSS(path) {
     path = path || './tmp/';
     
@@ -74,7 +81,10 @@ function parseSection (section, skip) {
         return;
     }
     
-    dir = output + title;
+    dir = output;
+    if (!PETER) {
+        dir += title;
+    }
     // Make if it doesn't exist.
     mkdirp.sync(dir);
     count = 0;
@@ -89,11 +99,6 @@ function parseSection (section, skip) {
 
 console.log('Suck it bitches. This content was converted.');
 
-// GLOBAL -- FIXME
-var relPath;
-var count;
-var dir;
-var PETER = false;
 function processCurriculumItem (item) {
     if (!item.url) {
         return;
@@ -112,6 +117,10 @@ function processCurriculumItem (item) {
         var css = index == 0;
         var data = processHTML(part.content, css);
         console.log('WRITING CONTENT', dir + '/' + part.path);
+        // FIXME this is broken.
+        thing= (dir + '/' + part.path).split('/').slice(0, -1).join('/')
+        console.log(thing);
+        mkdirp.sync(thing);
         fs.writeFileSync(dir + '/' + part.path, data);
     });
     
@@ -233,7 +242,7 @@ module.exports = function(path, sectionName, directory) {
     console.log('OUTPUT: ', directory);
     // Globals
     PETER = true;
-    // util.topicPath(curFolder, topic1)
+    // util.topicPath(curFolder, path) == assuming we have some folder.
     topic = fs.readFileSync(path).toString();
     data = llab.parse(topic);
     output = directory;
