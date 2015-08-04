@@ -21,7 +21,8 @@ util.edXPath = function (url) {
 }
 
 /* This does the bulk of the work to tranform a path into an edX URL
- * @{}
+ * @param {string}
+ * FIXME -- this breaks if passed in a full URL! http:// gahhhhhh
  */
 util.transformURL = function (baseURL, filePath, url) {
     var fileDir = path.dirname(filePath);
@@ -40,6 +41,15 @@ util.transformURL = function (baseURL, filePath, url) {
     }
 
     return util.edXPath(url);
+}
+
+/** Normalize spaces and other special chars in filenames.
+ *  Warning: Don't pass this a full path as it removes /
+ *  @param {string} the filename to be normalized
+ *  @return {string} a normalized filename. 
+ */
+util.edXFileName =  function fileName (name) {
+    return name.replace(/[\s+/:]/g, '_');
 }
 
 module.exports = util;
