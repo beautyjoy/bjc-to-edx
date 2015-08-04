@@ -180,6 +180,7 @@ function splitFile (html, page, dir) {
     output = [];
     $ = cheerio.load(html);
 
+    // EDC Puts an <h2> at the beginning of every page.
     title = $('h2').first().text();
 
     text = $('body').html()
@@ -200,7 +201,8 @@ function splitFile (html, page, dir) {
                 file = 'html/' + file;
             }
             output.push({
-                type: 'html',
+                type: 'file',
+                title: num + '-' + title,
                 content: before,
                 path: file
             }); // part before quiz
@@ -213,6 +215,7 @@ function splitFile (html, page, dir) {
         }
         output.push({
             type: 'quiz',
+            title: num + '-' + 'Quiz-'+ title,
             content: xml,
             path: file
         }); // push quiz
@@ -225,7 +228,8 @@ function splitFile (html, page, dir) {
             file = 'html/' + file;
         }
         output.push({
-            type: 'html',
+            type: 'file',
+            title: title,
             content: text,
             path: file
         });
