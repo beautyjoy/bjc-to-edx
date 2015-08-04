@@ -12,16 +12,20 @@ llab = require('./lib/llab');
 util = require('./code/util');
 
 
-
 curFolder = 'curriculum/edc/'
-output = './tmp/U2/';
-topic1 = 'nyc_bjc/1-intro-loops.topic';
-topic2 = 'nyc_bjc/2-conditionals-abstraction.topic';
+output = './tmp/';
+
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
-//topic = fs.readFileSync(util.topicPath(curFolder, topic1));
-topic = fs.readFileSync(util.topicPath(curFolder, topic2));
+if (true) {
+    output += 'U1/';
+    topic = 'nyc_bjc/1-intro-loops.topic';
+} else {
+    output += 'U2/';
+    topic = 'nyc_bjc/2-conditionals-abstraction.topic';
+}
 
+topic = fs.readFileSync(util.topicPath(curFolder, topic));
 topic = topic.toString();
 data = llab.parse(topic);
 
