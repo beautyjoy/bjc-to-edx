@@ -42,4 +42,13 @@ util.transformURL = function (baseURL, filePath, url) {
     return util.edXPath(url);
 }
 
+/** Normalize spaces and other special chars in filenames.
+ *  Warning: Don't pass this a full path as it removes /
+ *  @param {string} the filename to be normalized
+ *  @return {string} a normalized filename. 
+ */
+util.edXFileName =  function fileName (name) {
+    return name.replace(/[\s+/:]/g, '_');
+}
+
 module.exports = util;
