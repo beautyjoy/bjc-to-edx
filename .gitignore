@@ -10,6 +10,7 @@ __pycache__
 2014_2/
 *.tar.gz
 tmp/
+output-course/
 
 
 # This file will include passwords -- DONT COMMIT THEM

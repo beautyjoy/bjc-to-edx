@@ -76,7 +76,7 @@ function shouldParse (title) {
 function parseSection (section, skip) {
     var title = section.title.trim();
     
-    if (!shouldParse(title) || skip === true) {
+    if (!shouldParse(title)) {
         console.log('skipping:', title);
         return;
     }
@@ -126,7 +126,6 @@ function processCurriculumItem (item) {
     return parts;
 }
 
-
 /** Does the work to modify a bunch of things to prep for edX
  *
  * @param {Cherrio-Object} The contents of the html file
@@ -137,20 +136,23 @@ function processHTML (html, includeCSS) {
     
     $ = cheerio.load(html);
     
+    // Fix some of the EDC image elements with .button
+    // These conflict with edX.
+    $('.button').removeClass('button')
+    
     // Fix image URLs
-    imgs = $('img');
-    for (i = 0; i < imgs.length; i += 1) {
-        url = imgs[i].attribs.src;
-        imgs[i].attribs.src = util.transformURL(BASEURL, relPath, url);
-    }
+    $('img').each(function (index, elm) {
+        var url = elm.attr('src');
+        elm.attr('src', util.transformURL(BASEURL, relPath, url));
+    });
 
     // Fix Snap! run links.
-    runs = $('a.run');
-    for (i = 0; i < runs.length; i += 1) {
-        url = runs[i].attribs.href;
-        runs[i].attribs.href = util.transformURL(BASEURL, relPath, url);
-    }
-
+    console.log('Transforming ', $('a').length, ' urls.');
+    $('a').each(function (index, elm) {
+        var url = elm.attr('href');
+        elm.attr('href', util.transformURL(BASEURL, relPath, url));
+    });
+    
     // Remove EDC's inline HTML comments. (Why is it there.....)
     [
         '.comment',
@@ -198,7 +200,7 @@ function splitFile (html, page, dir) {
             num = output.length + 1;
             file = page + '-' + num + '-' + title + '.html';
             if (PETER) {
-                file = 'html/' + file;
+                file = 'html/' + util.edXFileName(file);
             }
             output.push({
                 type: 'file',
@@ -211,7 +213,7 @@ function splitFile (html, page, dir) {
         num = output.length + 1;
         file = page + '-' + num + '-' + title + '.xml';
         if (PETER) {
-            file = 'problem/' + file;
+            file = 'problem/' + util.edXFileName(file);
         }
         output.push({
             type: 'quiz',
@@ -225,7 +227,7 @@ function splitFile (html, page, dir) {
     if (quizzes.length == 0) {
         file = page + '-' + title + '.html';
         if (PETER) {
-            file = 'html/' + file;
+            file = 'html/' + util.edXFileName(file);
         }
         output.push({
             type: 'file',
@@ -251,9 +253,9 @@ module.exports = function(path, sectionName, directory) {
     data.topics.forEach(function (topic) {
         topic.contents.some(function (section) {
             var title = section.title.trim();
-            skip = title.indexOf(sectionName) == -1;
-            tmp = parseSection(section, skip)
-            if (tmp) {
+            found = title.indexOf(sectionName) != -1;
+            if (found) {
+                tmp = parseSection(section);
                 result = tmp;
                 return true;
             }
