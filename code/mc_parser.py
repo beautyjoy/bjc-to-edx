@@ -16,7 +16,7 @@ def make_quiz(source, destination=None):
     filename = source.rsplit('/', 1)[1]
     try:
         soup = BeautifulSoup(open(source), "html.parser")
-    except (FileNotFoundError, OSError):
+    except (OSError, IOError):
         if len(source) > 0:
             try:
                 soup = BeautifulSoup(source, "html.parser")
