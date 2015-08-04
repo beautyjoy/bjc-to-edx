@@ -4,3 +4,6 @@
 [submodule "curriculum/edc"]
 	path = curriculum/edc
 	url = git@github.com:bjc-edc/bjc-r.git
+[submodule "lib/llab"]
+	path = lib/llab
+	url = git://github.com/beautyjoy/llab.git
