@@ -89,6 +89,7 @@ console.log('Suck it bitches. This content was converted.');
 var relPath;
 var count;
 var dir;
+var PETER = false;
 function processCurriculumItem (item) {
     if (!item.url) {
         return;
@@ -137,15 +138,23 @@ function processHTML (html, includeCSS) {
         runs[i].attribs.href = util.transformURL(BASEURL, relPath, url);
     }
 
-    outerHTML = $.html();
+    // Remove EDC's inline HTML comments. (Why is it there.....)
+    [
+        '.comment',
+        '.todo',
+        '.commentBig'
+    ].forEach(function (sel) { $(sel).remove(); });
+
+    // wrap content in div.llab-full
+    wrap = '<div class="llab-full">CONTENT</div>';
+    
+    outerHTML = wrap.replace(/CONTENT/, $.html());
+    
     if (includeCSS != false) {
         outerHTML = cssString + outerHTML;
     }
-
-    wrap = '<div class="full">CONTENT</div>';
     
-    // wrap content in div.full
-    return wrap.replace(/CONTENT/, outerHTML);
+    return outerHTML;
 }
 
 /** Split a single curriculum page into components to be in a vertical.
@@ -174,6 +183,9 @@ function splitFile (html, page, dir) {
         if (before.length) {
             num = output.length + 1;
             file = page + '-' + num + '-' + title + '.html';
+            if (PETER) {
+                file = 'html/' + file;
+            }
             output.push({
                 type: 'html',
                 content: before,
@@ -183,6 +195,9 @@ function splitFile (html, page, dir) {
         
         num = output.length + 1;
         file = page + '-' + num + '-' + title + '.xml';
+        if (PETER) {
+            file = 'xml/' + file;
+        }
         output.push({
             type: 'quiz',
             content: xml,
@@ -192,10 +207,14 @@ function splitFile (html, page, dir) {
     });
     
     if (quizzes.length == 0) {
+        file = page + '-' + title + '.html';
+        if (PETER) {
+            file = 'html/' + file;
+        }
         output.push({
             type: 'html',
             content: text,
-            path: page + '-' + title + '.html'
+            path: file
         });
     }
     
@@ -203,10 +222,13 @@ function splitFile (html, page, dir) {
 }
 
 module.exports = function(path, sectionName, directory) {
-    output = directory;
-    var topic, data, result;
+    // Globals
+    PETER = true;
     topic = fs.readFileSync(path); // util.topicPath(curFolder, topic1)
     data = llab.parse(topic);
+    output = directory;
+    
+    var topic, data, result;
     
     data.topics.forEach(function (topic) {
         topic.contents.forEach(function (section) {
