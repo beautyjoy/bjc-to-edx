@@ -27,10 +27,10 @@ var buildCourse = function(courseDirectory, options) {
 
     outline.chapters.forEach(function(chapter) {
         var chapterLoc = buildChapter(chapter);
-        var chapterXml = et.SubElement(outlineXml.getroot(), 'chapter'); // make new xml 'chapter' node, and append to course outline
-        chapterXml.set('url_name', chapterLoc); // set node's 'url_name' attribute to chapterLoc
+        var chapterXml = et.SubElement(outlineXml.getroot(), 'chapter');
+        chapterXml.set('url_name', chapterLoc);
     });
-    fs.writeFileSync(outlineFile, outlineXml.write({'xml_declaration': false})); // write back out to outlineFile
+    fs.writeFileSync(outlineFile, outlineXml.write({'xml_declaration': false}));
 };
 course.buildCourse = buildCourse;
 
@@ -59,7 +59,7 @@ var buildSequential = function (sequentialOutline) { // TODO: this function is v
     var sequentialTitle = sequentialOutline.title;
     sequentialXml.getroot().set('display_name', sequentialTitle);
     sequentialOutline.content.forEach(function(item) {
-        buildVerticals([item]).forEach(function(verticalLocation) {
+	buildVerticals([item]).forEach(function(verticalLocation) {
             var verticalNode = et.SubElement(sequentialXml.getroot(), 'vertical');
             verticalNode.set('url_name', verticalLocation);
         });
@@ -74,52 +74,57 @@ var buildSequential = function (sequentialOutline) { // TODO: this function is v
  * one or more curriculum elements (html files, quiz problems, videos,
  * etc). */
 var buildVerticals = function(verticalOutlines) {
-    verticalOutlines.forEach(function(verticalOutline) {
-        // TODO: Make this whole thing an external function
-        var verticalXml, verticalTitle, itemXml;
-        verticalXml = new et.ElementTree(et.Element('vertical'));
-        verticalTitle = verticalOutline.title;
-        verticalXml.getroot().set('display_name', verticalTitle);
-        // TODO: extract this to be a function
-        switch (verticalOutline.type) {
-        case 'file':
-            // TODO: this assumes that the path is already xml-ified, which
-            // will likely not be the case
-            itemXml = new et.SubElement(verticalXml.getroot(), "html");
-            itemXml.set("url_name", verticalOutline.path);
-	    console.log("here");
-            return [verticalTitle];
-            break;
-
-        case 'quiz':
-            itemXml = new et.SubElement(verticalXml.getroot(), "problem");
-            itemXml.set("url_name", verticalOutline.path);
-            return [verticalTitle];
-            break;
-
-        case 'video':
-            itemXml = new et.SubElement(verticalXml.getroot(), "video");
-            itemXml.set("url_name", verticalOutline.path);
-            return [verticalTitle]; // TODO: this also needs to write a separate xml file in the 'video' directory
-            break;
-        
-        case 'external': // TODO: not sure exactly what this will be
-	    return ['UNSUPPORTED'];
-            break;
-
-        case 'llab':
-            // TODO: rename once Michael has updated
-            var llabElements = TEST_TEMP(verticalOutline.path,
-                                 verticalOutline.section, 
-                                 outputDir);
-            return llabElements.map(buildVerticals);
-            break;
-
-        default:
-            throw 'Error: unrecognized vertical type "' + verticalOutline.type + '"';
-            break;
-        }
-    });
+    if (verticalOutlines[0].type == 'llab') {
+	// TODO: rename once Michael has updated
+        var llabElements = TEST_TEMP(verticalOutlines[0].path,
+                                     verticalOutlines[0].section, 
+                                     outputDir);
+        return llabElements.map(buildVerticals);
+    }
+    var verticalXml, verticalTitle;
+    verticalXml = new et.ElementTree(et.Element('vertical'));
+    verticalTitle = verticalOutlines[0].title;
+    verticalXml.getroot().set('display_name', verticalTitle);
+    verticalOutlines.forEach(buildVerticalElement, {'parent': verticalXml});
+    // TODO: write file here
+    var fileName = verticalTitle + '.xml';
+    fs.writeFileSync(outputDir + 'vertical/' + fileName,
+		     verticalXml.write({'xml_declaration': false}));
+    return [fileName];
 };
 
+var buildVerticalElement = function(verticalElement) {
+    var itemXml;
+    var verticalXml = this.parent;
+    // TODO: extract this to be a function
+    switch (verticalElement.type) {
+    case 'file':
+        // TODO: this assumes that the path is already xml-ified, which
+        // will likely not be the case
+        itemXml = new et.SubElement(verticalXml.getroot(), "html");
+        itemXml.set("url_name", verticalElement.path);
+	return verticalElement.path;
+        break;
+
+    case 'quiz':
+        itemXml = new et.SubElement(verticalXml.getroot(), "problem");
+        itemXml.set("url_name", verticalElement.path);
+	return verticalElement.path;
+        break;
+	
+    case 'video':
+        itemXml = new et.SubElement(verticalXml.getroot(), "video");
+        itemXml.set("url_name", verticalElement.path);
+	return verticalElement.videoId; // TODO: this also needs to write a separate xml file in the 'video' directory
+        break;
+        
+    case 'external': // TODO: not sure exactly what this will be
+	return 'UNSUPPORTED';
+        break;
+	
+    default:
+        throw 'Error: unrecognized vertical type "' + verticalElement.type + '"';
+        break;
+    }
+};
 module.exports = course;
