@@ -142,15 +142,16 @@ function processHTML (html, includeCSS) {
     
     // Fix image URLs
     $('img').each(function (index, elm) {
-        var url = elm.attr('src');
-        elm.attr('src', util.transformURL(BASEURL, relPath, url));
+        var url = $(elm).attr('src');
+        $(elm).attr('src', util.transformURL(BASEURL, relPath, url));
     });
 
     // Fix Snap! run links.
-    console.log('Transforming ', $('a').length, ' urls.');
-    $('a').each(function (index, elm) {
-        var url = elm.attr('href');
-        elm.attr('href', util.transformURL(BASEURL, relPath, url));
+    console.log('Found ', $('a').length, ' ALL urls.');
+    console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
+    $('a.run').each(function (index, elm) {
+        var url = $(elm).attr('href');
+        $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
     });
     
     // Remove EDC's inline HTML comments. (Why is it there.....)

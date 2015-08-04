@@ -21,7 +21,8 @@ util.edXPath = function (url) {
 }
 
 /* This does the bulk of the work to tranform a path into an edX URL
- * @{}
+ * @param {string}
+ * FIXME -- this breaks if passed in a full URL! http:// gahhhhhh
  */
 util.transformURL = function (baseURL, filePath, url) {
     var fileDir = path.dirname(filePath);
