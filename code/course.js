@@ -76,6 +76,8 @@ var buildSequential = function (sequentialOutline) { // TODO: this function is v
 var buildVerticals = function(verticalOutlines) {
     if (verticalOutlines[0].type == 'llab') {
 	// TODO: rename once Michael has updated
+	console.log('--------------------------------------------------');
+	console.log(verticalOutlines);
         var llabElements = TEST_TEMP(verticalOutlines[0].path,
                                      verticalOutlines[0].section, 
                                      outputDir);
@@ -95,8 +97,6 @@ var buildVerticals = function(verticalOutlines) {
 };
 
 var buildVerticalElement = function(verticalElement) {
-    console.log('--------------------------------------------------');
-    console.log(verticalElement);
     var itemXml;
     var verticalXml = this.parent;
     // TODO: extract this to be a function

@@ -60,14 +60,14 @@ chapters:
         title: "Lab 2: Something"
         content:
           - type: llab
-            path: unit-1.topic
-            section: "Programming Lab 2: XXXX"
+            path: curriculum/edc/topic/nyc_bjc/2-conditionals-abstraction.topic
+            section: ""
           
       - type: discussion # Sequential
         title: Discussion
         file: path.html # a vertical
         embed: https://piazza.url?folder=thingy
         content:
-          - type: discussion
+          - type: file
             path: path.html # a vertical
             embed: https://piazza.url?folder=thingy
