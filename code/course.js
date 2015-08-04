@@ -1,3 +1,7 @@
+/** @file This file builds an edX course in OLX format.
+ * @author Peter Sujan peterasujan@gmail.com
+ */
+
 
 var fs = require('fs');
 var child_process = require('child_process');
@@ -10,8 +14,8 @@ var TEST_TEMP = require('../test.js');
 var course = {};
 var config, outline, outputDir;
 
-/** Copies the template xml course and fills in course/outline.xml with
- * pointers to chapter files. */
+/** Copies the template xml course and fills in
+ * course/outline.xml withpointers to chapter files. */
 var buildCourse = function(courseDirectory, options) {
     // TODO: Check overrides in options. Store the defaults in some variable.
     config = yaml.load(fs.readFileSync(courseDirectory + 'settings.yml'));
@@ -34,9 +38,9 @@ var buildCourse = function(courseDirectory, options) {
 };
 course.buildCourse = buildCourse;
 
-/** Creates and fills in files in chapter/, each of which points to
- * several sequential files. Returns the filename of the created
- * chapter. */
+/**  Creates and fills in files in chapter/, each of which
+ * points to several sequential files. Returns the filename of the
+ * created chapter. */
 var buildChapter = function (chapterOutline) {
     var chapterXml = new et.ElementTree(et.Element('chapter'));
     var chapterTitle = chapterOutline.title;
@@ -52,8 +56,8 @@ var buildChapter = function (chapterOutline) {
     return fileName;
 };
 
-/** Creates and fills in files in sequential/, each of which points to
- * several vertical files. */
+/**  Creates and fills in files in sequential/, each of which
+ * points to several vertical files. */
 var buildSequential = function (sequentialOutline) { // TODO: this function is very similar to buildChapter -- can probably generalize
     var sequentialXml = new et.ElementTree(et.Element('sequential'));
     var sequentialTitle = sequentialOutline.title;
@@ -70,9 +74,9 @@ var buildSequential = function (sequentialOutline) { // TODO: this function is v
     return fileName;
 };
 
-/** Creates and fills in files in vertical/, each of which points to
- * one or more curriculum elements (html files, quiz problems, videos,
- * etc). */
+/**  Creates and fills in files in vertical/, each of which
+ * points to one or more curriculum elements (html files, quiz
+ * problems, videos, etc). */
 var buildVerticals = function(verticalOutlines) {
     if (verticalOutlines[0].type == 'llab') {
 	// TODO: rename once Michael has updated
