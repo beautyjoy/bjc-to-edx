@@ -92,7 +92,6 @@ var buildVerticals = function(verticalOutlines) {
     verticalTitle = verticalOutlines[0].title;
     verticalXml.getroot().set('display_name', verticalTitle);
     verticalOutlines.forEach(buildVerticalElement, {'parent': verticalXml});
-    // TODO: write file here
     var fileName = util.edXFileName(verticalTitle);
     fs.writeFileSync(outputDir + 'vertical/' + fileName + '.xml',
 		     verticalXml.write({'xml_declaration': false}));
@@ -100,7 +99,7 @@ var buildVerticals = function(verticalOutlines) {
 };
 
 var buildVerticalElement = function(verticalElement) {
-    var itemXml;
+    var itemXml, strippedFilename, htmlXml;
     var verticalXml = this.parent;
     console.log(verticalElement);
     // TODO: extract this to be a function
@@ -108,25 +107,30 @@ var buildVerticalElement = function(verticalElement) {
     case 'file':
         // TODO: this assumes that the path is already xml-ified, which
         // will likely not be the case
-        itemXml = new et.SubElement(verticalXml.getroot(), "html");
-        itemXml.set("url_name", verticalElement.path);
-	return verticalElement.path;
+	strippedFilename = verticalElement.path.split('.')[0];
+        itemXml = new et.SubElement(verticalXml.getroot(), 'html');
+        itemXml.set('url_name', strippedFilename);
+	htmlXml = new et.ElementTree(et.Element('html'));
+	htmlXml.getroot().set('filename', strippedFilename);
+	fs.writeFileSync(outputDir + 'html/' + strippedFilename + '.xml',
+			 htmlXml.write({'xml_declaration': false}));
+	//return verticalElement.path; // Not relevant
         break;
 
     case 'quiz':
-        itemXml = new et.SubElement(verticalXml.getroot(), "problem");
-        itemXml.set("url_name", verticalElement.path);
-	return verticalElement.path;
+        itemXml = new et.SubElement(verticalXml.getroot(), 'problem');
+        itemXml.set('url_name', verticalElement.path.split('.')[0]);
+	// return verticalElement.path;
         break;
 	
     case 'video':
-        itemXml = new et.SubElement(verticalXml.getroot(), "video");
-        itemXml.set("url_name", verticalElement.path);
-	return verticalElement.videoId; // TODO: this also needs to write a separate xml file in the 'video' directory
+        itemXml = new et.SubElement(verticalXml.getroot(), 'video');
+        itemXml.set('url_name', verticalElement.path);
+	// return verticalElement.videoId; // TODO: this also needs to write a separate xml file in the 'video' directory
         break;
         
     case 'external': // TODO: not sure exactly what this will be
-	return 'UNSUPPORTED';
+	// return 'UNSUPPORTED';
         break;
 	
     default:
