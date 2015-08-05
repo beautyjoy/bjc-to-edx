@@ -10,6 +10,7 @@ var yaml = require('js-yaml');
 var et = require('elementtree');
 // DOES THE PROCESSING AND SUCH
 var TEST_TEMP = require('../test.js');
+var util = require('./util.js');
 
 var course = {};
 var config, outline, outputDir;
@@ -50,8 +51,8 @@ var buildChapter = function (chapterOutline) {
 	var sequentialNode = et.SubElement(chapterXml.getroot(), 'sequential');
 	sequentialNode.set('url_name', sequentialLocation);
     });
-    var fileName = chapterTitle + '.xml';
-    fs.writeFileSync(outputDir + 'chapter/' + fileName,
+    var fileName = util.edXFileName(chapterTitle);
+    fs.writeFileSync(outputDir + 'chapter/' + fileName + '.xml',
 		     chapterXml.write({'xml_declaration': false}));
     return fileName;
 };
@@ -68,8 +69,8 @@ var buildSequential = function (sequentialOutline) { // TODO: this function is v
             verticalNode.set('url_name', verticalLocation);
         });
     });
-    var fileName = sequentialTitle + '.xml';
-    fs.writeFileSync(outputDir + 'sequential/' + fileName,
+    var fileName = util.edXFileName(sequentialTitle);
+    fs.writeFileSync(outputDir + 'sequential/' + fileName  + '.xml',
 		     sequentialXml.write({'xml_declaration': false}));
     return fileName;
 };
@@ -80,8 +81,6 @@ var buildSequential = function (sequentialOutline) { // TODO: this function is v
 var buildVerticals = function(verticalOutlines) {
     if (verticalOutlines[0].type == 'llab') {
 	// TODO: rename once Michael has updated
-	console.log('--------------------------------------------------');
-	console.log(verticalOutlines);
         var llabElements = TEST_TEMP(verticalOutlines[0].path,
                                      verticalOutlines[0].section, 
                                      outputDir);
@@ -94,8 +93,8 @@ var buildVerticals = function(verticalOutlines) {
     verticalXml.getroot().set('display_name', verticalTitle);
     verticalOutlines.forEach(buildVerticalElement, {'parent': verticalXml});
     // TODO: write file here
-    var fileName = verticalTitle + '.xml';
-    fs.writeFileSync(outputDir + 'vertical/' + fileName,
+    var fileName = util.edXFileName(verticalTitle);
+    fs.writeFileSync(outputDir + 'vertical/' + fileName + '.xml',
 		     verticalXml.write({'xml_declaration': false}));
     return [fileName];
 };
@@ -103,6 +102,7 @@ var buildVerticals = function(verticalOutlines) {
 var buildVerticalElement = function(verticalElement) {
     var itemXml;
     var verticalXml = this.parent;
+    console.log(verticalElement);
     // TODO: extract this to be a function
     switch (verticalElement.type) {
     case 'file':
