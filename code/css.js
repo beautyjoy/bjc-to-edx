@@ -17,14 +17,16 @@ module.exports = proccessCSSFiles;
 
 var RULES = [
     { name: 'transform-urls', function: transformURLs },
-    { name: 'prefix-selectors', function: prefixSelectors },
+    { name: 'prefix-selectors', function: prefixAllSelectors },
     { name: 'remove-comments', function: removeComments }
 ];
 
 // FUNCTIONS TO WRITE / PONDER
 // rules() returns the rules of an AST
-// filterType(ast, type) return the rules which match that type
-// excludeType(ast, type) return the ast with rules of a certain type missing.
+
+function rules(ast) {
+    return ast.stylesheet.rules;
+}
 
 function transformURLs (ast) {
     // TODO: Search for rules with a url() in `value`
@@ -33,9 +35,24 @@ function transformURLs (ast) {
     return ast;
 }
 
-function prefixSelectors(prefix, ast) {
+function prefixAllSelectors(ast, prefix) {
     // search for rule type of "rule"
+    rules(ast).forEach(function (rule) {
+        if (rule.selectors) {
+            rule.selectors = prefixRuleSelectors(rule.selectors, prefix);
+        }
+    })
     return ast;
+}
+
+function prefixRuleSelectors (list, prefix) {
+    return list.map(prefixItem(prefix));    
+}
+
+function prefixItem (prefix) {
+    return function (item) {
+        return (item.indexOf(prefix) == -1 ? prefix + ' ' : '') + item;
+    };
 }
 
 function removeComments(ast) {
@@ -43,3 +60,10 @@ function removeComments(ast) {
     // search all `declarations` in all rules for type "comment"
     return ast;
 }
+
+function matchesType(type) {
+    return function (rule) {
+        return rule.type === type;
+    }
+}
+
