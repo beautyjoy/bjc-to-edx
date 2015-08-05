@@ -17,13 +17,21 @@ output = './tmp/';
 
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
-if (true) {
+if (false) {
     output += 'U1/';
     topic = 'nyc_bjc/1-intro-loops.topic';
 } else {
     output += 'U2/';
     topic = 'nyc_bjc/2-conditionals-abstraction.topic';
 }
+
+var PROCESS_FUNCTIONS = {
+    file: processFile,
+    quiz: processQuiz,
+    markdown: processMarkdown,
+    external: processExternal
+};
+
 
 topic = fs.readFileSync(util.topicPath(curFolder, topic));
 topic = topic.toString();
@@ -115,7 +123,8 @@ function processCurriculumItem (item) {
     parts = splitFile(html, count, dir);
     parts.forEach(function(part, index) {
         var css = index == 0;
-        var data = processHTML(part.content, css);
+        // TODO: Handle Different content types differently.
+        var data = processItem(part, css);
         // part.path is a file name
         console.log(dir);
         var folder = dir + '/' + part.directory
@@ -125,6 +134,27 @@ function processCurriculumItem (item) {
     });
     
     return parts;
+};
+
+function processItem (item, options) {
+    return PROCESS_FUNCTIONS[item.type](item.content, options);
+}
+
+function processQuiz (quiz) {
+    return quiz;
+}
+
+function processMarkdown (file) {
+    return file;
+}
+
+function processFile (file, options) {
+    // FIXME -- this is a simplification for now.
+    return processHTML(file, options);
+}
+
+function processExternal (item, options) {
+    return item;
 }
 
 /** Does the work to modify a bunch of things to prep for edX
@@ -133,13 +163,13 @@ function processCurriculumItem (item) {
  *
  */
 function processHTML (html, includeCSS) {
-    var i, imgs, runs, url, outerHTML, wrap;
-    
+    var outerHTML, wrap;
+
     $ = cheerio.load(html);
-    
+
     // Fix some of the EDC image elements with .button
     // These conflict with edX.
-    $('.button').removeClass('button')
+    $('.button').removeClass('button');
     
     // Fix image URLs
     $('img').each(function (index, elm) {
