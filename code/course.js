@@ -27,7 +27,7 @@ var buildCourse = function(courseDirectory, options) {
     child_process.execSync('rm -rf ' + outputDir); // TODO: this can be exploited in the most gristly of ways...
     child_process.execSync('cp -R template ' + outputDir);
     
-    var outlineFile = outputDir + 'course/outline.xml';
+    var outlineFile = outputDir + 'course/3T2015.xml';
     var outlineXml = et.parse(fs.readFileSync(outlineFile).toString());
 
     outline.chapters.forEach(function(chapter) {
