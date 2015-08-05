@@ -21,10 +21,8 @@ var RULES = [
     { name: 'remove-comments', function: removeComments }
 ];
 
-// FUNCTIONS TO WRITE / PONDER
-// rules() returns the rules of an AST
-
 function rules(ast) {
+    // TODO: verify this actually works....
     return ast.stylesheet.rules;
 }
 
@@ -35,11 +33,12 @@ function transformURLs (ast) {
     return ast;
 }
 
+// Inplace modification of the AST for ease.
 function prefixAllSelectors(ast, prefix) {
     // search for rule type of "rule"
-    rules(ast).forEach(function (rule) {
+    rules(ast).forEach(function (rule, idx, arr) {
         if (rule.selectors) {
-            rule.selectors = prefixRuleSelectors(rule.selectors, prefix);
+            arr[idx].selectors = prefixRuleSelectors(rule.selectors, prefix);
         }
     })
     return ast;
