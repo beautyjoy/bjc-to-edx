@@ -25,6 +25,11 @@ util.edXPath = function (url) {
  * FIXME -- this breaks if passed in a full URL! http:// gahhhhhh
  */
 util.transformURL = function (baseURL, filePath, url) {
+    if (url.indexOf('/static') == 0 || url.indexOf('http') == 0 ||
+        url.indexOf('//') == 0) {
+        return url;
+    }
+
     var fileDir = path.dirname(filePath);
     url = path.normalize(url);
 
