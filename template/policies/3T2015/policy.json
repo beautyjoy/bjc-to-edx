@@ -1,0 +1,153 @@
+{
+    "course/3T2015": {
+        "advanced_modules": [
+            "lti"
+        ], 
+        "course_image": "1_thumb.jpg", 
+        "discussion_topics": {
+            "General": {
+                "id": "i4x-BerkeleyX-BJC_1x-course-3T2015"
+            }
+        }, 
+        "display_name": "The Beauty and Joy of Computing (CS Principles), Part 1", 
+        "end": "2015-10-23T00:00:00Z", 
+        "graceperiod": "", 
+        "lti_passports": [
+            "peerstudio:berkeley_cs10:wxDJfu5ndhai+1pXrhThkO7Z5Xdf9sUSgxFv5UGNECk="
+        ], 
+        "mobile_available": true, 
+        "pdf_textbooks": [
+            {
+                "chapters": [
+                    {
+                        "title": "Chapter 1", 
+                        "url": "/static/chapter1.pdf"
+                    }, 
+                    {
+                        "title": "Chapter 2", 
+                        "url": "/static/chapter2.pdf"
+                    }
+                ], 
+                "id": "9Blown_to_Bits", 
+                "tab_title": "Blown to Bits"
+            }, 
+            {
+                "chapters": [
+                    {
+                        "title": "Welcome to BJC", 
+                        "url": "/static/bjc.1x_lecture_abstraction_a.pdf"
+                    }, 
+                    {
+                        "title": "Abstraction: Abstraction & Detail Removal", 
+                        "url": "/static/bjc.1x_lecture_abstraction_b.pdf"
+                    }, 
+                    {
+                        "title": "Abstraction: Generalization", 
+                        "url": "/static/bjc.1x_lecture_abstraction_c.pdf"
+                    }, 
+                    {
+                        "title": "Functions: Function Basics", 
+                        "url": "/static/bjc.1x_lecture_functions_a.pdf"
+                    }, 
+                    {
+                        "title": "Functions: Data Types Domain & Range", 
+                        "url": "/static/bjc.1x_lecture_functions_b.pdf"
+                    }, 
+                    {
+                        "title": "Functions:  Why should you use functions?", 
+                        "url": "/static/bjc.1x_lecture_functions_c.pdf"
+                    }, 
+                    {
+                        "title": "Abstraction Revisited: Numbers", 
+                        "url": "/static/bjc.1x_lecture_abstraction2_a.pdf"
+                    }, 
+                    {
+                        "title": "Abstraction Revisited: Base Conversion", 
+                        "url": "/static/bjc.1x_lecture_abstraction2_b.pdf"
+                    }, 
+                    {
+                        "title": "Abstraction Revisited: Power, Limitations", 
+                        "url": "/static/bjc.1x_lecture_abstraction2_c.pdf"
+                    }, 
+                    {
+                        "title": "Creativity: Introduction", 
+                        "url": "/static/bjc.1x_lecture_creativity_a.pdf"
+                    }, 
+                    {
+                        "title": "Creativity: Computational Artifacts", 
+                        "url": "/static/bjc.1x_lecture_creativity_b.pdf"
+                    }, 
+                    {
+                        "title": "Creativity: Collaboration, Analysis, Power! Part 1", 
+                        "url": "/static/bjc.1x_lecture_creativity_c.pdf"
+                    }, 
+                    {
+                        "title": "Creativity: Collaboration, Analysis, Power! Part 2", 
+                        "url": "/static/bjc.1x_lecture_creativity_d.pdf"
+                    }, 
+                    {
+                        "title": "Programming Paradigms", 
+                        "url": "/static/bjc.1x_lecture_programming_paradigms_a.pdf"
+                    }, 
+                    {
+                        "title": "Programming Paradigms: Object-Oriented Programming", 
+                        "url": "/static/bjc.1x_lecture_programming_paradigms_b.pdf"
+                    }, 
+                    {
+                        "title": "Programming Paradigms: Declarative Programming", 
+                        "url": "/static/bjc.1x_lecture_programming_paradigms_c.pdf"
+                    }
+                ], 
+                "id": "2BJC.1x_Lectures", 
+                "tab_title": "BJC.1x Lectures"
+            }
+        ], 
+        "start": "2015-09-07T00:00:00Z", 
+        "tabs": [
+            {
+                "name": "Courseware", 
+                "type": "courseware"
+            }, 
+            {
+                "name": "Course Info", 
+                "type": "course_info"
+            }, 
+            {
+                "name": "Piazza Discussion", 
+                "type": "static_tab", 
+                "url_slug": "64d1497c5a56428fb3bff9dec0c094b6"
+            }, 
+            {
+                "is_hidden": true, 
+                "name": "Discussion", 
+                "type": "discussion"
+            }, 
+            {
+                "is_hidden": true, 
+                "name": "Wiki", 
+                "type": "wiki"
+            }, 
+            {
+                "name": "Progress", 
+                "type": "progress"
+            }, 
+            {
+                "name": "Textbooks", 
+                "type": "pdf_textbooks"
+            }, 
+            {
+                "name": "Textbooks", 
+                "type": "textbooks"
+            }
+        ], 
+        "video_upload_pipeline": {
+            "course_video_upload_token": "6a98508c0f7a11e5b31a685b35c5f98f"
+        }, 
+        "xml_attributes": {
+            "filename": [
+                "course/3T2015.xml", 
+                "course/3T2015.xml"
+            ]
+        }
+    }
+}
