@@ -49,7 +49,8 @@ util.transformURL = function (baseURL, filePath, url) {
  *  @return {string} a normalized filename. 
  */
 util.edXFileName =  function fileName (name) {
-    return name.replace(/[\s+/:]/g, '_');
+    // Windows rules / ? < > \ : * | "
+    return name.replace(/[\s+/:|*\\<>?"!,';&^]/g, '_');
 }
 
 module.exports = util;
