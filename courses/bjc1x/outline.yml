@@ -60,8 +60,8 @@ chapters:
         title: "Lab 2: Something"
         content:
           - type: llab
-            path: curriculum/edc/topic/nyc_bjc/2-conditionals-abstraction.topic
-            section: ""
+            path: curriculum/edc/topic/nyc_bjc/1-intro-loops.topic
+            section: "Programming Lab 2: Control Commands"
           
       # - type: discussion # Sequential
       #   title: Discussion
