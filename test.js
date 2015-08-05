@@ -116,11 +116,12 @@ function processCurriculumItem (item) {
     parts.forEach(function(part, index) {
         var css = index == 0;
         var data = processHTML(part.content, css);
-        console.log('WRITING CONTENT', dir + '/' + part.path);
-        // FIXME this is broken.
-        thing= (dir + '/' + part.path).split('/').slice(0, -1).join('/')
-        mkdirp.sync(thing);
-        fs.writeFileSync(dir + '/' + part.path, data);
+        // part.path is a file name
+        console.log(dir);
+        var folder = dir + '/' + part.directory
+        console.log('WRITING CONTENT', folder + part.path);
+        mkdirp.sync(folder);
+        fs.writeFileSync(folder + part.path, data);
     });
     
     return parts;
@@ -200,29 +201,24 @@ function splitFile (html, page, dir) {
         if (before.length) {
             num = output.length + 1;
             file = page + '-' + num + '-' + title + '.html';
-	    // TODO: Peter is changing this for testing purposes
-            if (PETER) {
-		file = util.edXFileName(file);
-                //file = 'html/' + util.edXFileName(file);
-            }
+            file = util.edXFileName(file);
             output.push({
                 type: 'file',
                 title: num + '-' + title,
                 content: before,
+                directory: 'html/',
                 path: file
             }); // part before quiz
         }
         
         num = output.length + 1;
         file = page + '-' + num + '-' + title + '.xml';
-        if (PETER) {
-	    file = util.edXFileName(file);
-            //file = 'problem/' + util.edXFileName(file);
-        }
+        file = util.edXFileName(file);
         output.push({
             type: 'quiz',
             title: num + '-' + 'Quiz-'+ title,
             content: xml,
+            directory: 'problem/',
             path: file
         }); // push quiz
         text = text.slice(idx + qzHTML.length);
@@ -230,14 +226,12 @@ function splitFile (html, page, dir) {
     
     if (quizzes.length == 0) {
         file = page + '-' + title + '.html';
-        if (PETER) {
-	    file = util.edXFileName(file);
-            //file = 'html/' + util.edXFileName(file);
-        }
+        file = util.edXFileName(file);
         output.push({
             type: 'file',
             title: title,
             content: text,
+            directory: 'html/',
             path: file
         });
     }
