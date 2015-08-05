@@ -1,48 +1,48 @@
 chapters:
-  - title: Welcome to BJC.1x! # Chapter
-    sections: # a bunch of sequentials
-      - type: other
-        title: Introduction
-        content:
-          - title: Introduction
-            type: file
-            file: introduction.md # Vertical
-            path: introduction.md # Vertical
-      - type: lecture
-        title: "Lecture 1"
-        content:
-          - title: "Lecture 1: Intro"
-            type: video
-            videoId: xxxxxxxxx
-          - title: Quiz 1
-            type: quiz
-            quizType: xml
-            path: path/to/quiz.xml # (or RUQL)
+  # - title: Welcome to BJC.1x! # Chapter
+  #   sections: # a bunch of sequentials
+  #     - type: other
+  #       title: Introduction
+  #       content:
+  #         - title: Introduction
+  #           type: file
+  #           file: introduction.md # Vertical
+  #           path: introduction.md # Vertical
+  #     - type: lecture
+  #       title: "Lecture 1"
+  #       content:
+  #         - title: "Lecture 1: Intro"
+  #           type: video
+  #           videoId: xxxxxxxxx
+  #         - title: Quiz 1
+  #           type: quiz
+  #           quizType: xml
+  #           path: path/to/quiz.xml # (or RUQL)
   - title: "Week 1: Abstraction"
     sections:
-      - type: readings
-        title: Readings
-        content:
-          - type: file
-            title: "Brian Harvey's Intro to Abstraction"
-            path: something.html
-          - type: external
-            title: Program or Be Programmed
-            url: https://youtu.be/imV3pPIUy1k
-          - type: quiz
-            quizType: ruql
-            title: Reading Quiz 1
-            path: path/to/ruql.rb # This inserts all quizzes on one page.
-      - type: lecture
-        title: Abstraction Lecture
-        content:
-          - type: video
-            title: XXX
-            videoId: aaaaaa
-          - type: quiz
-            title: A
-            path: something.rb
-            quizType: ruql
+      # - type: readings
+      #   title: Readings
+      #   content:
+      #     - type: file
+      #       title: "Brian Harvey's Intro to Abstraction"
+      #       path: something.html
+      #     - type: external
+      #       title: Program or Be Programmed
+      #       url: https://youtu.be/imV3pPIUy1k
+      #     - type: quiz
+      #       quizType: ruql
+      #       title: Reading Quiz 1
+      #       path: path/to/ruql.rb # This inserts all quizzes on one page.
+      # - type: lecture
+      #   title: Abstraction Lecture
+      #   content:
+      #     - type: video
+      #       title: XXX
+      #       videoId: aaaaaa
+      #     - type: quiz
+      #       title: A
+      #       path: something.rb
+      #       quizType: ruql
       - type: lab
         title: "Lab 1: Something"
         content:
@@ -60,14 +60,15 @@ chapters:
         title: "Lab 2: Something"
         content:
           - type: llab
-            path: curriculum/edc/topic/nyc_bjc/2-conditionals-abstraction.topic
-            section: ""
+            path: curriculum/edc/topic/nyc_bjc/1-intro-loops.topic
+            section: "Programming Lab 2: Control Commands"
           
-      - type: discussion # Sequential
-        title: Discussion
-        file: path.html # a vertical
-        embed: https://piazza.url?folder=thingy
-        content:
-          - type: file
-            path: path.html # a vertical
-            embed: https://piazza.url?folder=thingy
+      # - type: discussion # Sequential
+      #   title: Discussion
+      #   file: path.html # a vertical
+      #   embed: https://piazza.url?folder=thingy
+      #   content:
+      #     - type: file
+      #       title: Some discussion
+      #       path: path.html # a vertical
+      #       embed: https://piazza.url?folder=thingy
