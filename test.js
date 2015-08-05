@@ -200,8 +200,10 @@ function splitFile (html, page, dir) {
         if (before.length) {
             num = output.length + 1;
             file = page + '-' + num + '-' + title + '.html';
+	    // TODO: Peter is changing this for testing purposes
             if (PETER) {
-                file = 'html/' + util.edXFileName(file);
+		file = util.edXFileName(file);
+                //file = 'html/' + util.edXFileName(file);
             }
             output.push({
                 type: 'file',
@@ -214,7 +216,8 @@ function splitFile (html, page, dir) {
         num = output.length + 1;
         file = page + '-' + num + '-' + title + '.xml';
         if (PETER) {
-            file = 'problem/' + util.edXFileName(file);
+	    file = util.edXFileName(file);
+            //file = 'problem/' + util.edXFileName(file);
         }
         output.push({
             type: 'quiz',
@@ -228,7 +231,8 @@ function splitFile (html, page, dir) {
     if (quizzes.length == 0) {
         file = page + '-' + title + '.html';
         if (PETER) {
-            file = 'html/' + util.edXFileName(file);
+	    file = util.edXFileName(file);
+            //file = 'html/' + util.edXFileName(file);
         }
         output.push({
             type: 'file',
