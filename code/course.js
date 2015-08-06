@@ -101,7 +101,6 @@ var buildVerticals = function(verticalOutlines) {
 var buildVerticalElement = function(verticalElement) {
     var itemXml, strippedFilename, htmlXml;
     var verticalXml = this.parent;
-    console.log(verticalElement);
     // TODO: extract this to be a function
     switch (verticalElement.type) {
     case 'file':
