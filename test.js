@@ -107,6 +107,7 @@ function parseSection (section, skip) {
 
 console.log('Suck it bitches. This content was converted.');
 
+// This needs renamed...
 function processCurriculumItem (item) {
     if (!item.url) {
         return;
@@ -123,7 +124,6 @@ function processCurriculumItem (item) {
     parts = splitFile(html, count, dir);
     parts.forEach(function(part, index) {
         var css = index == 0;
-        // TODO: Handle Different content types differently.
         var data = processItem(part, css);
         // part.path is a file name
         console.log(dir);
@@ -194,9 +194,9 @@ function processHTML (html, includeCSS) {
 
     // wrap content in div.llab-full
     wrap = '<div class="llab-full">CONTENT</div>';
-    
+
     outerHTML = wrap.replace(/CONTENT/, $.html());
-    
+
     if (includeCSS != false) {
         outerHTML = cssString + outerHTML;
     }
