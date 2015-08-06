@@ -17,7 +17,7 @@ output = './tmp/';
 
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
-if (false) {
+if (true) {
     output += 'U1/';
     topic = 'nyc_bjc/1-intro-loops.topic';
 } else {

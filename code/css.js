@@ -18,8 +18,8 @@ var util = require('./util.js');
 /** This function does the bulk of transforming CSS.
  *  options = {
         paths: [ 'file.css' ],
-        concatenate: true,
-        output: 'name.css', // TODO: Or just return a string??
+        concatenate: true, // Defaults true. FALSE IS NOT YET IMPLEMENTED
+        output: 'name.css',
         rules: [
             { name: 'transform-urls',
               options: [ ],
@@ -31,7 +31,7 @@ var util = require('./util.js');
  
  */
 function proccessCSSFiles (options) {
-    var paths, output, appliedRules,
+    var paths, result, appliedRules,
         separator = '\n/**********/\n';
     
     paths = options.paths || [];
@@ -39,14 +39,18 @@ function proccessCSSFiles (options) {
         paths = [ paths ];
     }
     
-    output = '';
+    result = '';
     paths.forEach(function(path) {
         appliedRules = rulesForFile(path, options.rules);
-        output += transfromFile(path, appliedRules);
-        output += separator;
+        result += transfromFile(path, appliedRules);
+        result += separator;
     })
     
-    return output;
+    if (options.output) {
+        return fs.writeFileSync(options.output, result);
+    } else {
+        return result;
+    }
 }
 
 module.exports = proccessCSSFiles;
@@ -74,9 +78,7 @@ function transfromFile(path, rules) {
  */
 
 function rulesForFile(path, rules) {
-    function testPath(path) {
-        return function (re) { return re.test(path) }
-    }
+    
     
     // This could happen if the only option were concatentation.
     if (!rules) {
@@ -95,7 +97,7 @@ function rulesForFile(path, rules) {
         }
 
         // Any exclude rule calls this rule not to be matched.
-        include = ! rule.exclude.any(testPath(path));
+        include = ! (rule.exclude).any(testPath(path));
         // Any only rule will cause this to be matched.
         include = include || rule.only.some(testPath(path));
 
@@ -138,11 +140,10 @@ function callRule(ast, name, options) {
 }
 
 function rules(ast) {
-    // TODO: verify this actually works....
     return ast.stylesheet.rules;
 }
 
-function transformURLs (ast, replacement) {
+function transformURLs (ast, baseURL, filePath) {
     // TODO: Search for rules with a url() in `value`
     // TODO: need to figure out a reliable way to parse CSS URL rules
     // TODO: need to figure out path to CSS images. :(
@@ -164,16 +165,26 @@ function prefixRuleSelectors (list, prefix) {
     return list.map(prefixItem(prefix));    
 }
 
+function removeComments(ast) {
+    // search for all rules of type "comment"
+    // search all `declarations` in all rules for type "comment"
+    return ast;
+}
+
+/////// Helper Functions for map/forEach/etc
+
+
+/** 
+ */
+
 function prefixItem (prefix) {
     return function (item) {
         return (item.indexOf(prefix) == -1 ? prefix + ' ' : '') + item;
     };
 }
 
-function removeComments(ast) {
-    // search for all rules of type "comment"
-    // search all `declarations` in all rules for type "comment"
-    return ast;
+function testPath(path) {
+    return function (re) { return re.test(path) }
 }
 
 function matchesType(type) {
@@ -182,3 +193,12 @@ function matchesType(type) {
     }
 }
 
+function asArray(item) {
+    if (!item) {
+        return [];
+    }
+    if (item.constructor == Array) {
+        return item;
+    }
+    return [ item ];
+}
