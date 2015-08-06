@@ -33,7 +33,6 @@ def make_quiz(source, destination=None):
 
     for img in soup.find_all("img"):
         img["src"] = util.edx_image_location(img.get("src"))
-        print(img)
 
     exclamation_point = soup.new_tag("em")
     exclamation_point.append("!")
