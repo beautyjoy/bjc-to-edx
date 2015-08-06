@@ -34,7 +34,7 @@ function proccessCSSFiles (options) {
     var paths, output, appliedRules,
         separator = '\n/**********/\n';
     
-    paths = options.files;
+    paths = options.paths || [];
     if (paths.constructor != Array) {
         paths = [ paths ];
     }
@@ -85,6 +85,7 @@ function rulesForFile(path, rules) {
     
     var outputRules, include;
     
+    outputRules = [];
     rules.forEach(function(rule) {
         // Match all files.
         include = !rule.only && !rule.exclude;
@@ -125,6 +126,10 @@ function callRule(ast, name, options) {
     if (!rule) {
         throw new Error('The rule ' + name + ' does not exist.\n' + 
             'The known rule names are: ' + Object.keys(RULES).toString());
+    }
+    
+    if (options && options.constructor != Array) {
+        options = [ options ];
     }
     
     fn = rule.function;
