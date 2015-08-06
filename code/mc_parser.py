@@ -79,6 +79,7 @@ def make_quiz(source, destination=None):
     html_fill_list = []
 
     problem = ET.Element("problem")
+    problem.set("display_name", "Multiple Choice Problem");
     prompt = ET.SubElement(problem, "p")
     prompt.text = get_temp_html()
     html_fill_list.append(prompt_text)
