@@ -149,9 +149,9 @@ function transformURLs (ast, baseURL, filePath) {
         if (rule.declarations) {
             rule.declarations.forEach( function(declare, j, arr2) {
                 if (declare.value && declare.value.indexOf('url') != -1) {
-                    arr2[j] = declare.value.replace(/url\(([.\w\d/])+\)/g, 
-                        util.transformURL(baseURL, filePath, '$1'));
-                    console.log(arr2[j]);
+                    // arr2[j] = declare.value.replace(/url\(([.\w\d/])+\)/g,
+                    //     util.transformURL(baseURL, filePath, '$1'));
+                    // console.log(arr2[j]);
                 }
             });
         }
