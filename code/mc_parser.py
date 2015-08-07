@@ -22,7 +22,7 @@ def make_quiz(source, destination=None):
                 soup = BeautifulSoup(source, "html.parser")
             except:
                 sys.exit(1)
-        
+
 
     """
     make sure this is a multiple choice quiz

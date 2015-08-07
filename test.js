@@ -9,6 +9,7 @@ cheerio = require('cheerio');
 mkdirp = require('mkdirp');
 
 llab = require('./lib/llab');
+css = require('./code/css')
 util = require('./code/util');
 
 
@@ -43,10 +44,31 @@ var count;
 var dir;
 var PETER = false;
 
+var CSSOptions = {
+    paths: [
+        // TODO: Use newer llab stuff?
+        // TODO: Exclude Bootstrap?
+        'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
+        'curriculum/edc/llab/css/default.css',
+        'curriculum/edc/css/bjc.css'
+    ],
+    rules: [
+        {
+            name: 'transform-urls',
+            // Params: baseURL, then filePath
+            options: ['/bjc-r', '']
+        },
+        {
+            name: 'prefix-selectors',
+            options: '.llab-full',
+            exclude: /bootsrap/
+        }
+    ]
+};
 
 function doCSS(path) {
     path = path || './tmp/';
-    
+
     var CSSFILES = [
         'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
         'curriculum/edc/llab/css/default.css',
@@ -56,7 +78,7 @@ function doCSS(path) {
     var combinedCSS = CSSFILES.map(function(file) {
         return fs.readFileSync(file).toString();
     }).join('\n\n/******/\n\n');
-    
+
     fs.writeFileSync(path + 'bjc-edx.css', combinedCSS);
 }
 
@@ -83,12 +105,12 @@ function shouldParse (title) {
 
 function parseSection (section, skip) {
     var title = section.title.trim();
-    
+
     if (!shouldParse(title)) {
         console.log('skipping:', title);
         return;
     }
-    
+
     dir = output;
     if (!PETER) {
         dir += title;
@@ -101,7 +123,7 @@ function parseSection (section, skip) {
         // This also writes files...hmmm.
         results.push(processCurriculumItem(item));
     });
-    
+
     return results;
 }
 
@@ -132,7 +154,7 @@ function processCurriculumItem (item) {
         mkdirp.sync(folder);
         fs.writeFileSync(folder + part.path, data);
     });
-    
+
     return parts;
 };
 
@@ -170,7 +192,7 @@ function processHTML (html, includeCSS) {
     // Fix some of the EDC image elements with .button
     // These conflict with edX.
     $('.button').removeClass('button');
-    
+
     // Fix image URLs
     $('img').each(function (index, elm) {
         var url = $(elm).attr('src');
@@ -184,7 +206,7 @@ function processHTML (html, includeCSS) {
         var url = $(elm).attr('href');
         $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
     });
-    
+
     // Remove EDC's inline HTML comments. (Why is it there.....)
     [
         '.comment',
@@ -200,7 +222,7 @@ function processHTML (html, includeCSS) {
     if (includeCSS != false) {
         outerHTML = cssString + outerHTML;
     }
-    
+
     return outerHTML;
 }
 
@@ -240,7 +262,7 @@ function splitFile (html, page, dir) {
                 path: file
             }); // part before quiz
         }
-        
+
         num = output.length + 1;
         file = page + '-' + num + '-' + title + '.xml';
         file = util.edXFileName(file);
@@ -253,7 +275,7 @@ function splitFile (html, page, dir) {
         }); // push quiz
         text = text.slice(idx + qzHTML.length);
     });
-    
+
     if (quizzes.length == 0) {
         file = page + '-' + title + '.html';
         file = util.edXFileName(file);
@@ -265,7 +287,7 @@ function splitFile (html, page, dir) {
             path: file
         });
     }
-    
+
     return output;
 }
 
@@ -276,9 +298,9 @@ module.exports = function(path, sectionName, directory) {
     topic = fs.readFileSync(path).toString();
     data = llab.parse(topic);
     output = directory;
-    
+
     var topic, data, result;
-    
+
     data.topics.forEach(function (topic) {
         topic.contents.some(function (section) {
             var title = section.title.trim();
