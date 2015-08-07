@@ -40,7 +40,7 @@ function proccessCSSFiles (options) {
     }
     
     result = '';
-    paths.forEach(function(path) {
+    paths.forEach(function (path) {
         appliedRules = rulesForFile(path, options.rules);
         result += transfromFile(path, appliedRules);
         result += separator;
@@ -55,7 +55,7 @@ function proccessCSSFiles (options) {
 
 module.exports = proccessCSSFiles;
 
-function transfromFile(path, rules) {
+function transfromFile (path, rules) {
     var contents, ast;
     
     contents = fs.readFileSync(path).toString();
@@ -77,9 +77,7 @@ function transfromFile(path, rules) {
  *  @param {array} A rules list to test matchers against.
  */
 
-function rulesForFile(path, rules) {
-    
-    
+function rulesForFile (path, rules) {
     // This could happen if the only option were concatentation.
     if (!rules) {
         return [];
@@ -88,7 +86,7 @@ function rulesForFile(path, rules) {
     var outputRules, include;
     
     outputRules = [];
-    rules.forEach(function(rule) {
+    rules.forEach(function (rule) {
         // Match all files.
         include = !rule.only && !rule.exclude;
         if (include) {
@@ -97,9 +95,9 @@ function rulesForFile(path, rules) {
         }
 
         // Any exclude rule calls this rule not to be matched.
-        include = ! (rule.exclude).any(testPath(path));
+        include = ! asArray(rule.exclude).some(testPath(path));
         // Any only rule will cause this to be matched.
-        include = include || rule.only.some(testPath(path));
+        include = include || asArray(rule.only).some(testPath(path));
 
         if (include) {
             outputRules.push(rule);
@@ -147,6 +145,17 @@ function transformURLs (ast, baseURL, filePath) {
     // TODO: Search for rules with a url() in `value`
     // TODO: need to figure out a reliable way to parse CSS URL rules
     // TODO: need to figure out path to CSS images. :(
+    rules(ast).forEach(function (rule, i, arr) {
+        if (rule.declarations) {
+            rule.declarations.forEach( function(declare, j, arr2) {
+                if (declare.value && declare.value.indexOf('url') != -1) {
+                    arr2[j] = declare.value.replace(/url\(([.\w\d/])+\)/g, 
+                        util.transformURL(baseURL, filePath, '$1'));
+                    console.log(arr2[j]);
+                }
+            });
+        }
+    });
     return ast;
 }
 

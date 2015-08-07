@@ -44,6 +44,8 @@ var count;
 var dir;
 var PETER = false;
 
+
+var cssRelPath = path.relative(curFolder, 'curriculum/edc/llab/css/default.css');
 var CSSOptions = {
     paths: [
         // TODO: Use newer llab stuff?
@@ -56,7 +58,7 @@ var CSSOptions = {
         {
             name: 'transform-urls',
             // Params: baseURL, then filePath
-            options: ['/bjc-r', '']
+            options: ['/bjc-r', cssRelPath]
         },
         {
             name: 'prefix-selectors',
@@ -66,23 +68,8 @@ var CSSOptions = {
     ]
 };
 
-function doCSS(path) {
-    path = path || './tmp/';
 
-    var CSSFILES = [
-        'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
-        'curriculum/edc/llab/css/default.css',
-        'curriculum/edc/css/bjc.css'
-    ];
-
-    var combinedCSS = CSSFILES.map(function(file) {
-        return fs.readFileSync(file).toString();
-    }).join('\n\n/******/\n\n');
-
-    fs.writeFileSync(path + 'bjc-edx.css', combinedCSS);
-}
-
-doCSS();
+fs.writeFileSync(path + 'bjc-edx.css', css(CSSOptions));
 
 cssPath = util.edXPath('bjc-edx.css');
 cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
@@ -159,7 +146,7 @@ function processCurriculumItem (item) {
 };
 
 function processItem (item, options) {
-    return PROCESS_FUNCTIONS[item.type](item.content, options);
+    return PROCESS_FUNCTIONS[item.type].call(null, item.content, options);
 }
 
 function processQuiz (quiz) {
