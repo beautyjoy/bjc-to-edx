@@ -1,7 +1,7 @@
 # Survey authoring
 1. Write survey in markdown syntax (possibly outlining first). Surveys themselves exist in https://github.com/beautyjoy/surveys
 2. When you're satisfied with the questions, copy them into a separate .txt file in [Qualtrics advanced format](http://www.qualtrics.com/university/researchsuite/advanced-building/advanced-options-drop-down/import-and-export-surveys/).
-3. Create survey in [Qualtrics](https://berkeley.qualtrics.com).
+3. Create survey in [Qualtrics](https://berkeley.qualtrics.com) and upload .txt file ("Advanced Options" -> "Import").
 4. While editing the survey, click "Look & Feel", "Advanced", and copy [qualtrics.js](https://github.com/beautyjoy/llab-to-edx/blob/master/edx-js-problem/qualtrics.js) into the "Header" box.
 5. Upload survey.js and survey.css (probably not necessary) to edX. These can be used for all surveys unchanged.
 6. Make a new copy of survey.html with the appropriate Qualtrics URL.
