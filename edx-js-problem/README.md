@@ -6,3 +6,4 @@
 5. Upload survey.js and survey.css (probably not necessary) to edX. These can be used for all surveys unchanged.
 6. Make a new copy of survey.html with the appropriate Qualtrics URL.
 7. Create a javascript graded problem in edX using edx_problem.xml. Make sure to change the "html_file" attribute to point to the appropriate html file.
+8. Add other_problem.html as a second problem on the same page.
