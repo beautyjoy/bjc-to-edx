@@ -63,13 +63,13 @@ var CSSOptions = {
         {
             name: 'prefix-selectors',
             options: '.llab-full',
-            exclude: /bootsrap/
+            exclude: /bootstrap/
         }
     ]
 };
 
 
-fs.writeFileSync(path + 'bjc-edx.css', css(CSSOptions));
+fs.writeFileSync(output + 'bjc-edx.css', css(CSSOptions));
 
 cssPath = util.edXPath('bjc-edx.css');
 cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
