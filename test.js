@@ -69,7 +69,7 @@ var CSSOptions = {
 };
 
 
-fs.writeFileSync(output + 'bjc-edx.css', css(CSSOptions));
+fs.writeFileSync('./tmp/' + 'bjc-edx.css', css(CSSOptions));
 
 cssPath = util.edXPath('bjc-edx.css');
 cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
@@ -78,7 +78,7 @@ function loadFile (path) {
 
 }
 
-data.topics.forEach(parseTopic);
+// data.topics.forEach(parseTopic);
 
 
 function parseTopic (topic, args) {
@@ -113,8 +113,6 @@ function parseSection (section, skip) {
 
     return results;
 }
-
-console.log('Suck it bitches. This content was converted.');
 
 // This needs renamed...
 function processCurriculumItem (item) {
