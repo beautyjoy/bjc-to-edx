@@ -115,6 +115,9 @@ var RULES = {
     'prefix-selectors': {
          function: prefixAllSelectors
     },
+    'rename-selectors': {
+             function: renameAllSelectors
+    },
     'remove-comments': {
          function: removeComments
     }
@@ -191,6 +194,22 @@ function prefixRuleSelectors (list, prefix) {
     return list.map(prefixItem(prefix));
 }
 
+// Inplace modification of the AST for ease.
+function renameAllSelectors(ast, from, rename) {
+    // search for rule type of "rule"
+    rules(ast).forEach(function (rule, idx, arr) {
+        if (rule.selectors) {
+            arr[idx].selectors = renameRuleSelectors(rule.selectors, from, rename);
+        }
+    })
+    return ast;
+}
+
+function renameRuleSelectors (list, from, rename) {
+    var renamer = renameItem(from, rename);
+    return list.map(renamer);
+}
+
 function removeComments(ast) {
     // search for all rules of type "comment"
     // search all `declarations` in all rules for type "comment"
@@ -206,6 +225,18 @@ function removeComments(ast) {
 function prefixItem (prefix) {
     return function (item) {
         return (item.indexOf(prefix) == -1 ? prefix + ' ' : '') + item;
+    };
+}
+
+/** Rename a CSSS selector. This is really a .replace() designed to be used
+ *  inside a map() block.
+ *  @param {string} the string to be replaced.
+ */
+function renameItem (from, rename) {
+    return function (item) {
+        // TODO: Verify this works correct with a . in class names.
+        var re = new RegExp(from, 'g');
+        return item.replace(re, rename);
     };
 }
 

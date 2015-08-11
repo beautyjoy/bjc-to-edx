@@ -61,6 +61,11 @@ var CSSOptions = {
             options: ['/bjc-r', cssRelPath]
         },
         {
+            name: 'rename-selectors',
+            options: ['.full', '.llab-full'],
+            exclude: /bootstrap/
+        },
+        {
             name: 'prefix-selectors',
             options: '.llab-full',
             exclude: /bootstrap/
