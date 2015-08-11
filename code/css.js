@@ -1,6 +1,10 @@
 /** A Generic CSS Modification Tool.
  *  This should be extracted into it's own module.
+<<<<<<< HEAD
  *
+=======
+ *
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
  *  TODO: In place modification or return new ASTs?
  *  TODO: formalize the spec for `options`
  *  TODO: Consistent function parameters
@@ -28,24 +32,40 @@ var util = require('./util.js');
             }
         ]
     }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
  */
 function proccessCSSFiles (options) {
     var paths, result, appliedRules,
         separator = '\n/**********/\n';
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
     paths = options.paths || [];
     if (paths.constructor != Array) {
         paths = [ paths ];
     }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
     result = '';
     paths.forEach(function (path) {
         appliedRules = rulesForFile(path, options.rules);
         result += transfromFile(path, appliedRules);
         result += separator;
     })
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
     if (options.output) {
         return fs.writeFileSync(options.output, result);
     } else {
@@ -57,15 +77,26 @@ module.exports = proccessCSSFiles;
 
 function transfromFile (path, rules) {
     var contents, ast;
+<<<<<<< HEAD
 
     contents = fs.readFileSync(path).toString();
     ast = css.parse(contents);
 
+=======
+
+    contents = fs.readFileSync(path).toString();
+    ast = css.parse(contents);
+
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
     // Successively update the AST with each rule.
     rules.forEach(function (rule) {
         ast = callRule(ast, rule.name, rule.options)
     });
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
     return css.stringify(ast);
 }
 
@@ -82,9 +113,15 @@ function rulesForFile (path, rules) {
     if (!rules) {
         return [];
     }
+<<<<<<< HEAD
 
     var outputRules, include;
 
+=======
+
+    var outputRules, include;
+
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
     outputRules = [];
     rules.forEach(function (rule) {
         // Match all files.
@@ -115,9 +152,12 @@ var RULES = {
     'prefix-selectors': {
          function: prefixAllSelectors
     },
+<<<<<<< HEAD
     'rename-selectors': {
              function: renameAllSelectors
     },
+=======
+>>>>>>> 9649cb11d032730c1f12c8825fd01b9462cd7532
     'remove-comments': {
          function: removeComments
     }
@@ -191,6 +231,7 @@ function prefixAllSelectors(ast, prefix) {
 }
 
 function prefixRuleSelectors (list, prefix) {
+<<<<<<< HEAD
     return list.map(prefixItem(prefix));
 }
 
