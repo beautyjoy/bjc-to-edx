@@ -300,7 +300,7 @@ module.exports = function(path, sectionName, directory) {
                 result = tmp;
                 return true;
             }
-        })
+        });
     });
 
     return result;

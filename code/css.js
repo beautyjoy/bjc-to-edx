@@ -209,6 +209,17 @@ function removeComments(ast) {
     return ast;
 }
 
+/** Return a new AST with the CSS tree modified by the provided function.
+ *  This will apply the function not only to the main rules but will also
+ *  travel the media queries to modify those as well.
+ *  NOTE: This returns a new AST and does not modify the provided one.
+ *  TODO: This function doesnt do anything yet.
+ *
+ */
+function mapASTRules (ast, fn) {
+    return ast;
+}
+
 /////// Helper Functions for map/forEach/etc
 
 
