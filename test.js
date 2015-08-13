@@ -50,7 +50,7 @@ var CSSOptions = {
     paths: [
         // TODO: Use newer llab stuff?
         // TODO: Exclude Bootstrap?
-        'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
+        // 'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
         'curriculum/edc/llab/css/default.css',
         'curriculum/edc/css/bjc.css'
     ],
