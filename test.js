@@ -50,25 +50,24 @@ var CSSOptions = {
     paths: [
         // TODO: Use newer llab stuff?
         // TODO: Exclude Bootstrap?
-        // 'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
+        'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
         'curriculum/edc/llab/css/default.css',
         'curriculum/edc/css/bjc.css'
     ],
     rules: [
         {
             name: 'transform-urls',
-            // Params: baseURL, then filePath
+            // Params: baseURL, filePath
             options: ['/bjc-r', cssRelPath]
         },
         {
             name: 'rename-selectors',
-            options: ['.full', '.llab-full'],
-            exclude: /bootstrap/
+            options: ['.full', '.llab-full']
         },
         {
             name: 'prefix-selectors',
-            options: '.llab-full',
-            exclude: /bootstrap/
+            options: '.llab-full '
+            // , exclude: /bootstrap/
         }
     ]
 };
