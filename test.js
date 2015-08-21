@@ -1,6 +1,10 @@
-/*  LLAB AUTOBUILD WIP SCRIPT
+/**  LLAB AUTOBUILD WIP SCRIPT
+ *
+ *  TODO: This script is NOT FINISHED
+ *  run with `node test.js`
  */
 
+// Default Node modules
 fs = require('fs');
 path = require('path');
 exec = require('child_process').execSync;
@@ -13,7 +17,12 @@ css = require('./code/css')
 util = require('./code/util');
 
 
+// This is where a llab course CONTENT lives
+// This should be a checked out state
+// TODO: Config param this shit.
 curFolder = 'curriculum/edc/'
+// This is where the edX XML folder will be.
+// TODO: CONFIG THIS SHIT.
 output = './tmp/';
 
 
@@ -82,7 +91,7 @@ function loadFile (path) {
 
 }
 
-// data.topics.forEach(parseTopic);
+data.topics.forEach(parseTopic);
 
 
 function parseTopic (topic, args) {
@@ -304,3 +313,6 @@ module.exports = function(path, sectionName, directory) {
 
     return result;
 }
+
+
+console.log('This conversion is done!');
