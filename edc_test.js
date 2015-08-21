@@ -81,10 +81,11 @@ var CSSOptions = {
     ]
 };
 
+CSS_FILE_NAME = 'bjc-edx.css';
 
-fs.writeFileSync('./tmp/' + 'bjc-edx.css', css(CSSOptions));
+fs.writeFileSync(output + CSS_FILE_NAME, css(CSSOptions));
 
-cssPath = util.edXPath('bjc-edx.css');
+cssPath = util.edXPath(CSS_FILE_NAME);
 cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
 
 function loadFile (path) {
