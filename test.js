@@ -75,7 +75,7 @@ var CSSOptions = {
         },
         {
             name: 'prefix-selectors',
-            options: '.llab-full '
+            options: '.llab-full'
             // , exclude: /bootstrap/
         }
     ]

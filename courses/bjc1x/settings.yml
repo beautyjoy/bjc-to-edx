@@ -1,8 +1,14 @@
+# TODO: Build Metadata.
+
+---
+
 # Public, main course name
 name: 
 # edX Course ID
 id: 
   
+# TODO: These are examples from another project.
+# This file is todo!
   course:
       name: 'Computer Science'
       number: '80169'
