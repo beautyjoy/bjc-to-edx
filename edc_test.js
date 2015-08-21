@@ -236,6 +236,7 @@ function splitFile (html, page, dir) {
     $ = cheerio.load(html);
 
     // EDC Puts an <h2> at the beginning of every page.
+    // TODO: HACKY -- THIS NEEDS TO BE GENERCIZED
     title = $('h2').first().text();
 
     text = $('body').html()
