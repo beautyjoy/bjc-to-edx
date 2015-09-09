@@ -1,7 +1,7 @@
 
 console.log("TESTING TESTING");
 
-function receiveMessage() {
+function receiveMessage(event) {
     //console.log("qualtrics received message");
     var complete = (document.getElementById("EndOfSurvey") !== null);
     //console.log("trying to post message");
