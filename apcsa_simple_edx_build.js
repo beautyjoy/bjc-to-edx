@@ -16,16 +16,29 @@ mkdirp = require('mkdirp');
 llab = require('./lib/llab');
 css = require('./code/css');
 util = require('./code/util');
-edx_util = require('edx_util');
+edx_util = require('./code/edx_util');
 
 
-var NATE_DEBUG = true;
-function nateDEBUG(str) {
-    if (NATE_DEBUG) {
+//////////////////////////////////
+
+var TOPICS_TO_PROCESS = [];
+
+//TOPICS_TO_PROCESS.push(['c1/L1_objects_classes.topic', 'L1']);
+//TOPICS_TO_PROCESS.push(['c1/L2_first_programming.topic', 'L2']);
+TOPICS_TO_PROCESS.push(['c1/L3_programming_2.topic', 'L3']);
+//TOPICS_TO_PROCESS.push(['c1/L4_conditionals_1.topic', 'L4']);
+//TOPICS_TO_PROCESS.push(['c1/L5_conditionals_2.topic', 'L5']);
+//TOPICS_TO_PROCESS.push(['c1/L6_virtual_pets.topic', 'L6']);
+
+
+//////////////////////////
+
+var DEBUGMODE = true;
+function DEBUG(str) {
+    if (DEBUGMODE) {
         console.log(str);
     }
 }
-
 
 
 var PROCESS_FUNCTIONS = {
@@ -38,7 +51,12 @@ var PROCESS_FUNCTIONS = {
 BASEURL = '/apcsa/r'; // MATCH LLAB.ROOTURL IN CURR REPO
 
 
-
+ 
+//GLOBAL -- FIXME
+var relPath;
+var count;
+var dir;
+var PETER = false;
 
 
 
@@ -57,7 +75,7 @@ output = './apcsa_edx_out/cur_' + new Date().toISOString() + "/";
 output = output.replace(/:/g, "_");
 output = output.replace("-", "_");
 
-
+//DEBUG("starting course: " + output);
 edx_util.startCourse(output);
 
 
@@ -67,11 +85,7 @@ edx_util.startCourse(output);
 //////////////
 //////////////  CSS BS
 
-//GLOBAL -- FIXME
-var relPath;
-var count;
-var dir;
-var PETER = false;
+
 
 //var cssRelPath = path.relative(curFolder, 'curriculum/edc/llab/css/default.css');
 //var CSSOptions = {
@@ -127,17 +141,13 @@ cssString += css_get_reference('ucb-apcsa.css');
 /////////
 ///////// TOPICS/CHAPTER
 
-var TOPICS_TO_PROCESS = [];
 
-TOPICS_TO_PROCESS.push = ['c1/L1_objects_classes.topic', 'L1'];
-//TOPICS_TO_PROCESS.push = ['c1/L2_first_programming.topic', 'L2'];
-//TOPICS_TO_PROCESS.push = ['c1/L3_programming_2.topic', 'L3'];
-//TOPICS_TO_PROCESS.push = ['c1/L4_conditionals_1.topic', 'L4'];
-//TOPICS_TO_PROCESS.push = ['c1/L5_conditionals_2.topic', 'L5'];
-//TOPICS_TO_PROCESS.push = ['c1/L6_virtual_pets.topic', 'L6'];
 
-TOPICS_TO_PROCESS.forEach(function(topicpath, filename_prepend) {
-    topic_do_me(TOPIC_TO_PROCESS[prepender], prepender);
+TOPICS_TO_PROCESS.forEach(function(topicinfo) {
+    var topicpath = topicinfo[0];
+    var prepender = topicinfo[1];
+DEBUG("TOPIC sez do me: " + topicpath + " , " + prepender);
+    topic_do_me(topicinfo[0], topicinfo[1]);
 });
 
 
@@ -147,7 +157,7 @@ edx_util.endCourse();
 
 //var topic;
 //var topicdata;
-function topic_do_me(topicpath, prepeder) {
+function topic_do_me(topicpath, prepender) {
     
     
     topic = fs.readFileSync(util.topicPath(curFolder, topicpath));
@@ -188,14 +198,14 @@ function parseSection (sectiondata, skip) {
         console.log('skipping section:', title);
         return;
     }
-
+DEBUG("SECTION sez do me : " + title);
     edx_util.startSection(sectiondata, title);
 
-    sectiondata.contents.forEach(function (item) {
-        processCurriculumItem(item);
+    sectiondata.contents.forEach(function (page) {
+        processPage(page);
     });
 
-    edx_util.endSectin();
+    edx_util.endSection();
     
    
 }
@@ -205,38 +215,74 @@ function parseSection (sectiondata, skip) {
 
 /////////////////////// VERTICAL / PAGE
 
+// TODO figure out how to do edx-specific components (e.g., stuff that doesn't
+//    show up in llab-format -- autograding, etc.
+
+// TODO bring back the split stuff -- apcsa will use it eventually
 
 // This needs renamed...
-function processCurriculumItem (item) {
+function processPage (pagedata) {
+    var item = pagedata;
     if (!item.url) {
         console.log("skipping file: no url")
         return;
     } else if (item.url.indexOf(BASEURL) != 0) {
         return;
     }
-
-    count += 1;
-    file = item.url.replace(BASEURL, curFolder);
-    relPath = path.relative(curFolder, file);
-    console.log('FILE: ', file);
-    html = fs.readFileSync(file);
-
-nateDEBUG("process curriculum item: " );return;       
     
-    parts = splitFile(html, count, dir);
-    parts.forEach(function(part, index) {
-        var css = index == 0;
-        var data = processItem(part, css);
-        // part.path is a file name
-        console.log(dir);
-        var folder = dir + '/' + part.directory
-        console.log('WRITING CONTENT', folder + part.path);
-        mkdirp.sync(folder);
-        fs.writeFileSync(folder + part.path, data);
-    });
 
-    return parts;
-};
+    var file = item.url.replace(BASEURL, curFolder);
+    var relPath = path.relative(curFolder, file);
+    var basename = path.basename(file, ".html");
+//DEBUG('FILE: ' +  file);
+    var html = fs.readFileSync(file);
+    var $ = cheerio.load(html);
+    
+    var title = $('title').html();
+    var text = $('body').html();
+    
+    edx_util.startVertical(relPath, title);
+    
+    //////// do  parts
+    var partnum = 1;
+    // APCSA doesn't need to split files right now
+    // parse quizes separately.
+    var quizzes = $('div.assessment-data');
+    if (quizzes.length > 0) {
+        // quiz
+        var xml = assessmentData2EdxProblem($, quizzes[0]);   // TODO only one in apcsa right now
+console.log("QUIZ xml : " + xml);
+        edx_util.addQuizEdxFormatComponent(xml, basename);
+    } else {
+        // html
+        var proc_html = processHTML(html, true);
+    }
+}
+    
+    
+
+
+
+//TODO use cheerio rather than python craziness
+function assessmentData2EdxProblem($, assessData) {
+    var qzHTML = $.html(assessData); // like a call to outerHTML()
+console.log("ASSDAT2EDX : qzhtml-> " + qzHTML);
+    // TODO replace doublequote with singlequote in qzHTML, just in case.  or escape single quotes.
+    var command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
+    var xml = exec(command).toString();
+   
+
+    return xml;
+}
+
+
+
+
+
+
+///////////////////////////// PARTS
+
+
 
 function processItem (item, options) {
     return PROCESS_FUNCTIONS[item.type].call(null, item.content, options);
@@ -279,25 +325,24 @@ function processHTML (html, includeCSS) {
         $(elm).attr('src', util.transformURL(BASEURL, relPath, url));
     });
 
-    // Fix Snap! run links.
-    console.log('Found ', $('a').length, ' ALL urls.');
-    console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
-    $('a.run').each(function (index, elm) {
-        var url = $(elm).attr('href');
-        $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
-    });
+//    // Fix Snap! run links.
+//    console.log('Found ', $('a').length, ' ALL urls.');
+//    console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
+//    $('a.run').each(function (index, elm) {
+//        var url = $(elm).attr('href');
+//        $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
+//    });
 
     // Remove EDC's inline HTML comments. (Why is it there.....)
-    [
-        '.comment',
-        '.todo',
-        '.commentBig'
-    ].forEach(function (sel) { $(sel).remove(); });
+//    [
+//        '.comment',
+//        '.todo',
+//        '.commentBig'
+//    ].forEach(function (sel) { $(sel).remove(); });
 
     // wrap content in div.llab-full
-    wrap = '<div class="llab-full">CONTENT</div>';
-
-    outerHTML = wrap.replace(/CONTENT/, $.html());
+    //wrap = '<div class="llab-full">CONTENT</div>';
+    //outerHTML = wrap.replace(/CONTENT/, $.html());
 
     if (includeCSS != false) {
         outerHTML = cssString + outerHTML;
@@ -306,95 +351,11 @@ function processHTML (html, includeCSS) {
     return outerHTML;
 }
 
-/** Split a single curriculum page into components to be in a vertical.
- *
- * @param {string} the raw HTML file to be processed
- */
-function splitFile (html, page, dir) {
-    var $, output, title, quizzes, qzHTML, text;
 
-    output = [];
-    $ = cheerio.load(html);
+//////////////////////////// done
 
-    // EDC Puts an <h2> at the beginning of every page.
-    title = $('h2').first().text();
 
-    text = $('body').html()
-    // parse quizes separately.
-    quizzes = $('div.assessment-data');
-    console.log('Found ', quizzes.length, ' quizzes.');
-    quizzes.each(function(index, elm) {
-        qzHTML = $.html(elm); // like a call to outerHTML()
-        command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
-        xml = exec(command).toString();
-        var idx = text.indexOf(qzHTML);
-        var before = text.slice(0, idx).trim();
-
-        if (before.length) {
-            num = output.length + 1;
-            file = page + '-' + num + '-' + title + '.html';
-            file = util.edXFileName(file);
-            output.push({
-                type: 'file',
-                title: num + '-' + title,
-                content: before,
-                directory: 'html/',
-                path: file
-            }); // part before quiz
-        }
-
-        num = output.length + 1;
-        file = page + '-' + num + '-' + title + '.xml';
-        file = util.edXFileName(file);
-        output.push({
-            type: 'quiz',
-            title: num + '-' + 'Quiz-'+ title,
-            content: xml,
-            directory: 'problem/',
-            path: file
-        }); // push quiz
-        text = text.slice(idx + qzHTML.length);
-    });
-
-    if (quizzes.length == 0) {
-        file = page + '-' + title + '.html';
-        file = util.edXFileName(file);
-        output.push({
-            type: 'file',
-            title: title,
-            content: text,
-            directory: 'html/',
-            path: file
-        });
-    }
-
-    return output;
-}
-
-module.exports = function(path, sectionName, directory) {
-    // Globals
-    PETER = true;
-    // util.topicPath(curFolder, path) == assuming we have some folder.
-    topic = fs.readFileSync(path).toString();
-    data = llab.parse(topic);
-    output = directory;
-
-    var topic, data, result;
-
-    data.topics.forEach(function (topic) {
-        topic.contents.some(function (section) {
-            var title = section.title.trim();
-            found = title.indexOf(sectionName) != -1;
-            if (found) {
-                tmp = parseSection(section);
-                result = tmp;
-                return true;
-            }
-        });
-    });
-
-    return result;
-}
+module.exports = "non requireable, you spud";
 
 
 console.log('This conversion is done!');
