@@ -13,7 +13,9 @@ There are two YAML files per course:
 These are the default names which the tool expects, but you can always change them.
 
 ## Running The Builder
+
 `./build-course OPTIONS`
+
 ## Misc. Notes
 
 ### CSS Processing

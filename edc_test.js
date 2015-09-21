@@ -203,7 +203,7 @@ function processHTML (html, includeCSS) {
     console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
     $('a.run').each(function (index, elm) {
         var url = $(elm).attr('href');
-        $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
+        $(elm).attr('href', util.transformURL(BASEURL, relPath, url)).attr('target', '_blank');
     });
 
     // Remove EDC's inline HTML comments. (Why is it there.....)
