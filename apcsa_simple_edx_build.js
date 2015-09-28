@@ -23,12 +23,12 @@ edx_util = require('./code/edx_util');
 
 var TOPICS_TO_PROCESS = [];
 
-//TOPICS_TO_PROCESS.push(['c1/L1_objects_classes.topic', 'L1']);
-//TOPICS_TO_PROCESS.push(['c1/L2_first_programming.topic', 'L2']);
-TOPICS_TO_PROCESS.push(['c1/L3_programming_2.topic', 'L3']);
-//TOPICS_TO_PROCESS.push(['c1/L4_conditionals_1.topic', 'L4']);
-//TOPICS_TO_PROCESS.push(['c1/L5_conditionals_2.topic', 'L5']);
-//TOPICS_TO_PROCESS.push(['c1/L6_virtual_pets.topic', 'L6']);
+TOPICS_TO_PROCESS.push(['c1/L1_objects_classes.topic', 'L1_']);
+TOPICS_TO_PROCESS.push(['c1/L2_first_programming.topic', 'L2_']);
+//TOPICS_TO_PROCESS.push(['c1/L3_programming_2.topic', 'L3_']);
+//TOPICS_TO_PROCESS.push(['c1/L4_conditionals_1.topic', 'L4_']);
+//TOPICS_TO_PROCESS.push(['c1/L5_conditionals_2.topic', 'L5_']);
+//TOPICS_TO_PROCESS.push(['c1/L6_virtual_pets.topic', 'L6_']);
 
 
 //////////////////////////
@@ -233,7 +233,7 @@ function processPage (pagedata) {
 
     var file = item.url.replace(BASEURL, curFolder);
     var relPath = path.relative(curFolder, file);
-    var basename = path.basename(file, ".html");
+    var basename_base = path.basename(file, ".html");
 //DEBUG('FILE: ' +  file);
     var html = fs.readFileSync(file);
     var $ = cheerio.load(html);
@@ -245,18 +245,23 @@ function processPage (pagedata) {
     
     //////// do  parts
     var partnum = 1;
+    var get_part_basename = function () {
+        return basename_base + "_p" + partnum++; 
+    }
     // APCSA doesn't need to split files right now
     // parse quizes separately.
     var quizzes = $('div.assessment-data');
     if (quizzes.length > 0) {
         // quiz
         var xml = assessmentData2EdxProblem($, quizzes[0]);   // TODO only one in apcsa right now
-console.log("QUIZ xml : " + xml);
-        edx_util.addQuizEdxFormatComponent(xml, basename);
+        edx_util.addQuizEdxFormatComponent(xml, get_part_basename());
     } else {
         // html
         var proc_html = processHTML(html, true);
+        edx_util.addHTMLComponenet(proc_html, title, get_part_basename());
     }
+    
+    edx_util.endVertical();
 }
     
     
@@ -266,10 +271,23 @@ console.log("QUIZ xml : " + xml);
 //TODO use cheerio rather than python craziness
 function assessmentData2EdxProblem($, assessData) {
     var qzHTML = $.html(assessData); // like a call to outerHTML()
-console.log("ASSDAT2EDX : qzhtml-> " + qzHTML);
-    // TODO replace doublequote with singlequote in qzHTML, just in case.  or escape single quotes.
-    var command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
-    var xml = exec(command).toString();
+//console.log("ASSDAT2EDX : qzhtml-> " + qzHTML);
+    
+    var command;
+    //var exec = "python3";
+    var cmd = "/Anaconda3/python.exe";
+    
+    // pass in qzHTML as string
+    // TODO replace doublequote with singlequote in qzHTML, just in case. 
+    // or escape single quotes.
+    // command = cmd + ' code/mc_parser.py \'' + qzHTML + '\'';
+    
+    // write ass-data to file, rather than pass in as string.  Overwrite whatever's there.
+    var filename = "./apcsa_edx_out/CUR_ASSESSMENT_DATA.html";
+    fs.writeFileSync(filename, qzHTML);
+    command = cmd + ' code/mc_parser.py ' + filename;
+        
+    var xml = exec(command).toString();   // returns a buffer
    
 
     return xml;
@@ -343,13 +361,26 @@ function processHTML (html, includeCSS) {
     // wrap content in div.llab-full
     //wrap = '<div class="llab-full">CONTENT</div>';
     //outerHTML = wrap.replace(/CONTENT/, $.html());
+    outerHTML = $.html();
 
     if (includeCSS != false) {
         outerHTML = cssString + outerHTML;
     }
 
+    
+    // HACKOLA - put in stub
+    return getTestHTMLPage();
+    
     return outerHTML;
 }
+
+
+
+function getTestHTMLPage() {
+    var str = '<div class="apcsa_full"> <link rel="stylesheet" type="text/css" media="screen" href="/static/css_ucb_apcsa.css" />  <div class="header" audio="audio_header">STUB PAGE RIGHT NOW, TESTING</div>  <div id="marginCol"><div class="vocab"><a href="http://veritas.eecs.berkeley.edu/apcsa-ret/page/glossary.php?term=uniform distribution" target="_vocab">uniform distribution</a></div></div><div id="mainCol"> <p audio="2">The way to look at many, many rolls is with a chart.  The <tt>lesson10/Dice2</tt> project contains a bar chart class that can show the roll of a single die.  A good random number generator will make a <span class="vocab" term="uniform distribution">uniform distribution</span>, or a set of numbers in which any particular number is as likely as any other.  </p>  <div class="openbluejproj" project="c2/random/Dice2">   <p audio="1">Open the current project in BlueJ, and use the <tt>DieRollGenerator</tt> and    <tt>BarChart6</tt> classes to look at many, many rolls of your dice generator.      (<b>random/Dice2</b>).          </p>       </div>       <br><div class="imageCenter">  <img src="/static/art_scenes_random_dice.png" alt="Twitterton in trouble"></div> </div></div>';
+    return str;
+}
+
 
 
 //////////////////////////// done
