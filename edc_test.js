@@ -81,10 +81,11 @@ var CSSOptions = {
     ]
 };
 
+CSS_FILE_NAME = 'bjc-edx.css';
 
-fs.writeFileSync('./tmp/' + 'bjc-edx.css', css(CSSOptions));
+fs.writeFileSync(output + CSS_FILE_NAME, css(CSSOptions));
 
-cssPath = util.edXPath('bjc-edx.css');
+cssPath = util.edXPath(CSS_FILE_NAME);
 cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
 
 function loadFile (path) {
@@ -202,7 +203,7 @@ function processHTML (html, includeCSS) {
     console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
     $('a.run').each(function (index, elm) {
         var url = $(elm).attr('href');
-        $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
+        $(elm).attr('href', util.transformURL(BASEURL, relPath, url)).attr('target', '_blank');
     });
 
     // Remove EDC's inline HTML comments. (Why is it there.....)
@@ -235,6 +236,7 @@ function splitFile (html, page, dir) {
     $ = cheerio.load(html);
 
     // EDC Puts an <h2> at the beginning of every page.
+    // TODO: HACKY -- THIS NEEDS TO BE GENERCIZED
     title = $('h2').first().text();
 
     text = $('body').html()
