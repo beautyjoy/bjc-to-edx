@@ -49,8 +49,6 @@ llab.getSnapRunURL = function(targeturl) {
     }
     finalurl = finalurl + currdom + targeturl;
 
-    console.log('TARGET URL: ', targeturl);
-    console.log('FINAL URL: ', finalurl);
     return finalurl;
 };
 

@@ -183,8 +183,9 @@ function processExternal (item, options) {
  * @param {Cherrio-Object} The contents of the html file
  *
  */
+// TODO: This needs to take in an array of functions.
 function processHTML (html, includeCSS) {
-    var outerHTML, wrap;
+    var $, outerHTML, wrap;
 
     $ = cheerio.load(html);
 
