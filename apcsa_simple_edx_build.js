@@ -1,6 +1,6 @@
-/**  LLAB AUTOBUILD WIP SCRIPT
+/**  APCSA AUTOBUILD  SCRIPT
  *
- *  TODO: This script is NOT FINISHED
+
  *  run with `node test.js`
  */
 
@@ -23,7 +23,7 @@ edx_util = require('./code/edx_util');
 
 var TOPICS_TO_PROCESS = [];
 
-TOPICS_TO_PROCESS.push(['c1/L1_objects_classes.topic', 'L1_']);
+//TOPICS_TO_PROCESS.push(['c1/L1_objects_classes.topic', 'L1_']);
 TOPICS_TO_PROCESS.push(['c1/L2_first_programming.topic', 'L2_']);
 //TOPICS_TO_PROCESS.push(['c1/L3_programming_2.topic', 'L3_']);
 //TOPICS_TO_PROCESS.push(['c1/L4_conditionals_1.topic', 'L4_']);
@@ -125,11 +125,11 @@ function css_get_reference(cssfile) {
     return '<link rel="stylesheet" href="' + path + '">\n\n';
 }
 var cssString = '';
-cssString += css_get_reference('bootstrap.min.css');
-cssString += css_get_reference('bootstrap-theme.min.css');
-cssString += css_get_reference('brainstorm.css');
-cssString += css_get_reference('matchsequence.css');
-cssString += css_get_reference('default.css');
+//cssString += css_get_reference('bootstrap.min.css');
+//cssString += css_get_reference('bootstrap-theme.min.css');
+//cssString += css_get_reference('brainstorm.css');
+//cssString += css_get_reference('matchsequence.css');
+//cssString += css_get_reference('default.css');
 cssString += css_get_reference('ucb-apcsa.css');
 
 
@@ -234,12 +234,14 @@ function processPage (pagedata) {
     var file = item.url.replace(BASEURL, curFolder);
     var relPath = path.relative(curFolder, file);
     var basename_base = path.basename(file, ".html");
-//DEBUG('FILE: ' +  file);
+
     var html = fs.readFileSync(file);
     var $ = cheerio.load(html);
     
     var title = $('title').html();
     var text = $('body').html();
+    
+//DEBUG('Do Page (file : ' +  file + ')(title: ' + title +')');    
     
     edx_util.startVertical(relPath, title);
     
@@ -328,50 +330,66 @@ function processExternal (item, options) {
  * @param {Cherrio-Object} The contents of the html file
  *
  */
-function processHTML (html, includeCSS) {
-    var outerHTML, wrap;
-
+function processHTML (html) {
     $ = cheerio.load(html);
 
-    // Fix some of the EDC image elements with .button
-    // These conflict with edX.
-    $('.button').removeClass('button');
+    
+    
+// OLD BJC STUFF
+//    // Fix some of the EDC image elements with .button
+//    // These conflict with edX.
+//    $('.button').removeClass('button');
 
+
+    
+    /////////// FROM apcsa_process_html.js, curriculum.js
+    
+    var WRAPCLASS = "apcsa_full";
+    var WRAPCLASS_SEL = "." + WRAPCLASS;
+
+    // make the wrap class div
+    $.root().prepend('<div class="' + WRAPCLASS +'"></div>');
+    // move contents into the wrapclass div
+    var bodycontents = $("body").html();
+    $(WRAPCLASS_SEL).html(bodycontents);
+    // title -- apcsa is a title tag in head
+    var title = $("title").text();
+    $(WRAPCLASS_SEL).prepend('<div class="header">' + title + '</div>');
+    // remove the (empty?) html/head/body -- do them all in case some are missing
+    $("head").remove();
+    $("body").remove();
+    $("html").remove();
+    // add scripttag script
+    $(WRAPCLASS_SEL).prepend('<script type="text/javascript" src="/static/apcsa_process_html.js"></script>');
+    // add css tagcss
+    $(WRAPCLASS_SEL).prepend(cssString);
+
+    // fix up contents
     // Fix image URLs
+    var prepend_str_find = '/apcsa/r/static/';
+    var prepend_str_replace = '/static/';
+    var imgregex_find = /\//g;     // finds every /
+    var imgregex_replace = "_";
     $('img').each(function (index, elm) {
         var url = $(elm).attr('src');
-        $(elm).attr('src', util.transformURL(BASEURL, relPath, url));
+
+        if (url.indexOf(prepend_str_find) == 0) {
+            url = url.slice(prepend_str_find.length);  // lose that
+            url = url.replace(imgregex_find, imgregex_replace);
+            url = prepend_str_replace + url;
+        } else {
+            DEBUG("img src didn't have prepend str I expected, but rather: " + prepend_str);
+        }
+        //$(elm).attr('src', util.transformURL(BASEURL + "/static", relPath, url));
+        $(elm).attr('src', url);
     });
-
-//    // Fix Snap! run links.
-//    console.log('Found ', $('a').length, ' ALL urls.');
-//    console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
-//    $('a.run').each(function (index, elm) {
-//        var url = $(elm).attr('href');
-//        $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
-//    });
-
-    // Remove EDC's inline HTML comments. (Why is it there.....)
-//    [
-//        '.comment',
-//        '.todo',
-//        '.commentBig'
-//    ].forEach(function (sel) { $(sel).remove(); });
-
-    // wrap content in div.llab-full
-    //wrap = '<div class="llab-full">CONTENT</div>';
-    //outerHTML = wrap.replace(/CONTENT/, $.html());
-    outerHTML = $.html();
-
-    if (includeCSS != false) {
-        outerHTML = cssString + outerHTML;
-    }
-
+    
+    
     
     // HACKOLA - put in stub
-    return getTestHTMLPage();
+    //return getTestHTMLPage();
     
-    return outerHTML;
+    return ($.root().html());
 }
 
 
