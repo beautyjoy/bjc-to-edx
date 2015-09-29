@@ -13,17 +13,17 @@ cheerio = require('cheerio');
 mkdirp = require('mkdirp');
 
 llab = require('./lib/llab');
-css = require('./code/css')
+css = require('./code/css');
 util = require('./code/util');
 
 
 // This is where a llab course CONTENT lives
 // This should be a checked out state
 // TODO: Config param this shit.
-curFolder = 'curriculum/edc/'
+curFolder = '../apcsa-r/main/'
 // This is where the edX XML folder will be.
 // TODO: CONFIG THIS SHIT.
-output = './tmp/';
+output = './apcsa_edx_out/';
 
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
