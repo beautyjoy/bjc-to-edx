@@ -6,7 +6,7 @@ EDX VERSION
 c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 */
 
-.matchsequence-data {
+.apcsa_full .matchsequence-data {
     height: 150px;
     background-image: url("/c4x/BerkeleyX/LUCS.1x/asset/icon-loading.gif"), url("/c4x/BerkeleyX/LUCS.1x/asset/matchsequence-background.png");
     background-position: center;
@@ -16,18 +16,18 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
     border-style: solid;
 }
 /* hide the contents of the data div */
-.matchsequence-data > * {
+.apcsa_full .matchsequence-data > * {
 	display:none;
 }
 
-.matchsequence-data .remote-data-error {
+.apcsa_full .matchsequence-data .remote-data-error {
 	background-color: #fd5b5b;
 	background-image: url("/c4x/BerkeleyX/LUCS.1x/asset/matchsequence-background.png");
 	text-align: center;
     font-weight: bold;
 }
 
-.matchsequence {
+.apcsa_full .matchsequence {
 	display: none;
     border-color: #000000;
     border-width: thin;
@@ -37,13 +37,13 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 }
 
 /* unused right now */
-.matchsequence > .settings {
+.apcsa_full .matchsequence > .settings {
     position: absolute;
     top: 0px;
     right: 0px;
 }
 
-.matchsequence > .title {
+.apcsa_full .matchsequence > .title {
     border-style: none;
     border-bottom: thin solid #000000;
     background-color: #b48cb4;
@@ -62,13 +62,16 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 }
 
 
-.matchsequence > .prompt {
+.apcsa_full .matchsequence > .prompt {
     padding: 10px 10px;
     font-size: .9em;
     text-align: left;
+    background: white;
 }
 
-
+.apcsa_full .matchsequence td, .apcsa_full .matchsequence th {
+	border: none;
+}
 
 /* old old stuff
 */
@@ -102,16 +105,17 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
     
 */
     
-#play {
+#llab_play {
 	margin: 0px;
 	padding: 4px;
 }
 
-#play table td {
+#llab_play table td {
 	vertical-align: top;
+	border: none;
 }
 
-#play :after {
+#llab_play :after {
 	clear: both;
 /*	content: '.';    */
 /*	display: block;  */
@@ -119,7 +123,7 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 	visibility: hidden;
 }
 
-#play ul {
+#llab_play ul {
 	border: 1px solid black;
 	float: left;
 	margin: 2px;
@@ -127,7 +131,7 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 	position: relative;
 }
 
-#play ul li {
+#llab_play ul li {
 	font-size: .8em;
 	background-image: none;
 	cursor: move;
@@ -137,38 +141,38 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 	position: relative;
 }
 
-#play ul li.choice {
+#llab_play ul li.choice {
 	background-color: #9999FF;
 	border: 1px solid #004C6D;
 }
 
-.bucket {
+.apcsa_full .bucket {
 	min-width: 30px;
 }
 
-.bucket ul {
+.apcsa_full .bucket ul {
 	background-color: #FFF;
 }
 
-.feedback_ul {
+.apcsa_full .feedback_ul {
 	background-color: #FFF;
 }
 
-.choice {
+.apcsa_full .choice {
 	background-color: red;
 }
 
-#play ul li.correct {
+#llab_play ul li.correct {
    background-color: #CCFF99;
    border: 1px solid #004C6D;
 }
 
-#play ul li.wrongorder {
+#llab_play ul li.wrongorder {
 	background-color: yellow;
 	border: 1px solid #004C6D;
 }
 
-#play ul li.incorrect {
+#llab_play ul li.incorrect {
 	background-color: #FF3333;
 	border: 1px solid #004C6D;
 }
@@ -222,12 +226,12 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 	width:260px;
 }
 
-.feedback_ul {
+.apcsa_full .feedback_ul {
 	text-align: left;
 	font-size: .9em;
 }
 
-#feedbackDiv {
+#llab_feedbackDiv {
 	width: 70%;
 	margin: 5px auto 0 auto;
 	padding: 2px;
@@ -236,16 +240,16 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 	color: #000;
 }
 
-#feedbackDiv p {
+#llab_feedbackDiv p {
 	font-size:inherit;
 }
 
 /* I don't like it */
-#statusDiv {
+#llab_statusDiv {
 	display: none;
 }
 
-
+/* 
 #triesContainer {
 	color: #333;
 	margin: 2px auto;
@@ -268,13 +272,15 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 	border-radius: 2px;
 }
 
+*/
+
 #sourceBucket {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-.horizontalLi {
+.apcsa_full .horizontalLi {
 	margin: 3px 3px 3px 0;
 	padding: 1px;
 	float: left;
@@ -284,12 +290,12 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
 }
 
 /* from htmlAssessment.css */
-.buttonDiv {
+.apcsa_full .buttonDiv {
     text-align: center;
     width: 780px;
 }
 
-#statusDiv {
+#llab_statusDiv {
     width: 80%;
     margin: 0px auto 10px auto;
     padding: 2px;
@@ -299,12 +305,12 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
     color: #333;
 }
 
-#buttonTable {
+#llab_buttonTable {
     border-collapse: collapse;
     margin: 8px auto 5px auto;
 }
 
-.buttonDiv {
+.apcsa_full .buttonDiv {
     text-align:center;
     /* vertical-align:middle; */
     line-height: 25px; /* same as height of link */ 
@@ -314,7 +320,7 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
     border-radius: 4px;
 }
 
-.buttonDiv a, .buttonDiv input {
+.apcsa_full .buttonDiv a, .apcsa_full .buttonDiv input {
     display: inline-block;
     font-size: 0.8em;
     padding: 0.2em 0.75em;
@@ -324,12 +330,12 @@ c1 root ->  /c4x/BerkeleyX/LUCS.1x/asset/
     font-weight:bold;
 }
 
-.buttonDiv input {
+.apcsa_full .buttonDiv input {
     height:30px;
     padding: 0.2em 0.75em 0.3em;
     font-size: 0.8em !important;
 }
 
-.buttonDiv a:hover, .buttonDiv input:hover {
+.apcsa_full .buttonDiv a:hover, .apcsa_full .buttonDiv input:hover {
     cursor:pointer;
 }

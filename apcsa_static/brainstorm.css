@@ -5,7 +5,7 @@ edx version
 c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 
 */
-.brainstorm-data {
+.apcsa_full .brainstorm-data {
 	height: 150px;
 	background-image: url("/c4x/BerkeleyX/LUCS.1x/asset/icon-loading.gif"), url("/c4x/BerkeleyX/LUCS.1x/asset/brainstorm-background.png");
 	background-position: center;
@@ -16,12 +16,12 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 }
 
 /* hide brainstorm data itself */
-.brainstorm-data > * {
+.apcsa_full .brainstorm-data > * {
 	display:none;
 }
 
 /* class when couldn't get remote brainstorm data. fugly. */
-.brainstorm-data .remote-data-error {
+.apcsa_full .brainstorm-data .remote-data-error {
 	background-color: #fd5b5b;
 	background-image: url("/c4x/BerkeleyX/LUCS.1x/asset/brainstorm-background.png");
 	text-align: center;
@@ -29,7 +29,7 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 }
 
 /* initial */
-.brainstorm {
+.apcsa_full .brainstorm {
 	display: none;
 	border-color: #000000;
 	border-width: thin;
@@ -39,13 +39,13 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 }
 
 
-.brainstorm > .settings {
+.apcsa_full .brainstorm > .settings {
 	position: absolute;
 	top: 0px;
 	right: 0px;
 }
 
-.brainstorm > .title {
+.apcsa_full .brainstorm > .title {
 	display: none;     /* gets set in BRAINSTORM constructor if title is present */
 	border-style: none;
 	border-bottom: thin solid #000000;
@@ -66,13 +66,13 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 
 
 
-.brainstorm > .prompt {
+.apcsa_full .brainstorm > .prompt {
 	padding: 10px 10px;
 	font-size: .9em;
 	text-align: left;
 }
 
-.brainstorm > .input {
+.apcsa_full .brainstorm > .input {
 
 	padding: 10px 10%;
 	/* margin-left: auto;
@@ -81,7 +81,7 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 	background-color: #FBF9EE;
 }
 
-.brainstorm  .input > .inputarea {
+.apcsa_full .brainstorm  .input > .inputarea {
 	width: 80%;
 	display: block;
 	margin-left: auto;
@@ -89,22 +89,22 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 }
 
 
-.brainstorm  .input > input[type=button].disabled {
+.apcsa_full .brainstorm  .input > input[type=button].disabled {
 	color: #999;
 }
 
 
 /* both buttons */
-.brainstorm input[type=button] {
+.apcsa_full .brainstorm input[type=button] {
 	-moz-border-radius:5px;
     -webkit-border-radius:5px;
     border-radius:5px;
 }
-.brainstorm input[type=button]:hover:not(.disabled) {
+.apcsa_full .brainstorm input[type=button]:hover:not(.disabled) {
     background-color: white;
 }
 
-.brainstorm > .responseArea {
+.apcsa_full .brainstorm > .responseArea {
 	display: none;
 	position: relative;
 	text-align: left;
@@ -112,14 +112,14 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
 	padding-top: 5px;
 }
 
-.brainstorm > .responseArea > .responsebutton {
+.apcsa_full .brainstorm > .responseArea > .responsebutton {
     position: absolute;
     top: 0px;
     right: 0px;
 }
 
 
-.brainstorm .response {
+.apcsa_full .brainstorm .response {
 	padding-left: 35px;
 	padding-top: 9px;
 	padding-bottom: 9px;
@@ -132,36 +132,36 @@ c1 -> /c4x/BerkeleyX/LUCS.1x/asset/XXX
     border-radius:8px;
 }
 
-.brainstorm .responses > .responsePlaceholder {
+.apcsa_full .brainstorm .responses > .responsePlaceholder {
 	display: none;
 }
 
-.brainstorm .response.user {
+.apcsa_full .brainstorm .response.user {
 	background-color: red;
 }
 
-.brainstorm .response .responseTitle {
+.apcsa_full .brainstorm .response .responseTitle {
     color: #000;
     font-weight: bold;
 }
 
-.brainstorm .response .responseTitle span {
+.apcsa_full .brainstorm .response .responseTitle span {
 	padding-right: 10px;
 	
 }
 
-.brainstorm .response.user .username {
+.apcsa_full .brainstorm .response.user .username {
 	font-style: italic;
 }
 
-.brainstorm .response.user .edit input[type=button] {
+.apcsa_full .brainstorm .response.user .edit input[type=button] {
     margin-bottom: 5px
 }
 
 
 
 
-.brainstorm .response > .responseTextArea {
+.apcsa_full .brainstorm .response > .responseTextArea {
     padding: 4px 6px;
     font-weight: normal;
     background-color: #FFF;

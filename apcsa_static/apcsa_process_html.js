@@ -20,7 +20,7 @@ APCSA_SPECS.marginDivs = [ "key", "warning", "help", "vocab" ];
 // talk bubble attributes (for align and color, default is first entry).
 APCSA_SPECS.talkBubbleAligns = [ "left", "right" ];
 APCSA_SPECS.talkBubbleColors = [ "blue", "red", "orange", "green" ];
-APCSA_SPECS.talkBubbleImgDir = "/static/art_robots_";
+APCSA_SPECS.talkBubbleImgDir = "/c4x/BerkeleyX/LUCS.1x/asset/art_robots_";
 
 
 // populate this table with entries to be looked up automatically. This script
@@ -168,10 +168,10 @@ APCSA_SPECS.foldedDivInnerHTML = '<span class="foldit">reveal</i></span>';
 
 
 
+APCSA_SPECS.full_selector = ".apcsa_full";
 
 //  moved into build
 // put this around everything
-//APCSA_SPECS.full_selector = ".apcsa_full";
 //APCSA_SPECS.createDivWrapper = function() {
 //    $(document.body).wrapInner('<div class="apcsa_full"></div>');
 //};
@@ -250,7 +250,7 @@ APCSA_SPECS.fixMargins = function() {
         if (typeof (vocabClass) != "undefined") {
             vocabDiv.addClass(vocabClass);
         }
-        $("span.vocab").each(
+        $(APCSA_SPECS.full_selector + " " + "span.vocab").each(
                 function(i) {
                     if (!(this.getAttribute("term"))) {
                         this.setAttribute('term', this.innerHTML)
@@ -409,6 +409,12 @@ llab.bs = {};
 llab.bs.nodes = [];
 
 // /////////
+
+llab.brainstorm_refresh_responses_path = "/c4x/BerkeleyX/LUCS.1x/asset/brainstorm-refresh-responses.png";
+llab.brainstorm_gear_path ="/c4x/BerkeleyX/LUCS.1x/asset/brainstorm-gear.png";
+
+// unused...
+llab.empty_brainstorum_div_URL = llab.llab_path + "html/empty-brainstorm-div.html";
 
 
 // starting point, after page load
@@ -579,7 +585,7 @@ llab.bs.getContentTemplate = function(indexOnPage) {
     // template needs to start with '<' !! no spaces, sigh
     var template = '<div class="brainstorm" indexOnPage="' + indexOnPage + '">'
             + '   <div class="settings">'
-            + '      <img src="' + llab.llab_path + 'img/brainstorm-gear.png" alt="Settings" />'
+            + '      <img src="' + llab.brainstorm_gear_path + '" alt="Settings" />'
             + '   </div>'
             + '   <div class="title"></div>'
             + '   <div class="prompt"></div>'
@@ -592,7 +598,7 @@ llab.bs.getContentTemplate = function(indexOnPage) {
             + '   <div class="responseArea">'
             + '      <p>Responses: </p>'
             + '      <div class="responsebutton">'
-            + '         <img src="' + llab.llab_path + 'img/brainstorm-refresh-responses.png" alt="Refresh responses" />'
+            + '         <img src="' + llab.brainstorm_refresh_responses_path + '" alt="Refresh responses" />'
             + '      </div> ' 
             + '      <div class="responses">'
             + '         <div class="responsePlaceholder"></div>'
@@ -834,6 +840,10 @@ $(document).ready(function() {
 // namespace for everything -- eventually!
 llab.ms = {} // namespace stuff
 
+// id for play div -- also in css
+llab.ms.playid = "llab_play";
+
+
 /* 
  * TODO
  * - grab the latest code from wise?  Really?  Hm.
@@ -854,35 +864,36 @@ llab.ms.addClassToElement = function(id, cls) {
     $("#" + id).addClass(cls);
 }
 
+llab.ms.DEBUG = function(str) {
+    console.log(str);
+}
 
-$(document).ready(function() {
-    // first get the msdiv template
-    llab.ms.nodes = [];
-    $.get(llab.empty_matchsequence_div_URL, function(mstemplate) {
-        $("div.matchsequence-data").each(function(i, msdatadiv) {
-            // copy/instantiate template
-            var msdiv = $(mstemplate).clone();
-            $(msdiv).attr("indexOnPage", i);
-            //attach .matchsequence templatediv after datadiv
-            $(msdatadiv).after(msdiv);
-            // get the ms specification and pass to buildTheDiv()
-            llab.ms.getSpecificationAndBuild(i, msdatadiv, msdiv);
-        });
-    }, "html").fail(function(jqXHR, textStatus, error) {
-        // TODO make better
-        $(".matchsequence-data").addClass("remote-data-error")
-           .append("<hr><p>Failed to retrievie Match & Sequence template. "
-                   + "I blame the patriarchy.</p><p>Error: "+error+"</p>");
-    });
+/// from empty-matchsequence-div in llab
+llab.ms.template = 
+'<div class="matchsequence">' +
+'<div class="title">Match & Sequence</div>' +
+'<div class="prompt"></div>' +
+'<div id="llab_playContainer">' +
+'<div id="llab_play"></div> </div>' +
+'<div id="llab_feedbackDiv"></div>' +
+'<div class="buttonDiv">' +
+'<div id="llab_statusDiv">' +
+'<div id="numberAttemptsDiv"></div> </div>' +
+'<table id="llab_buttonTable"> <tr> <td> ' +
+'<a  class="checkAnswerButton firstButton disabledLink" id="llab_checkAnswerButton">Submit Answer</a>' +
+'</td> </tr> </table> </div> </div>';
 
-});
+
 
 
 // may need to go out
 llab.ms.getSpecificationAndBuild = function(i, msdatadiv, msdiv) {
     // TODO use .matchsequence-data div, yo.
     // hack for now!!
-    var msspec =  llab_ms_myModels[i];
+    // edx hack on hack -- TODO class not id
+    //var msspec =  llab_ms_myModels[i];
+    //debugger;
+    var msspec = JSON.parse($(".llab_msdata").html()); // first element only
     // this is the callback when using ajax:
     llab.ms.buildTheDiv(msspec, i, msdiv, msdatadiv);
 }
@@ -935,7 +946,7 @@ llab.ms.buildTheDiv = function(msspec, i, msdiv, msdatadiv) {
 
 
 llab.ms.renderDragAndDrop = function(ms) {
-    $('#play ul').sortable({
+    $('#' + llab.ms.playid + ' ul').sortable({
         connectWith : 'ul',
         stop : function(e, ui) {
             /* update the match sequence */
@@ -944,7 +955,7 @@ llab.ms.renderDragAndDrop = function(ms) {
             ms.enableCheckAnswerButton();
         }
     });
-    $('#play ul').disableSelection();
+    $('#' + llab.ms.playid + ' ul').disableSelection();
 };
 
 
@@ -1425,7 +1436,7 @@ MS.prototype.render = function() {
 
     var bucketsHtml = "";
     var choicesBucketHtml = "";
-    document.getElementById('play').innerHTML = "";
+    document.getElementById(llab.ms.playid).innerHTML = "";
 
     // layout is vertical or horizontal
     var displayLayout = this.displayLayout;
@@ -1468,7 +1479,7 @@ MS.prototype.render = function() {
         bucketsHtml += "</div></td></tr></table>";
     }
 
-    document.getElementById('play').innerHTML = bucketsHtml;
+    document.getElementById(llab.ms.playid).innerHTML = bucketsHtml;
 
     /* enables jquery drag and drop */
     // MOVED this here from above
@@ -1481,7 +1492,7 @@ MS.prototype.render = function() {
         this.displayNumberAttempts("This is your", "attempt", this.attempts);
     } else {
         // hide the feedback and number of attempts display
-        $('#feedbackDiv').hide();
+        $('#llab_feedbackDiv').hide();
         $('#numberAttemptsDiv').hide();
     }
 
@@ -1845,7 +1856,7 @@ MS.prototype.checkAnswer = function() {
                     + "</font>";
             this.displayNumberAttempts("This is your", "attempt", this.attempts);
         }
-        document.getElementById("feedbackDiv").innerHTML = message;
+        document.getElementById("llab_feedbackDiv").innerHTML = message;
     } else {
         var state = this.getState(); // state is a MSSTATE instance
         // clean out old feedback
@@ -1963,7 +1974,7 @@ MS.prototype.checkAnswer = function() {
         numWrongChoices += numUnusedChoices;
 
         // update feedback div
-        var feedbackDiv = document.getElementById("feedbackDiv");
+        var feedbackDiv = document.getElementById("llab_feedbackDiv");
         if (numWrongChoices == 0) {
             feedbackDiv.innerHTML = "Congratulations! You've completed this question.";
             this.setChoicesDraggable(false);
@@ -2108,6 +2119,31 @@ MS.prototype.enableCheckAnswerButton = function() {
 MS.prototype.disableCheckAnswerButton = function() {
     $(this.msdiv).find('.checkAnswerButton').addClass('disabledLink');
 };
+
+
+
+//////
+
+llab.ms.nodes = [];
+
+$(document).ready(function() {
+    llab.ms.nodes = [];
+    var mstemplate = llab.ms.template;
+    llab.ms.DEBUG("trying matchsequence yo yo");
+    $("div.matchsequence-data").each(function(i, msdatadiv) {
+            // copy/instantiate template
+            llab.ms.DEBUG("found i=" + i);
+            llab.ms.DEBUG("datadiv: " + msdatadiv)
+            //debugger;
+            var msdiv = $(mstemplate).clone();
+            $(msdiv).attr("indexOnPage", i);
+            //attach .matchsequence templatediv after datadiv
+            $(msdatadiv).after(msdiv);
+            // get the ms specification and pass to buildTheDiv()
+            llab.ms.getSpecificationAndBuild(i, msdatadiv, msdiv);
+        });
+    });
+
 
 
 
