@@ -196,9 +196,11 @@ function addComponentRef2Vertical(comp_url, type) {
 edx_util.addHTMLComponenet = function(htmlcontents, title, ref) {
     var dir = EXPORT_DIR + "html/";
     var basename = FILE_PREPEND_STR + ref ;  // add getRandomStr?
+    // TODO clean title --? move " to ', special chars, etc?
+    var cleantitle = title;
+    cleantitle = cleantitle.replace(/\"/g, "'");   // double quote with single
     var xmlcontents = 
-        "<html editor=\"raw\" display_name=\"" + title 
-        + "\" filename=\"" + basename + "\"/>";
+        "<html filename=\"" + basename + "\" display_name=\"" + cleantitle + "\" editor=\"raw\"  />";
     
     // make html and ht
     fs.writeFileSync(dir+basename+".html", htmlcontents);
