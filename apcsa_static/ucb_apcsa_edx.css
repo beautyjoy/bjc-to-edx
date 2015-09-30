@@ -1,0 +1,1019 @@
+/**
+ * Copyright (c) 2006 Encore Research Group, University of Toronto
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+  	
+
+.apcsa_full .color1 {color:#164CBA;}   /* vibrant blue */
+.apcsa_full .color2 {color:#6883BA;}   /* mid blue */
+.apcsa_full .color3 {color:#919EBA;}   /* light blue */
+.apcsa_full .color4 {color:#334B7B;}   /* dark blue */
+.apcsa_full .color5 {color:#19253D;}   /* very dark blue */
+.apcsa_full .color6 {color:#4E628B;}  /* mid gray blue */
+.apcsa_full .color7 {color:#FF9D1E;}  /* bold orange */
+.apcsa_full .color8 {color:#FFCE8E;}  /* mid tan */
+.apcsa_full .color9 {color:#FFE6C6;}  /* light tan */
+.apcsa_full .color10 {color:#a97e46;}  /* brown */
+.apcsa_full .color11 {color:#543f23;}  /* dark red */
+.apcsa_full .color12 {color:#bf9a6b;}  /* light brown */
+
+.apcsa_full .bg1 {background-color:#164CBA;color:#FFF;}
+.apcsa_full .bg2 {background-color:#6883BA;color:#000;}
+.apcsa_full .bg3 {background-color:#919EBA;color:#000;}
+.apcsa_full .bg4 {background-color:#334B7B;color:#FFF;}
+.apcsa_full .bg5 {background-color:#19253D;color:#FFF;}
+.apcsa_full .bg6 {background-color:#4E628B;color:#FFF;}
+.apcsa_full .bg7 {background-color:#FF9D1E;color:#000;}
+.apcsa_full .bg8 {background-color:#FFCE8E;color:#000;}
+.apcsa_full .bg9 {background-color:#FFE6C6;color:#000;}
+.apcsa_full .bg10 {background-color:#a97e46;color:#000;}
+.apcsa_full .bg11 {background-color:#543f23;color:#FFF;}
+.apcsa_full .bg12 {background-color:#bf9a6b;color:#000;}
+
+
+.apcsa_full * {padding:0px; margin:0px;}
+
+/* NATE ADDED so the progress bar didn't overlap the margin bar
+ * 
+ */
+
+.apcsa_full  {
+	min-height: 540px;
+}
+
+.apcsa_full img {border:0px;}
+
+
+/*
+body {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 100%;
+	text-align: left;
+	background-color:#FFF;
+	}
+*/
+
+
+/* 
+.apcsa_full form li div {
+	font:500 15px/1.7 "Times New Roman", Times, serif;
+		}
+*/
+
+.apcsa_full form>h2, .apcsa_full form>ol>li {
+	color:#999;
+	/*  font:500 30px Tahoma, Geneva, sans-serif;     edx*/
+}
+
+.apcsa_full .faint {
+	color:#777;
+	/*  font:12px Tahoma, Geneva, sans-serif;     edx*/
+}
+
+.apcsa_full em {
+	color:#000;
+	/* font-weight:900;      bleh*/
+	font-style:italic;
+}
+
+.apcsa_full tt, .apcsa_full code {
+	font-size:105%;
+	font-weight:700;
+	line-height:100%;
+	font-family: "Courier New", Courier, monospace;
+}
+	
+
+/*  let edx deal here
+ * 
+
+.apcsa_full p {
+	font:1em "Times New Roman", Times, serif;
+	padding:10px 15px;
+	line-height:130%;
+	vertical-align: bottom;
+	}
+*/
+
+.apcsa_full p.right {text-align:right;}
+
+.apcsa_full .vocab {
+	color:#0000CC;
+	font-style:italic;
+	}
+	
+.apcsa_full .help {
+	color:#DC143C;
+	font-style:italic;
+	}
+
+.apcsa_full .width40 {width:40%;}
+.apcsa_full .width50 {width:50%;}
+.apcsa_full .width60 {width:60%;}
+.apcsa_full .width70 {width:70%;}
+.apcsa_full .width80 {width:80%;}
+.apcsa_full .width90 {width:90%;}
+
+.apcsa_full .marginleft25 {margin-left:25px;}
+.apcsa_full .marginleft50 {margin-left:50px;}
+.apcsa_full .marginleft75 {margin-left:75px;}
+.apcsa_full .marginleft100 {margin-left:100px;}
+.apcsa_full .marginleft125 {margin-left:125px;}
+.apcsa_full .marginleft150 {margin-left:150px;}
+.apcsa_full .marginleft200 {margin-left:200px;}
+
+
+.apcsa_full form label {
+	font-family:Tahoma, Geneva, sans-serif;
+}
+
+/***** made this the same as tt
+code {
+	font:700 .9em "Courier New", Courier, monospace;
+}
+*/
+
+/*
+.apcsa_full input[type=text], input[type=password], textarea {
+	font: 12px "Courier New", Courier, monospace;
+}
+*/
+
+
+/*
+.apcsa_full #class_nav_bar {
+	font:17px Helvetica, Arial, sans-serif;
+	color:#e3e3e3;
+}
+*/
+
+/*
+input[type=submit] {
+	font:500 18px Tahoma, Geneva, sans-serif;
+	color:#fff;
+}
+*/
+
+.apcsa_full ul, .apcsa_full ol {
+	/*  font:.9em "Palatino Linotype", "Book Antiqua", Palatino, serif;     let edx do this */
+	border-bottom:1px dotted #999;
+	width:85%;
+	color:#000033;
+	line-height:130%;
+	padding:5px 15px 5px 5px;
+	margin:10px 10px 10px 45px;
+	border:1px solid #3399ff;
+}
+
+.apcsa_full ul li, .apcsa_full ol li {
+	padding:5px;
+	margin-left:35px;
+}
+
+.apcsa_full th {
+	font-weight: normal;
+	font-size:16px;
+}
+
+.apcsa_full h1 {padding:10px 15px;}
+.apcsa_full h2 {font:900 26px "Palatino Linotype", "Book Antiqua", Palatino, serif;padding:10px 15px;}
+.apcsa_full h3 {font:900 18px "Palatino Linotype", "Book Antiqua", Palatino, serif;padding:15px;}
+.apcsa_full h4 {padding:10px 15px;}
+.apcsa_full h5 {padding:10px 15px;}
+.apcsa_full h6 {padding:10px 15px;}
+
+.apcsa_full  .header {
+	font:normal 1.2em Verdana, Geneva, sans-serif;
+	color:#666;
+	border-bottom:1px solid #ccc;
+	width:98%;
+	margin:5px 0 10px 10px;
+	text-align:left;
+	letter-spacing:1.5px;	
+}
+
+.apcsa_full .center {text-align:center;margin:0 auto;}
+
+.apcsa_full .redFlag {
+	font-size:.95em;
+	/*  font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;    */
+	text-align:center;
+	line-height:1.4em;
+	width: 50%;
+	margin:5px auto 10px auto;
+	padding:6px;
+	background-color:#FFCCCC;
+	color:#660000;
+	-moz-border-radius-topleft:8px;
+	-moz-border-radius-bottomright:8px;
+	border:1px solid #666;
+	}
+	
+.apcsa_full .redFlag p {
+	font-size:inherit
+	} 
+	
+.apcsa_full .redFlag.right {
+	float:right;
+	margin-right:10px;
+}
+
+.apcsa_full .redFlag.left {
+	float:left;
+	margin-left:10px;
+}
+
+.apcsa_full .floatClear {
+	clear:both;
+	margin:0;
+}
+
+.apcsa_full .floatClearLeft {
+	clear:left;
+}
+
+.apcsa_full .strike {
+	text-decoration: line-through;
+}
+
+.apcsa_full table .pre {
+	line-height: 1em;
+	}
+	
+.apcsa_full pre {
+	font:600 .9em "Courier New", Courier, monospace;
+	color:#333;
+	white-space:pre;
+	padding:10px;
+	margin:15px;
+	border-top:2px solid #999;
+	border-right:2px solid #999;
+	border-bottom:2px solid #999;
+	border-left:12px solid #999;
+}
+
+.apcsa_full pre.tightText, .apcsa_full pre .tightText {
+	letter-spacing:-.8px;
+	}
+
+.apcsa_full pre.veryTightText, .apcsa_full pre .veryTightText {
+	letter-spacing:-1px;
+	}
+
+	
+.apcsa_full pre.width20 {width:20%;margin-left:75px;}
+.apcsa_full pre.width30 {width:30%; margin-left:75px;}
+.apcsa_full pre.width40 {width:40%; margin-left:75px;}
+.apcsa_full pre.width50 {width:50%; margin-left:75px;}
+.apcsa_full pre.width60 {width:60%; margin-left:75px;}
+.apcsa_full pre.width70 {width:70%; margin-left:75px;}
+.apcsa_full pre.width80 {width:80%; margin-left:75px;}
+
+/* nate -- aw, doesn't work.  Idea here is to highlight red
+ * things that are 'new' in a pre block, using a span class
+ *    <pre> dough <span class="new">ray</span> meat far so? lah</pre>
+ */
+.apcsa_full pre .new {color:#543f23;}
+ 
+ 
+.apcsa_full .codeHighlight {
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_duke2.gif);
+	background-repeat:no-repeat;
+	padding:8px 4px 8px 28px;
+	margin-right:14px;
+}
+
+.apcsa_full .codeHighlight:hover {
+	background-color:#FFFF00;
+}
+	
+	
+.apcsa_full .codeBlock {
+	font:500 .9em "Courier New", Courier, monospace;
+	white-space:pre;
+	padding:10px;
+	margin:15px;
+	border-top:2px solid #999;
+	border-right:2px solid #999;
+	border-bottom:2px solid #999;
+	border-left:12px solid #999;
+}
+
+.apcsa_full .codeBlock cite {
+	font-family: "Lucida Console", Helvetica;
+	font-size:.8em;
+	color:#000099;
+}
+
+.apcsa_full .comment {
+	font-family: "Lucida Console", Helvetica;
+	font-size:.85em;
+	color:#330066;
+	letter-spacing:-1px;
+}
+
+.apcsa_full .codeHighlight1 {
+	background-color:#FFFF00;
+	display:block;
+	padding:3px 0 3px 2px;
+	margin-right:5px;
+	border-right:8px solid #FF9900;
+	white-space: pre;
+}
+
+.apcsa_full .codeHighlight2 {
+	background-color:#FF9999;
+	display:block;
+	padding:3px 0 3px 2px;
+	margin-right:5px;
+	border-right:8px solid #993333;
+	white-space: pre;
+}
+
+.apcsa_full .codeHighlightOff {
+	background-color:#FFF;
+	display: inherit;
+	padding:0;
+	margin-right:0px;
+	border-right:0;
+}
+
+.apcsa_full #summaryTable {
+	border-collapse:collapse;
+	border:2px dotted #ccc;
+	width:75%;
+	margin:0 auto 10px auto;
+	text-align:center;
+	vertical-align:top;
+	top:0;
+	}
+
+.apcsa_full #summaryTable th {
+	font-weight:bold;
+	}
+
+.apcsa_full #summaryTable p {
+	padding:6px;
+	}	
+
+.apcsa_full #tableSummary {
+	border-collapse:collapse;
+	border:2px dotted #ccc;
+	width:75%;
+	margin:0 auto 10px auto;
+	text-align:center;
+	vertical-align:top;
+	top:0;
+	}
+	
+.apcsa_full #tableSummary th {
+	font-weight:bold;
+	}
+
+.apcsa_full #tableSummary p {
+	padding:6px;
+	}	
+	
+.apcsa_full #tableBlue {
+	border-collapse:collapse;
+	margin:10px 15px;
+	background-color:#ccccff;
+	}
+	
+.apcsa_full #tableBlue th {
+	border:1px solid #6666FF;
+	vertical-align:top;
+	text-align:left;
+	/*  font:.8em "Times New Roman", Times;    edx*/
+	font: .8em;
+	padding:2px 10px;
+	font-weight: 600;
+	}
+	
+.apcsa_full #tableBlue td {
+	border:1px solid #6666FF;
+	vertical-align:top;
+	/* font:1em "Times New Roman", Times;     edx*/
+	font: 1em;
+	padding:5px 10px;
+		vertical-align:top;
+		}
+		
+.apcsa_full #tableBlue ul {
+	border:none;
+	margin:0px;
+}
+
+.apcsa_full #tableCenter {
+	margin: 0 auto;
+	
+	border-collapse: collapse;
+	border:1px solid #333;
+	/*  font-family:"Arial", sans-serif;    edx*/
+	background-color: #F0F8FF;
+	}
+	
+.apcsa_full #tableCenter th {
+	
+	padding: 5px 10px;
+	font-size: 0.9em;
+	font-weight: 600;
+	border-bottom: 2px solid #808080;
+	background-color: #B0E0E6;
+	}
+	
+.apcsa_full #tableCenter td { 
+	
+	font-size: .8em;
+	letter-spacing: 0.1em;
+	padding: 20px;
+	}
+	
+	
+.apcsa_full #tableClear {
+	border-collapse:collapse;
+	margin:0 0 0 50px;
+	background-color:#FFF;
+	}
+	
+.apcsa_full #tableClear td {
+	border:0;
+	vertical-align:top;
+	padding:5px;
+		}
+	
+.apcsa_full #tableClear	pre {
+	font:400 .85em "Courier New", Courier, monospace;
+	white-space:pre;
+	padding:10px;
+	margin:5px;
+	border-top:2px solid #999;
+	border-right:2px solid #999;
+	border-bottom:2px solid #999;
+	border-left:12px solid #999;
+}
+	
+.apcsa_full #tableTight {
+	border-collapse:collapse;
+	margin:0 0 0 5px;
+	background-color:#FFF;
+	}
+	
+.apcsa_full #tableTight td {
+	border:0;
+	vertical-align:top;
+	padding:0px;
+		}
+	
+.apcsa_full #tableTight	pre {
+	font:.85em Courier, monospace;
+	color:#000;
+	letter-spacing:-1px;
+	white-space:pre;
+	padding:5px;
+	margin:5px;
+	border-top:2px solid #999;
+	border-right:2px solid #999;
+	border-bottom:2px solid #999;
+	border-left:12px solid #999;
+}
+
+.apcsa_full .imageRight {
+	float:right;
+	margin:0 20px 15px 15px;
+	}
+
+.apcsa_full .imageLeft {
+	float:left;
+	margin:0 15px 15px 20px;
+	}
+
+.apcsa_full .imageCenter {
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
+	}
+	
+.apcsa_full .centeredImages {
+	text-align:center;
+	margin:0 auto; 
+		}
+		
+.apcsa_full .centeredImages img {
+	margin: 0 10px;
+		}
+	
+.apcsa_full .clearFloats {
+	clear:both;
+		}
+
+.apcsa_full .openbluejproj {
+	width:500px;
+	min-height:45px;
+	margin: 5px 10px 10px 45px;
+	padding: 5px 15px 0px 0px;    /* works ok if content is in <p> */
+	text-align:left;
+	font-size:.9em;
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_bluej_background.png);
+	background-repeat:no-repeat;
+	background-color: #FFCC99;    /* continues the bottom downward */
+	color:#000000;
+	border:1px solid #666;
+	font-family: Helvetica, Arial;
+	font-weight:normal;
+	-moz-border-radius:4px;
+		}
+
+.apcsa_full .openbluejproj p {
+	padding:4px 4px 4px 65px;
+		}
+		
+.apcsa_full .tryit {
+	width:500px;
+	margin: 10px 0 10px 45px;
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_doit_background.png);
+	background-position:-10px -3px;
+	background-color:#164CBA;
+	border:1px solid #000099;
+	-moz-border-radius-topleft:16px;
+	-moz-border-radius-bottomright:16px;
+		}
+
+.apcsa_full .tryit .vocab {
+	font-style:italic;
+	letter-spacing:.6px;
+	padding:0 2px;
+	font-weight:bold;
+	}
+
+.apcsa_full .tryit p {
+	padding:22px 8px 8px 8px;
+	text-align:center;
+	font-size:.8em;
+	line-height:135%;
+	letter-spacing:.5px;
+	color:#FFF;
+	/* font-family: Arial, Helvetica, Arial;    */
+    }
+
+.apcsa_full .tryit a:link, .apcsa_full .tryit a:visited {color:#FFE6C6;}
+.apcsa_full .tryit a:hover {color:#919EBA;}
+
+.apcsa_full .instructionsIcon {
+	width: 16px;  
+    height: 16px; 
+    background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_infoIcon.png);  
+	background-repeat: no-repeat;
+	text-decoration:none;
+	outline:none;
+}
+
+.apcsa_full .instructionsIcon:hover {
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_infoIconRollover.png);  
+	background-repeat: no-repeat;
+}
+
+.apcsa_full .step {
+	margin-left:35px; 	
+	padding: 0px 50px 15px 30px;
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_lightning.png);
+	background-repeat:no-repeat; 
+	background-position:0px 4px;
+	}
+
+.apcsa_full .tableCartoon {
+	border-collapse:collapse;
+	width:85%;
+	max-width:800px;
+	margin:4px auto;
+	}
+	
+.apcsa_full .tableCartoon td {
+	font-size:1em;
+	color:#003300;
+	padding:2px;
+	text-align:center;
+	}
+	
+.apcsa_full .tableCartoon td.right {text-align:right;}
+.apcsa_full .tableCartoon td.left {text-align:left;}
+
+/* removed video and transcript stuff */
+	
+.apcsa_full #selfCheckIntro {
+	width:650px;
+	}
+	
+.apcsa_full #selfCheckIntro .Intro1 {
+	color:red;
+	}
+	
+.apcsa_full #selfCheckIntro .Intro2{
+	font-size:90%;
+	}
+	
+.apcsa_full .selfCheckQuestion {
+	font-size:14px; 
+	/* font-family:Verdana, Arial,Helvetica;   edx*/
+	text-align:left;
+	width:650px; 
+	margin:10px 0 15px 0 ; 
+	color:#0000FF; 
+	line-height:120%;
+	}
+	
+	
+	
+	
+	
+.apcsa_full blockquote {
+	background: #fbfbac;
+	/* font-family: Georgia, "Times New Roman", Times, serif;   edx*/
+	font-style: italic;
+	width: 880px;
+	padding: 15px;
+	}
+
+/* removed brainstorm */
+	
+	
+.apcsa_full .quoteOrange {
+	padding:10px 15px;
+	margin: 15px;
+	width:80%;
+	border-left:12px solid #FF9D1E;
+	background-color:#FFCE8E;
+	}
+	
+.apcsa_full .quoteBlue {
+	padding:10px 15px;
+	margin: 15px;
+	width:80%;
+	color:#000;
+	border-left:12px solid #164cba;
+	background-color:#9999FF;
+	}
+	
+.apcsa_full .quoteBrown {
+	padding:10px 15px;
+	margin: 15px;
+	width:80%;
+	border-left:12px solid #bf9a6b;
+	background-color:#ddc8ad;
+	}
+
+.apcsa_full .quoteGreen {
+	padding:10px 15px;
+	margin: 15px;
+	width:80%;
+	border-left:12px solid #669933;
+	background-color:#99CC66;
+	}
+	
+
+/* removed slideshow stuff */
+
+/* STYLES FOR MARGINALIA ELEMENTS IN RIGHT COLUMN*/
+
+
+.apcsa_full #mainCol {
+	margin-right:20%;
+	text-align:left;	
+	}
+	
+.apcsa_full #marginCol {
+	float:right;
+	text-align:left;
+	width:17%;
+	min-height:540px;
+	background-color:#CCC;
+	-moz-border-radius-topleft:16px;
+	-moz-border-radius-bottomleft:16px;
+		} 
+
+.apcsa_full #marginCol a:hover {
+	background-color:#FFFF33;
+	}
+	
+.apcsa_full #marginCol .top25 {margin-top:25px;}	
+.apcsa_full #marginCol .top50 {margin-top:50px;}
+.apcsa_full #marginCol .top75 {margin-top:75px;}
+.apcsa_full #marginCol .top100 {margin-top:100px;}
+.apcsa_full #marginCol .top125 {margin-top:125px;}
+.apcsa_full #marginCol .top150 {margin-top:150px;}
+.apcsa_full #marginCol .top175 {margin-top:175px;}
+.apcsa_full #marginCol .top200 {margin-top:200px;}
+.apcsa_full #marginCol .top225 {margin-top:225px;}
+.apcsa_full #marginCol .top250 {margin-top:250px;}
+.apcsa_full #marginCol .top275 {margin-top:275px;}
+.apcsa_full #marginCol .top300 {margin-top:300px;}
+.apcsa_full #marginCol .top325 {margin-top:325px;}
+.apcsa_full #marginCol .top350 {margin-top:350px;}
+.apcsa_full #marginCol .top375 {margin-top:375px;}
+.apcsa_full #marginCol .top400 {margin-top:400px;}
+.apcsa_full #marginCol .top425 {margin-top:425px;}
+.apcsa_full #marginCol .top450 {margin-top:450px;}
+.apcsa_full #marginCol .top475 {margin-top:475px;}
+.apcsa_full #marginCol .top500 {margin-top:500px;}
+
+
+.apcsa_full #marginCol .key {
+	border:1px solid #990000;
+	color:#000;
+	font-size:.8em;
+	margin-left:10px;
+	margin-right:8px;
+	padding:45px 5px 5px 5px;
+	font-weight:bold;
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_special-key-32.png);
+	background-repeat:no-repeat; 
+	background-color:#DDC8AD;
+	background-position:10px 10px;
+	-moz-border-radius-topleft:8px;
+	-moz-border-radius-topright:8px;
+	-moz-border-radius-bottomleft:8px;
+	-moz-border-radius-bottomright:8px;
+}
+
+.apcsa_full #marginCol .vocab {
+	border:1px solid #666;
+	color:#0000CC;
+	font-size:.8em;
+	margin-left:10px;
+	margin-right:8px;
+	padding:40px 0 10px 0;
+	font-weight:bold;
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_special-dictionary-32.png);
+	background-repeat:no-repeat; 
+	background-position:10px 10px;
+	background-color:#FFE6C6;
+	-moz-border-radius-topleft:8px;
+	-moz-border-radius-topright:8px;
+	-moz-border-radius-bottomleft:8px;
+	-moz-border-radius-bottomright:8px;
+	}
+	
+.apcsa_full #marginCol .vocab a:link, #marginCol .vocab a:visited {
+	display:block;
+	padding:2px;
+	margin:10px 4px 8px 10px;
+	border-right:3px solid transparent;
+	}	
+	
+.apcsa_full #marginCol .vocab a:hover {
+	background-color:#FFFF33;
+	border-right:3px solid #666;
+	}	
+	
+.apcsa_full #marginCol .help {
+	/* font-family:Tahoma, Geneva, serif;     edx*/
+	border:1px solid #666;
+	color:#0000CC;
+	font-size:.82em;
+	margin-left:10px;
+	margin-right:8px;	
+	padding:36px 0 12px 0;
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_helpicon22.png);
+	background-repeat:no-repeat; 
+	background-position:10px 10px;
+	background-color:#FFCE8E;
+	-moz-border-radius-topleft:8px;
+	-moz-border-radius-topright:8px;
+	-moz-border-radius-bottomleft:8px;
+	-moz-border-radius-bottomright:8px;
+	}
+
+.apcsa_full #marginCol .help p {
+	font-size:inherit;
+	color:#333;
+	font-size:inherit;
+	padding:0;
+	margin:10px 4px 6px 5px;
+	}
+	
+.apcsa_full #marginCol .help a:link, #marginCol .help a:visited {
+	display:block;
+	padding:2px;
+	margin:2px 4px 5px 5px;
+	border-right:3px solid transparent;
+			}	
+	
+.apcsa_full #marginCol .help a:hover {
+	background-color:#FFFF33;
+	border-right:3px solid #666;
+	}	
+	
+.apcsa_full #marginCol .warning {
+	border:1px solid #330033;
+	color:#000;
+	font-size:.8em;
+	margin-left:10px;
+	margin-right:8px;
+	padding:40px 0 0px 0;
+	font-weight:bold;
+	background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_special-warning-32.png);
+	background-repeat:no-repeat; 
+	background-position:10px 10px;
+	background-color:#BF9A6B;
+	-moz-border-radius-topleft:8px;
+	-moz-border-radius-topright:8px;
+	-moz-border-radius-bottomleft:8px;
+	-moz-border-radius-bottomright:8px;
+	}
+
+.apcsa_full #marginCol .warning p {
+	padding:0;
+	margin:10px 4px 8px 10px;
+	}
+
+.apcsa_full #buttonClose {
+	text-align:center;
+	margin:30px auto;	}
+
+.apcsa_full #buttonClose a {
+	display:block;
+	margin:0 auto;
+	width:9em;
+	padding:3px 0;
+	font: bold 80% Verdana,Arial,sans-serif;
+    text-transform:uppercase;
+    background: #6883BA;
+    color: #333;
+    text-decoration:none;
+    text-align:center;
+    -moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+	border:1px solid #666;
+	outline:none; }
+    
+.apcsa_full #buttonClose a:hover{
+	background: #FFCC00;
+	color:#333	}
+	
+	
+/*===== Speech Bubbles TABLE STYLE ======*/
+
+.talkBubbleOuter .talkTable {
+	padding: 0px;
+	border: none;
+	margin:4px 0px 4px 20px;
+	border-collapse:collapse;
+	}
+
+/* to counter act edx, shee */	
+.talkBubbleOuter table {
+	width: auto !important;
+}	
+	
+.talkBubbleOuter table td  {
+	padding: 0px !important;
+	border: none !important;
+	margin: 0px !important;
+	vertical-align:top;
+}	
+
+.talkBubbleOuter .talkBubbleTD {
+	width:310px;
+	}
+
+.talkBubbleOuter .small_right {margin-left:60px;} 
+.talkBubbleOuter .medium_right {margin-left:120px;} 
+.talkBubbleOuter .large_right {margin-left:240px;} 
+
+
+
+
+.talkBubbleOuter .talkBubble {
+	width:310px;
+	min-height:45px;
+	background: #fbfbac;
+	-moz-border-radius:7px;
+	-webkit-border-radius:7px;
+	border-radius:7px;
+	background-repeat: no-repeat;
+	background-position: 80% 100%;
+	/* font-family: Tahoma, Geneva, "Gill Sans", Optima, "Lucida Grande", "Lucida San Unicode", "Times New Roman", Times, sans-serif;     edx*/
+	line-height:150%;
+	font-style: normal;
+	padding:5px 8px;
+	font-size:.84em;
+	color:#334B7B;
+}
+
+.talkBubbleOuter .talkBubble p {
+	/* font-family: Tahoma, Geneva, "Gill Sans", Optima, "Lucida Grande", "Lucida San Unicode", "Times New Roman", Times, sans-serif;     edx*/
+	font-size:inherit;
+	line-height:140%;
+	font-style: normal;
+	padding:inherit;
+
+	}
+	
+.talkBubbleOuter .talkBubble p.step {
+	padding: 0px 50px 15px 30px;
+	}
+
+.talkBubbleOuter .talkBubble tt {
+	line-height:inherit;
+	}
+	
+.talkBubbleOuter .talkBubble ul {
+	/*  font-family: Tahoma, Geneva, "Gill Sans", Optima, "Lucida Grande", "Lucida San Unicode", "Times New Roman", Times, sans-serif;    */
+	font-weight:bold;
+	border:0;
+	margin:0; 
+	padding: 0 0 5px 5px;
+	width:90%;
+	}
+
+.talkBubbleOuter .talkBubble.red {background-color: #ffaaaa;}
+.talkBubbleOuter .talkBubble.blue {background-color: #aaaaff;}
+.talkBubbleOuter .talkBubble.orange {background-color: #ff981e;}
+.talkBubbleOuter .talkBubble.green {background-color: #33ff99;}
+
+.talkBubbleOuter .talkWedge.left{
+	width:16px;
+	background-repeat:no-repeat;
+	background-position:3px 10px;	
+	}
+
+.talkBubbleOuter .talkWedge.right{
+	width:16px;
+	background-repeat:no-repeat;
+	background-position:-19px 10px;
+	}
+
+.talkBubbleOuter .talkWedge.red {background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_bubble_sprite_red.png);}
+.talkBubbleOuter .talkWedge.blue {background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_bubble_sprite_blue.png);}
+.talkBubbleOuter .talkWedge.orange {background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_bubble_sprite_orange.png);}
+.talkBubbleOuter .talkWedge.green {background-image:url(/c4x/BerkeleyX/LUCS.1x/asset/art_graphics_bubble_sprite_green.png);}
+
+.talkBubbleOuter .bubbleHeader {font-weight:bold;}
+
+
+
+/* removed code folding styles */
+
+
+
+/* brainstorm.css stuff./
+ * 
+ *styling for question_prompts -- use these in some edx problem types, so don't bring
+ * in brainstorm.css always.
+ * */
+
+#questionprompt,#questionDiv {
+	padding: 10px 20px;
+	background-color: #FFE6C6;
+	color: #000;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	margin-top: 8px;
+	font-size: .9em;
+}
+
+#questionprompt p,#questionDiv p {
+	font-size: inherit;
+}
+
+#questionprompt tt,#questionDiv tt {
+	font-size: 120%;
+	font-weight: bold;
+}
+
+#questionprompt table,#questionDiv table {
+	border-collapse: collapse;
+	margin: 0 auto;
+}
+
+#questionprompt table th,#questionDiv table th {
+	background-color: #919EBA;
+	color: #333;
+	border: 1px solid black;
+	padding: 4px 15px;
+	text-align: left;
+}
+
+#questionprompt table td,#questionDiv table td {
+	background-color: #99ccff;
+	color: #000;
+	border: 1px solid black;
+	padding: 10px 15px;
+}
+
+

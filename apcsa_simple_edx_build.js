@@ -23,11 +23,12 @@ edx_util = require('./code/edx_util');
 
 var TOPICS_TO_PROCESS = [];
 
-//TOPICS_TO_PROCESS.push(['c1/L1_objects_classes.topic', 'L1_']);
+TOPICS_TO_PROCESS.push(['c1/L1_objects_classes.topic', 'L1_']);
 TOPICS_TO_PROCESS.push(['c1/L2_first_programming.topic', 'L2_']);
-//TOPICS_TO_PROCESS.push(['c1/L3_programming_2.topic', 'L3_']);
-//TOPICS_TO_PROCESS.push(['c1/L4_conditionals_1.topic', 'L4_']);
-//TOPICS_TO_PROCESS.push(['c1/L5_conditionals_2.topic', 'L5_']);
+TOPICS_TO_PROCESS.push(['c1/L3_programming_2.topic', 'L3_']);
+TOPICS_TO_PROCESS.push(['c1/L4_conditionals_1.topic', 'L4_']);
+TOPICS_TO_PROCESS.push(['c1/L5_conditionals_2.topic', 'L5_']);
+
 //TOPICS_TO_PROCESS.push(['c1/L6_virtual_pets.topic', 'L6_']);
 
 
@@ -127,10 +128,10 @@ function css_get_reference(cssfile) {
 var cssString = '';
 //cssString += css_get_reference('bootstrap.min.css');
 //cssString += css_get_reference('bootstrap-theme.min.css');
-//cssString += css_get_reference('brainstorm.css');
-//cssString += css_get_reference('matchsequence.css');
+cssString += css_get_reference('brainstorm.css');
+cssString += css_get_reference('matchsequence.css');
 //cssString += css_get_reference('default.css');
-cssString += css_get_reference('ucb-apcsa.css');
+cssString += css_get_reference('ucb_apcsa_edx.css');
 
 
 
@@ -242,7 +243,8 @@ function processPage (pagedata) {
     var text = $('body').html();
     
 //DEBUG('Do Page (file : ' +  file + ')(title: ' + title +')');    
-    
+DEBUG('Do Page (file : ' +  file + ')'); 
+
     edx_util.startVertical(relPath, title);
     
     //////// do  parts
@@ -378,7 +380,7 @@ function processHTML (html) {
             url = url.replace(imgregex_find, imgregex_replace);
             url = prepend_str_replace + url;
         } else {
-            DEBUG("img src didn't have prepend str I expected, but rather: " + prepend_str);
+            DEBUG("img src didn't have prepend str I expected, but rather: " + url);
         }
         //$(elm).attr('src', util.transformURL(BASEURL + "/static", relPath, url));
         $(elm).attr('src', url);
