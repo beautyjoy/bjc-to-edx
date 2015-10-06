@@ -1,7 +1,7 @@
 /**  LLAB AUTOBUILD WIP SCRIPT
  *
  *  TODO: This script is NOT FINISHED
- *  run with `node test.js`
+ *  run with `node edc_test.js`
  */
 
 // Default Node modules
@@ -20,7 +20,7 @@ util = require('./code/util');
 // This is where a llab course CONTENT lives
 // This should be a checked out state
 // TODO: Config param this shit.
-curFolder = 'curriculum/edc/'
+curFolder = 'curriculum/edc/edc-edx-labs/'
 // This is where the edX XML folder will be.
 // TODO: CONFIG THIS SHIT.
 output = './tmp/';
@@ -59,9 +59,9 @@ var CSSOptions = {
     paths: [
         // TODO: Use newer llab stuff?
         // TODO: Exclude Bootstrap?
-        'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
-        'curriculum/edc/llab/css/default.css',
-        'curriculum/edc/css/bjc.css'
+        curFolder + '/llab/css/3.3.0/bootstrap-compiled.min.css',
+        curFolder + '/llab/css/default.css',
+        curFolder + '/css/bjc.css'
     ],
     rules: [
         {
@@ -86,7 +86,9 @@ CSS_FILE_NAME = 'bjc-edx.css';
 fs.writeFileSync(output + CSS_FILE_NAME, css(CSSOptions));
 
 cssPath = util.edXPath(CSS_FILE_NAME);
-cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
+cssString = '<link rel="stylesheet" href="' + cssPath + '">';
+jsPath = util.edXPath('edx-llab-hack.js');
+cssString += '<script src="' + jsPath + '"></script>\n\n';
 
 function loadFile (path) {
 
