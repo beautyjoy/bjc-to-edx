@@ -160,7 +160,7 @@ function transformURLs (ast, baseURL, filePath) {
                                 to -= 1;
                             }
                             url = m.slice(from, to);
-                            newUrl = util.transformURL(baseURL, filePath, url);
+                            newUrl = util.staticTransformURL(baseURL, filePath, url);
                             // FIXME -- there has got to be a better way....
                             arr[i].declarations[j].value = declare.value.replace(url, newUrl);
                         });

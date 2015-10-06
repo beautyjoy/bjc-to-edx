@@ -20,7 +20,8 @@ util.edXPath = function (url) {
     return '/static/' + url.replace(/\//g, '_');
 }
 
-/* This does the bulk of the work to tranform a path into an edX URL
+/* Transform a path into an edX-friendly URL that can be used in edX Studio!
+ *  NOTE: Due to whacky-ness these URLs ONLY WORK IN STUDIO!
  * @param {string}
  * FIXME -- this breaks if passed in a full URL! http:// gahhhhhh
  */
@@ -47,6 +48,22 @@ util.transformURL = function (baseURL, filePath, url) {
 
     return util.edXPath(url);
 }
+
+
+/* Transforms a URL into a "direct" edX URL to be used in static files.
+ * @param {string}
+ * FIXME -- this breaks if passed in a full URL! http:// gahhhhhh
+ */
+util.staticTransformURL = function (baseURL, filePath, url, edXOrg, courseID) {
+    // Generate a proper /static URL and then direct it to edx "contentstore"
+    var tempURL = util.transformURL(baseURL, filePath, url);
+    // See: http://bjc.link/1hnrR9Q (edX Source Code)
+    // FIXME == this is super hacky!!
+    tempURL = tempURL.replace('/static', '/c4x/BerkeleyX/BJC.2x/asset');
+    return tempURL;
+}
+
+
 
 /** Normalize spaces and other special chars in filenames.
  *  Warning: Don't pass this a full path as it removes /

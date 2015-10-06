@@ -26,13 +26,13 @@ curFolder = 'curriculum/edc/'
 output = './tmp/';
 
 
-BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
+BASEURL = '/edc-edx-labs'; // MATCH LLAB.ROOTURL IN CURR REPO
 if (true) {
-    output += 'U1/';
-    topic = 'nyc_bjc/1-intro-loops.topic';
+    output += 'U3/';
+    topic = 'nyc_bjc/3-lists.topic';
 } else {
-    output += 'U2/';
-    topic = 'nyc_bjc/2-conditionals-abstraction.topic';
+    output += 'U4/';
+    topic = 'nyc_bjc/4-algorithms.topic';
 }
 
 var PROCESS_FUNCTIONS = {
@@ -66,8 +66,8 @@ var CSSOptions = {
     rules: [
         {
             name: 'transform-urls',
-            // Params: baseURL, filePath
-            options: ['/bjc-r', cssRelPath]
+            // Params: llab base url, relative file paths
+            options: [BASEURL, cssRelPath]
         },
         {
             name: 'rename-selectors',
