@@ -12,6 +12,7 @@ __pycache__
 tmp/
 output-course/
 
+.settings
 .settings/
 
 
