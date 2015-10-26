@@ -1,6 +1,6 @@
 /** A Generic CSS Modification Tool.
  *  This should be extracted into it's own module.
- *  
+ *
  *  TODO: In place modification or return new ASTs?
  *  TODO: formalize the spec for `options`
  *  TODO: Consistent function parameters
@@ -28,24 +28,20 @@ var util = require('./util.js');
             }
         ]
     }
- 
  */
 function proccessCSSFiles (options) {
     var paths, result, appliedRules,
         separator = '\n/**********/\n';
-    
     paths = options.paths || [];
     if (paths.constructor != Array) {
         paths = [ paths ];
     }
-    
     result = '';
     paths.forEach(function (path) {
         appliedRules = rulesForFile(path, options.rules);
         result += transfromFile(path, appliedRules);
         result += separator;
     })
-    
     if (options.output) {
         return fs.writeFileSync(options.output, result);
     } else {
@@ -57,15 +53,13 @@ module.exports = proccessCSSFiles;
 
 function transfromFile (path, rules) {
     var contents, ast;
-    
+
     contents = fs.readFileSync(path).toString();
     ast = css.parse(contents);
-    
     // Successively update the AST with each rule.
     rules.forEach(function (rule) {
         ast = callRule(ast, rule.name, rule.options)
     });
-    
     return css.stringify(ast);
 }
 
@@ -82,9 +76,8 @@ function rulesForFile (path, rules) {
     if (!rules) {
         return [];
     }
-    
+
     var outputRules, include;
-    
     outputRules = [];
     rules.forEach(function (rule) {
         // Match all files.
@@ -115,6 +108,9 @@ var RULES = {
     'prefix-selectors': {
          function: prefixAllSelectors
     },
+    'rename-selectors': {
+             function: renameAllSelectors
+    },
     'remove-comments': {
          function: removeComments
     }
@@ -124,14 +120,14 @@ function callRule(ast, name, options) {
     var rule, parans, fn;
     rule = RULES[name];
     if (!rule) {
-        throw new Error('The rule ' + name + ' does not exist.\n' + 
+        throw new Error('The rule ' + name + ' does not exist.\n' +
             'The known rule names are: ' + Object.keys(RULES).toString());
     }
-    
+
     if (options && options.constructor != Array) {
         options = [ options ];
     }
-    
+
     fn = rule.function;
     params = [ ast ].concat(options);
     return fn.apply(null, params); // This "destructures" the array.
@@ -142,16 +138,33 @@ function rules(ast) {
 }
 
 function transformURLs (ast, baseURL, filePath) {
+    var urlPattern = /url\(['"]?([./?#\-\w]+)['"]?\)/g;
+    // THIS IS A WORKAROUND --
+    // The above regex does not generate a $1 grouping. (Why??)
+    // Use these to make the entire url() set, then use String::slice
+    var from = 4, to = -1;
+    var matches, url, newUrl;
     // TODO: Search for rules with a url() in `value`
     // TODO: need to figure out a reliable way to parse CSS URL rules
     // TODO: need to figure out path to CSS images. :(
+    // TODO: make the forEach a map
     rules(ast).forEach(function (rule, i, arr) {
         if (rule.declarations) {
-            rule.declarations.forEach( function(declare, j, arr2) {
+            rule.declarations.forEach( function (declare, j, arr2) {
                 if (declare.value && declare.value.indexOf('url') != -1) {
-                    // arr2[j] = declare.value.replace(/url\(([.\w\d/])+\)/g,
-                    //     util.transformURL(baseURL, filePath, '$1'));
-                    // console.log(arr2[j]);
+                    matches = declare.value.match(urlPattern);
+                    if (matches) {
+                        matches.forEach(function(m) {
+                            if (m[from] == '\'' || m[from] == '"') {
+                                from += 1;
+                                to -= 1;
+                            }
+                            url = m.slice(from, to);
+                            newUrl = util.staticTransformURL(baseURL, filePath, url);
+                            // FIXME -- there has got to be a better way....
+                            arr[i].declarations[j].value = declare.value.replace(url, newUrl);
+                        });
+                    }
                 }
             });
         }
@@ -171,7 +184,23 @@ function prefixAllSelectors(ast, prefix) {
 }
 
 function prefixRuleSelectors (list, prefix) {
-    return list.map(prefixItem(prefix));    
+    return list.map(prefixItem(prefix));
+}
+
+// Inplace modification of the AST for ease.
+function renameAllSelectors(ast, from, rename) {
+    // search for rule type of "rule"
+    rules(ast).forEach(function (rule, idx, arr) {
+        if (rule.selectors) {
+            arr[idx].selectors = renameRuleSelectors(rule.selectors, from, rename);
+        }
+    })
+    return ast;
+}
+
+function renameRuleSelectors (list, from, rename) {
+    var renamer = renameItem(from, rename);
+    return list.map(renamer);
 }
 
 function removeComments(ast) {
@@ -180,15 +209,38 @@ function removeComments(ast) {
     return ast;
 }
 
+/** Return a new AST with the CSS tree modified by the provided function.
+ *  This will apply the function not only to the main rules but will also
+ *  travel the media queries to modify those as well.
+ *  NOTE: This returns a new AST and does not modify the provided one.
+ *  TODO: This function doesnt do anything yet.
+ *
+ */
+function mapASTRules (ast, fn) {
+    return ast;
+}
+
 /////// Helper Functions for map/forEach/etc
 
 
-/** 
+/**
  */
 
 function prefixItem (prefix) {
     return function (item) {
         return (item.indexOf(prefix) == -1 ? prefix + ' ' : '') + item;
+    };
+}
+
+/** Rename a CSSS selector. This is really a .replace() designed to be used
+ *  inside a map() block.
+ *  @param {string} the string to be replaced.
+ */
+function renameItem (from, rename) {
+    return function (item) {
+        // TODO: Verify this works correct with a . in class names.
+        var re = new RegExp(from, 'g');
+        return item.replace(re, rename);
     };
 }
 

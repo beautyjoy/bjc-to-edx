@@ -1,6 +1,10 @@
-/*  LLAB AUTOBUILD WIP SCRIPT
+/**  LLAB AUTOBUILD WIP SCRIPT
+ *
+ *  TODO: This script is NOT FINISHED
+ *  run with `node edc_test.js`
  */
 
+// Default Node modules
 fs = require('fs');
 path = require('path');
 exec = require('child_process').execSync;
@@ -13,17 +17,22 @@ css = require('./code/css')
 util = require('./code/util');
 
 
-curFolder = 'curriculum/edc/'
+// This is where a llab course CONTENT lives
+// This should be a checked out state
+// TODO: Config param this shit.
+curFolder = 'curriculum/edc/edc-edx-labs/'
+// This is where the edX XML folder will be.
+// TODO: CONFIG THIS SHIT.
 output = './tmp/';
 
 
-BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
+BASEURL = '/edc-edx-labs'; // MATCH LLAB.ROOTURL IN CURR REPO
 if (true) {
-    output += 'U1/';
-    topic = 'nyc_bjc/1-intro-loops.topic';
+    output += 'U3/';
+    topic = 'nyc_bjc/3-lists.topic';
 } else {
-    output += 'U2/';
-    topic = 'nyc_bjc/2-conditionals-abstraction.topic';
+    output += 'U4/';
+    topic = 'nyc_bjc/4-algorithms.topic';
 }
 
 var PROCESS_FUNCTIONS = {
@@ -50,29 +59,36 @@ var CSSOptions = {
     paths: [
         // TODO: Use newer llab stuff?
         // TODO: Exclude Bootstrap?
-        'curriculum/edc/llab/css/3.3.0/bootstrap-compiled.min.css',
-        'curriculum/edc/llab/css/default.css',
-        'curriculum/edc/css/bjc.css'
+        curFolder + '/llab/css/3.3.0/bootstrap-compiled.min.css',
+        curFolder + '/llab/css/default.css',
+        curFolder + '/css/bjc.css'
     ],
     rules: [
         {
             name: 'transform-urls',
-            // Params: baseURL, then filePath
-            options: ['/bjc-r', cssRelPath]
+            // Params: llab base url, relative file paths
+            options: [BASEURL, cssRelPath]
+        },
+        {
+            name: 'rename-selectors',
+            options: ['.full', '.llab-full']
         },
         {
             name: 'prefix-selectors',
-            options: '.llab-full',
-            exclude: /bootsrap/
+            options: '.llab-full'
+            // , exclude: /bootstrap/
         }
     ]
 };
 
+CSS_FILE_NAME = 'bjc-edx.css';
 
-fs.writeFileSync(path + 'bjc-edx.css', css(CSSOptions));
+fs.writeFileSync(output + CSS_FILE_NAME, css(CSSOptions));
 
-cssPath = util.edXPath('bjc-edx.css');
-cssString = '<link rel="stylesheet" href="' + cssPath + '">\n\n';
+cssPath = util.edXPath(CSS_FILE_NAME);
+cssString = '<link rel="stylesheet" href="' + cssPath + '">';
+jsPath = util.edXPath('edx-llab-hack.js');
+cssString += '<script src="' + jsPath + '"></script>\n\n';
 
 function loadFile (path) {
 
@@ -113,8 +129,6 @@ function parseSection (section, skip) {
 
     return results;
 }
-
-console.log('Suck it bitches. This content was converted.');
 
 // This needs renamed...
 function processCurriculumItem (item) {
@@ -171,8 +185,9 @@ function processExternal (item, options) {
  * @param {Cherrio-Object} The contents of the html file
  *
  */
+// TODO: This needs to take in an array of functions.
 function processHTML (html, includeCSS) {
-    var outerHTML, wrap;
+    var $, outerHTML, wrap;
 
     $ = cheerio.load(html);
 
@@ -191,7 +206,7 @@ function processHTML (html, includeCSS) {
     console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
     $('a.run').each(function (index, elm) {
         var url = $(elm).attr('href');
-        $(elm).attr('href', util.transformURL(BASEURL, relPath, url));
+        $(elm).attr('href', util.transformURL(BASEURL, relPath, url)).attr('target', '_blank');
     });
 
     // Remove EDC's inline HTML comments. (Why is it there.....)
@@ -224,6 +239,7 @@ function splitFile (html, page, dir) {
     $ = cheerio.load(html);
 
     // EDC Puts an <h2> at the beginning of every page.
+    // TODO: HACKY -- THIS NEEDS TO BE GENERCIZED
     title = $('h2').first().text();
 
     text = $('body').html()
@@ -297,8 +313,11 @@ module.exports = function(path, sectionName, directory) {
                 result = tmp;
                 return true;
             }
-        })
+        });
     });
 
     return result;
 }
+
+
+console.log('This conversion is done!');

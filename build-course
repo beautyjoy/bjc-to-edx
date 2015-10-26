@@ -1,4 +1,4 @@
 #! /usr/bin/env bash
 
-# Currently this is just a shortcut wrapper...
-python3 code/parser.py $@
+# This is really just a convenient wrapper.
+node code/build.js $@
