@@ -1,3 +1,5 @@
+// Paste this file into a script tag in Qualtrics under "Look & Feel"
+// -> "Advanced" -> "Header"
 
 console.log("TESTING TESTING");
 
