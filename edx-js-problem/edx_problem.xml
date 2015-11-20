@@ -1,8 +1,8 @@
 <problem>
   <script type="loncapa/python">
 
-    import json
-    def vglcfn(e, ans):
+import json
+def vglcfn(e, ans):
     '''
     par is a dictionary that contains two keys, "answer" and "state".
     The value of "answer" is the JSON string that "getGrade" returns.
