@@ -15,6 +15,7 @@ output-course/
 .settings
 .settings/
 
+curriculum/*
 
 # This file will include passwords -- DONT COMMIT THEM
 # Also fix that little issue...
