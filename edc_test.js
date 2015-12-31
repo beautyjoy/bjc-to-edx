@@ -16,23 +16,23 @@ llab = require('./lib/llab');
 css = require('./code/css')
 util = require('./code/util');
 
-
+BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
 // This is where a llab course CONTENT lives
 // This should be a checked out state
 // TODO: Config param this shit.
-curFolder = 'curriculum/edc-edx-labs/'
+curFolder = 'curriculum' + BASEURL + '/';
 // This is where the edX XML folder will be.
 // TODO: CONFIG THIS SHIT.
 output = './tmp/';
 
 
-BASEURL = '/edc-edx-labs'; // MATCH LLAB.ROOTURL IN CURR REPO
-if (true) {
+
+if (false) {
     output += 'U3/';
     topic = 'nyc_bjc/3-lists.topic';
 } else {
     output += 'U4/';
-    topic = 'nyc_bjc/4-algorithms.topic';
+    topic = 'nyc_bjc/4-internet.topic';
 }
 
 mkdirp.sync(output);
