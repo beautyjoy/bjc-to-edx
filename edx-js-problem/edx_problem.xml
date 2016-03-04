@@ -15,8 +15,7 @@ def vglcfn(e, ans):
     answer = json.loads(par["answer"])
     print(answer)
     return answer
-    
-    
+
   </script>
   <customresponse cfn="vglcfn">
     <jsinput gradefn="Survey.getGrade"
