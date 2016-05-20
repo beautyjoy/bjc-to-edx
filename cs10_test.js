@@ -27,13 +27,13 @@ output = './tmp/';
 
 
 
-if (true) {
-    topic = 'berkeley_bjc/recur/recursion-trees-fractals.topic'
-    output += 'recur-1/';
+if (false) {
+    topic = 'berkeley_bjc/recur/recursive-reporters-part2.topic'
+    output += 'recur-2/';
     // topic = 'berkeley_bjc/recur/recursive-reporters-part1.topic';
 } else {
     output += 'hofs/';
-    topic = 'berkeley_bjc/hofs/hofs-practice.topic';
+    topic = 'berkeley_bjc/hofs/hofs-with-recursion.topic';
 }
 
 mkdirp.sync(output);
@@ -84,7 +84,7 @@ var CSSOptions = {
     ]
 };
 
-CSS_FILE_NAME = 'bjc-edx.css';
+CSS_FILE_NAME = 'bjc-edx-cs10.css';
 
 css_file = fs.openSync(output + CSS_FILE_NAME, 'w');
 fs.writeSync(css_file, css(CSSOptions));
@@ -201,6 +201,7 @@ function processHTML (html, includeCSS) {
     $('.button').removeClass('button');
 
     // Fix image URLs
+    // TODO: Log images to a location to rename files.
     $('img').each(function (index, elm) {
         var url = $(elm).attr('src');
         $(elm).attr('src', util.transformURL(BASEURL, relPath, url));
