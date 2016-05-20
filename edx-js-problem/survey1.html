@@ -16,7 +16,7 @@
         <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
         <script type="text/javascript">
 	var uid = parent.document.getElementById("UID").href.split("=")[1];
-	var url = "https://berkeley.qualtrics.com/SE/?SID=SV_cMbj7MPasSJUEip";
+	var url = "https://berkeley.qualtrics.com/SE/?SID=SV_cHNfKE1OTtyyHHv";
 	url = url + "&uid=" + uid;
         var survey = document.getElementById("qualtrics");
 	survey.src = url;
@@ -26,9 +26,7 @@
                     console.log("complete!");
                     var container = survey.parentNode;
                     var completionMessage = document.createElement("p");
-                    completionMessage.innerHTML =
-	                "<p>Thanks for taking the survey! Please click CHECK below to receive credit for taking it.</p>" +
-	                "<p><img src='https://courses.edx.org/c4x/BerkeleyX/BJC.1x/asset/bjcx-608x211.jpg' />";
+                    completionMessage.innerHTML = "Thanks for taking the survey!";
                     container.replaceChild(completionMessage, survey);
 	            jQuery(container).height(jQuery(completionMessage).height());
 	            jQuery(container.parentNode).height(jQuery(completionMessage).height());
