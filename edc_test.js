@@ -27,12 +27,12 @@ output = './tmp/';
 
 
 
-if (false) {
-    output += 'U3/';
-    topic = 'nyc_bjc/3-lists.topic';
+if (true) {
+    output += 'U1/';
+    topic = 'nyc_bjc/1-intro-loops.topic';
 } else {
-    output += 'U4/';
-    topic = 'nyc_bjc/4-internet.topic';
+    output += 'U7/';
+    topic = 'nyc_bjc/7-recursive-reporters.topic';
 }
 
 mkdirp.sync(output);
@@ -105,6 +105,7 @@ function parseTopic (topic, args) {
 }
 
 function shouldParse (title) {
+    //return true;
     return title.indexOf('Programming Lab') == 0 ||
     title.indexOf('Investigation') == 0;
 }
@@ -200,7 +201,7 @@ function processHTML (html, includeCSS) {
 
     // Fix image URLs
     $('img').each(function (index, elm) {
-        var url = $(elm).attr('src');
+        var url = $(elm).attr('src') || '';
         $(elm).attr('src', util.transformURL(BASEURL, relPath, url));
     });
 
