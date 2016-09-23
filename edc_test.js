@@ -25,15 +25,18 @@ curFolder = 'curriculum' + BASEURL + '/';
 // TODO: CONFIG THIS SHIT.
 output = './tmp/';
 
+unit_files = {
+    1: '1-intro-loops.topic',
+    2: '2-conditionals-abstraction.topic',
+    3: '3-lists.topic',
+    5: '5-algorithms.topic',
+    6: '6-recursion-trees-fractals.topic'
+};
 
+unit = 3;
+output += `U${unit}/`;
+topic = 'nyc_bjc/' + unit_files[unit];
 
-if (true) {
-    output += 'U1/';
-    topic = 'nyc_bjc/1-intro-loops.topic';
-} else {
-    output += 'U7/';
-    topic = 'nyc_bjc/7-recursive-reporters.topic';
-}
 
 mkdirp.sync(output);
 
@@ -105,7 +108,7 @@ function parseTopic (topic, args) {
 }
 
 function shouldParse (title) {
-    //return true;
+    return true;
     return title.indexOf('Programming Lab') == 0 ||
     title.indexOf('Investigation') == 0;
 }
