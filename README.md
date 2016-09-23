@@ -14,6 +14,14 @@ These are the default names which the tool expects, but you can always change th
 
 ## Running The Builder
 
+Building EDC content in `curriculum/bjc-r`:
+
+DO:
+```
+node edc_test.js <unit-num> <unit-num...>
+```
+
+THIS DOES NOT WORK:
 `./build-course OPTIONS`
 
 ## Misc. Notes
