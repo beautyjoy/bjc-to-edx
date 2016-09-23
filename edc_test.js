@@ -5,9 +5,10 @@
  */
 
 // Default Node modules
-fs = require('fs');
-path = require('path');
-exec = require('child_process').execSync;
+var fs = require('fs');
+var path = require('path');
+var exec = require('child_process').execSync;
+var process = require('process');
 
 cheerio = require('cheerio');
 mkdirp = require('mkdirp');
@@ -26,38 +27,14 @@ curFolder = 'curriculum' + BASEURL + '/';
 output = './tmp/';
 
 unit_files = {
-    1: '1-intro-loops.topic',
-    2: '2-conditionals-abstraction.topic',
-    3: '3-lists.topic',
-    5: '5-algorithms.topic',
-    6: '6-recursion-trees-fractals.topic'
+    1: 'intro-loops.topic',
+    2: 'conditionals-abstraction.topic',
+    3: 'lists.topic',
+    4: 'internet.topic',
+    5: 'algorithms.topic',
+    6: 'recursion-trees-fractals.topic',
+    7: 'recursive-reporters.topic'
 };
-
-unit = 3;
-output += `U${unit}/`;
-topic = 'nyc_bjc/' + unit_files[unit];
-
-
-mkdirp.sync(output);
-
-var PROCESS_FUNCTIONS = {
-    file: processFile,
-    quiz: processQuiz,
-    markdown: processMarkdown,
-    external: processExternal
-};
-
-
-topic = fs.readFileSync(util.topicPath(curFolder, topic));
-topic = topic.toString();
-data = llab.parse(topic);
-
-// GLOBAL -- FIXME
-var relPath;
-var count;
-var dir;
-var PETER = false;
-
 
 var cssRelPath = path.relative(curFolder, 'curriculum/edc/llab/css/default.css');
 var CSSOptions = {
@@ -86,22 +63,45 @@ var CSSOptions = {
     ]
 };
 
-CSS_FILE_NAME = 'bjc-edx.css';
+// GLOBAL -- FIXME
+var relPath;
+var count;
+var dir;
+var PETER = false;
 
-css_file = fs.openSync(output + CSS_FILE_NAME, 'w');
-fs.writeSync(css_file, css(CSSOptions));
+var PROCESS_FUNCTIONS = {
+    file: processFile,
+    quiz: processQuiz,
+    markdown: processMarkdown,
+    external: processExternal
+};
 
-cssPath = util.edXPath(CSS_FILE_NAME);
-cssString = '<link rel="stylesheet" href="' + cssPath + '">';
-jsPath = util.edXPath('edx-llab-hack.js');
-cssString += '<script src="' + jsPath + '"></script>\n\n';
 
-function loadFile (path) {
+function doWork(unit) {
+    output += `U${unit}/`;
+    topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
+    mkdirp.sync(output);
 
+    topic = fs.readFileSync(util.topicPath(curFolder, topic));
+    topic = topic.toString();
+    data = llab.parse(topic);
+    
+    CSS_FILE_NAME = 'bjc-edx.css';
+    css_file = fs.openSync(output + CSS_FILE_NAME, 'w');
+    fs.writeSync(css_file, css(CSSOptions));
+
+    cssPath = util.edXPath(CSS_FILE_NAME);
+    cssString = '<link rel="stylesheet" href="' + cssPath + '">';
+    jsPath = util.edXPath('edx-llab-hack.js');
+    cssString += '<script src="' + jsPath + '"></script>\n\n';
+
+    data.topics.forEach(parseTopic);
+    console.log(`Unit ${unit} conversion is done!`);
 }
 
-data.topics.forEach(parseTopic);
 
+function loadFile (path) {
+}
 
 function parseTopic (topic, args) {
     topic.contents.forEach(parseSection, args);
@@ -326,5 +326,21 @@ module.exports = function(path, sectionName, directory) {
     return result;
 }
 
+//////////////////////////////////////////
 
-console.log('This conversion is done!');
+if (process.argv.length > 2) {
+    var start = 2, end = process.argv.length;
+    for (var arg = start; arg < end; arg += 1) {
+        var item = process.argv[arg]
+        try {
+            unit = parseInt(item);
+            console.log(`Trying to convert Unit ${unit}`);
+            doWork(unit);
+        } catch (e) {
+            console.log(`Error encountered for item ${item}`);
+            console.log(e);
+        }
+    }
+    console.log('Processed all items');
+    process.exit(0);
+}
