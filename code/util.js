@@ -59,7 +59,7 @@ util.staticTransformURL = function (baseURL, filePath, url, edXOrg, courseID) {
     var tempURL = util.transformURL(baseURL, filePath, url);
     // See: http://bjc.link/1hnrR9Q (edX Source Code)
     // FIXME == this is super hacky!!
-    tempURL = tempURL.replace('/static', '/c4x/BerkeleyX/BJC.2x/asset');
+    tempURL = tempURL.replace('/static', '/c4x/BerkeleyX/BJC.34x/asset');
     return tempURL;
 }
 

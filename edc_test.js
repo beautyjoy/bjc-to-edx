@@ -1,7 +1,7 @@
 /**  LLAB AUTOBUILD WIP SCRIPT
  *
  *  TODO: This script is NOT FINISHED
- *  run with `node edc_test.js`
+ *  run with `node edc_test.js UNIT_NUM`
  */
 
 // Default Node modules
@@ -10,20 +10,20 @@ var path = require('path');
 var exec = require('child_process').execSync;
 var process = require('process');
 
-cheerio = require('cheerio');
-mkdirp = require('mkdirp');
+var cheerio = require('cheerio');
+var mkdirp = require('mkdirp');
 
-llab = require('./lib/llab');
-css = require('./code/css')
-util = require('./code/util');
+var llab = require('./lib/llab');
+var css = require('./code/css')
+var util = require('./code/util');
+
+var processedPaths = [];
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
 // This is where a llab course CONTENT lives
 // This should be a checked out state
-// TODO: Config param this shit.
-curFolder = 'curriculum' + BASEURL + '/';
+curFolder = `curriculum${BASEURL}/`;
 // This is where the edX XML folder will be.
-// TODO: CONFIG THIS SHIT.
 output = './tmp/';
 
 unit_files = {
@@ -36,7 +36,10 @@ unit_files = {
     7: 'recursive-reporters.topic'
 };
 
-var cssRelPath = path.relative(curFolder, 'curriculum/edc/llab/css/default.css');
+var cssRelPath = path.relative(
+    curFolder,
+    'curriculum/bjc-r/llab/css/default.css'
+);
 var CSSOptions = {
     paths: [
         // TODO: Use newer llab stuff?
@@ -72,16 +75,18 @@ var PETER = false;
 var PROCESS_FUNCTIONS = {
     file: processFile,
     quiz: processQuiz,
+    txt: processTxt,
     markdown: processMarkdown,
     external: processExternal
 };
 
 
 function doWork(unit) {
-    output += `U${unit}/`;
     topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
-    mkdirp.sync(output);
-
+    mkdirp.sync(`${output}U${unit}`);
+    // edX static files directory.
+    mkdirp.sync(`${output}static`);
+    
     topic = fs.readFileSync(util.topicPath(curFolder, topic));
     topic = topic.toString();
     data = llab.parse(topic);
@@ -107,6 +112,7 @@ function parseTopic (topic, args) {
     topic.contents.forEach(parseSection, args);
 }
 
+// TODO: Make this a config item`
 function shouldParse (title) {
     return true;
     return title.indexOf('Programming Lab') == 0 ||
@@ -138,26 +144,34 @@ function parseSection (section, skip) {
 }
 
 // This needs renamed...
-function processCurriculumItem (item) {
+function processCurriculumItem(item) {
     if (!item.url) {
         return;
-    } else if (item.url.indexOf(BASEURL) != 0) {
+    } else if (!item.url.startsWith(BASEURL)) {
         return;
     }
 
-    count += 1;
     file = item.url.replace(BASEURL, curFolder);
     relPath = path.relative(curFolder, file);
     console.log('FILE: ', file);
+    if (!file.endsWith('.html')) {
+        return;
+    }
+    if (processedPaths.includes(file)) {
+        return;
+    }
+    count += 1;
+
+    processedPaths.push(file);
     html = fs.readFileSync(file);
 
     parts = splitFile(html, count, dir);
     parts.forEach(function(part, index) {
-        var css = index == 0;
-        var data = processItem(part, css);
+        var css = index === 0,
+            data = processItem(part, css);
         // part.path is a file name
         console.log(dir);
-        var folder = dir + '/' + part.directory
+        var folder = dir + '/' + part.directory;
         console.log('WRITING CONTENT', folder + part.path);
         mkdirp.sync(folder);
         fs.writeFileSync(folder + part.path, data);
@@ -170,21 +184,26 @@ function processItem (item, options) {
     return PROCESS_FUNCTIONS[item.type].call(null, item.content, options);
 }
 
-function processQuiz (quiz) {
+function processQuiz(quiz) {
     return quiz;
 }
 
-function processMarkdown (file) {
+function processMarkdown(file) {
     return file;
 }
 
-function processFile (file, options) {
+function processFile(file, options) {
     // FIXME -- this is a simplification for now.
     return processHTML(file, options);
 }
 
-function processExternal (item, options) {
+function processExternal(item, options) {
     return item;
+}
+
+// TODO: this should copy stuff to the output directory.
+function processTxt(file) {
+    return file;
 }
 
 /** Does the work to modify a bunch of things to prep for edX
@@ -193,6 +212,7 @@ function processExternal (item, options) {
  *
  */
 // TODO: This needs to take in an array of functions.
+// TODO: rename this processHTMLSegment
 function processHTML (html, includeCSS) {
     var $, outerHTML, wrap;
 
@@ -204,18 +224,34 @@ function processHTML (html, includeCSS) {
 
     // Fix image URLs
     $('img').each(function (index, elm) {
-        var url = $(elm).attr('src') || '';
-        $(elm).attr('src', util.transformURL(BASEURL, relPath, url));
+        var url = $(elm).attr('src') || '',
+            newPath = util.transformURL(BASEURL, relPath, url);
+        $(elm).attr('src', newPath);
+        // Don't copy files more than once, minor optimization
+        if (!processedPaths.includes(newPath)) {
+            // TODO fix the url.
+            fs.writeFileSync(
+                `${output}${newPath}`,
+                 fs.readFileSync(`curriculum${url}`)
+            );
+            processedPaths.push(newPath);
+        }
     });
 
     // Fix Snap! run links.
-    console.log('Found ', $('a').length, ' ALL urls.');
+    console.log('Found ', $('a').length, ' total urls.');
     console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
     $('a.run').each(function (index, elm) {
         var url = $(elm).attr('href');
         $(elm).attr('href', util.transformURL(BASEURL, relPath, url)).attr('target', '_blank');
     });
-
+    $('a').each(function (index, elm) {
+        var url = $(elm).attr('href'),
+            path;
+        if (!url) { return; }
+        path = url.split('?')[0]; // remove the query string
+        processCurriculumItem({url: path});
+    });
     // Remove EDC's inline HTML comments. (Why is it there.....)
     [
         '.comment',
@@ -228,13 +264,21 @@ function processHTML (html, includeCSS) {
 
     outerHTML = wrap.replace(/CONTENT/, $.html());
 
-    if (includeCSS != false) {
+    if (!includeCSS) {
         outerHTML = cssString + outerHTML;
     }
 
     return outerHTML;
 }
 
+/*
+    Return a string of the CSS contensts and any JS contents that should appear
+    at the top of the page.
+    Typically this section only needs to appear once per edX 'vertical'
+*/
+function HTMLPreamble() {
+    
+}
 /** Split a single curriculum page into components to be in a vertical.
  *
  * @param {string} the raw HTML file to be processed
@@ -246,7 +290,6 @@ function splitFile (html, page, dir) {
     $ = cheerio.load(html);
 
     // EDC Puts an <h2> at the beginning of every page.
-    // TODO: HACKY -- THIS NEEDS TO BE GENERCIZED
     title = $('h2').first().text();
 
     text = $('body').html()
