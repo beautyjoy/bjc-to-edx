@@ -17,7 +17,8 @@ var llab = require('./lib/llab');
 var css = require('./code/css')
 var util = require('./code/util');
 
-var processedPaths = [];
+// Use an object like a hash.
+var processedPaths = {};
 
 BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
 // This is where a llab course CONTENT lives
@@ -131,7 +132,7 @@ function parseSection (section, skip) {
     if (!PETER) {
         dir += title;
     }
-    // Make if it doesn't exist.
+    
     mkdirp.sync(dir);
     count = 0;
     results = [];
@@ -154,15 +155,12 @@ function processCurriculumItem(item) {
     file = item.url.replace(BASEURL, curFolder);
     relPath = path.relative(curFolder, file);
     console.log('FILE: ', file);
-    if (!file.endsWith('.html')) {
-        return;
-    }
-    if (processedPaths.includes(file)) {
-        return;
-    }
+    
+    if (!file.endsWith('.html') || processedPaths[file] == 1) { return; }
+
     count += 1;
 
-    processedPaths.push(file);
+    processedPaths[file] = 1;
     html = fs.readFileSync(file);
 
     parts = splitFile(html, count, dir);
@@ -224,17 +222,24 @@ function processHTML (html, includeCSS) {
 
     // Fix image URLs
     $('img').each(function (index, elm) {
-        var url = $(elm).attr('src') || '',
-            newPath = util.transformURL(BASEURL, relPath, url);
+        var img_addr = $(elm).attr('src') || $(elm).attr('data-gifffer'),
+            newPath;
+
+        if (!img_addr) {
+            console.log('ERROR');
+            console.log(elm);
+            return;
+        }
+        
+        newPath = util.transformURL(BASEURL, relPath, img_addr);
         $(elm).attr('src', newPath);
         // Don't copy files more than once, minor optimization
-        if (!processedPaths.includes(newPath)) {
-            // TODO fix the url.
+        if (!processedPaths[newPath]) {
             fs.writeFileSync(
                 `${output}${newPath}`,
-                 fs.readFileSync(`curriculum${url}`)
+                fs.readFileSync(`curriculum${img_addr}`)
             );
-            processedPaths.push(newPath);
+            processedPaths[newPath] = 1;
         }
     });
 
