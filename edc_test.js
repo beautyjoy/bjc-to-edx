@@ -154,14 +154,20 @@ function processCurriculumItem(item) {
 
     file = item.url.replace(BASEURL, curFolder);
     relPath = path.relative(curFolder, file);
-    console.log('FILE: ', file);
-    
+    console.info('Reading: ', file);
+    console.log('Processing?', processedPaths[file] == 1);
+
     if (!file.endsWith('.html') || processedPaths[file] == 1) { return; }
 
     count += 1;
 
     processedPaths[file] = 1;
-    html = fs.readFileSync(file);
+    try {
+        html = fs.readFileSync(file);
+    } catch (err) {
+        console.log(err);
+        return
+    }
 
     parts = splitFile(html, count, dir);
     parts.forEach(function(part, index) {
@@ -169,10 +175,10 @@ function processCurriculumItem(item) {
             data = processItem(part, css);
         // part.path is a file name
         console.log(dir);
-        var folder = dir + '/' + part.directory;
-        console.log('WRITING CONTENT', folder + part.path);
+        var folder = `${dir}/${part.directory}`;
         mkdirp.sync(folder);
         fs.writeFileSync(folder + part.path, data);
+        console.log('Wrote: ', folder + part.path);
     });
 
     return parts;
@@ -282,8 +288,9 @@ function processHTML (html, includeCSS) {
     Typically this section only needs to appear once per edX 'vertical'
 */
 function HTMLPreamble() {
-    
+
 }
+
 /** Split a single curriculum page into components to be in a vertical.
  *
  * @param {string} the raw HTML file to be processed
