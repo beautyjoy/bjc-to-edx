@@ -25,7 +25,7 @@ BASEURL = '/bjc-r'; // MATCH LLAB.ROOTURL IN CURR REPO
 // This should be a checked out state
 curFolder = `curriculum${BASEURL}/`;
 // This is where the edX XML folder will be.
-output = './tmp/';
+output = './tmp';
 
 unit_files = {
     1: 'intro-loops.topic',
@@ -73,27 +73,31 @@ var count;
 var dir;
 var PETER = false;
 
+// TODO: This seems redundant, mostly.
 var PROCESS_FUNCTIONS = {
     file: processFile,
     quiz: processQuiz,
     txt: processTxt,
     markdown: processMarkdown,
-    external: processExternal
+    external: processExternal,
+    script: processScript
 };
 
 
 function doWork(unit) {
     topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
-    mkdirp.sync(`${output}U${unit}`);
+    output += `/U${unit}`;
+    mkdirp.sync(output);
     // edX static files directory.
-    mkdirp.sync(`${output}static`);
+    mkdirp.sync(`${output}/static`);
     
     topic = fs.readFileSync(util.topicPath(curFolder, topic));
     topic = topic.toString();
     data = llab.parse(topic);
     
+    // TODO: Extract into preable section.
     CSS_FILE_NAME = 'bjc-edx.css';
-    css_file = fs.openSync(output + CSS_FILE_NAME, 'w');
+    css_file = fs.openSync(output + '/' + CSS_FILE_NAME, 'w');
     fs.writeSync(css_file, css(CSSOptions));
 
     cssPath = util.edXPath(CSS_FILE_NAME);
@@ -104,7 +108,6 @@ function doWork(unit) {
     data.topics.forEach(parseTopic);
     console.log(`Unit ${unit} conversion is done!`);
 }
-
 
 function loadFile (path) {
 }
@@ -130,32 +133,25 @@ function parseSection (section, skip) {
 
     dir = output;
     if (!PETER) {
-        dir += title;
+        dir += `/${title}`;
     }
     
     mkdirp.sync(dir);
     count = 0;
-    results = [];
     section.contents.forEach(function (item) {
-        // This also writes files...hmmm.
-        results.push(processCurriculumItem(item));
+        processCurriculumItem(item);
     });
-
-    return results;
 }
 
 // This needs renamed...
 function processCurriculumItem(item) {
-    if (!item.url) {
-        return;
-    } else if (!item.url.startsWith(BASEURL)) {
+    if (!item.url || !item.url.startsWith(BASEURL)) {
         return;
     }
 
     file = item.url.replace(BASEURL, curFolder);
     relPath = path.relative(curFolder, file);
-    console.info('Reading: ', file);
-    console.log('Processing?', processedPaths[file] == 1);
+    console.info('Reading: ', file, 'Processing?', processedPaths[file] == 1);
 
     if (!file.endsWith('.html') || processedPaths[file] == 1) { return; }
 
@@ -166,48 +162,41 @@ function processCurriculumItem(item) {
         html = fs.readFileSync(file);
     } catch (err) {
         console.log(err);
-        return
+        return;
     }
 
     parts = splitFile(html, count, dir);
     parts.forEach(function(part, index) {
-        var css = index === 0,
-            data = processItem(part, css);
-        // part.path is a file name
-        console.log(dir);
-        var folder = `${dir}/${part.directory}`;
+        var includeCSSLink = index === 0,
+            data = processItem(part, includeCSSLink),
+            folder = `${dir}/${part.directory}`;
         mkdirp.sync(folder);
         fs.writeFileSync(folder + part.path, data);
         console.log('Wrote: ', folder + part.path);
     });
-
-    return parts;
 };
 
 function processItem (item, options) {
-    return PROCESS_FUNCTIONS[item.type].call(null, item.content, options);
+    return PROCESS_FUNCTIONS[item.type].apply(null, arguments);
 }
 
-function processQuiz(quiz) {
-    return quiz;
-}
-
-function processMarkdown(file) {
-    return file;
-}
-
-function processFile(file, options) {
+function processFile(item, options) {
     // FIXME -- this is a simplification for now.
-    return processHTML(file, options);
+    return processHTML(item.content, options);
 }
 
-function processExternal(item, options) {
-    return item;
-}
 
-// TODO: this should copy stuff to the output directory.
-function processTxt(file) {
-    return file;
+// TODO: These are simplifications.
+// They are just ID functions
+// Rethink?
+function processTxt (content) { return content; }
+function processExternal (content) { return content; }
+function processQuiz (content) { return content; }
+function processMarkdown (content) { return content; }
+function processScript (item) { return item.content; }
+
+function processHTMLSegment (htmlContent, transformations) {
+    
 }
 
 /** Does the work to modify a bunch of things to prep for edX
@@ -242,7 +231,7 @@ function processHTML (html, includeCSS) {
         // Don't copy files more than once, minor optimization
         if (!processedPaths[newPath]) {
             fs.writeFileSync(
-                `${output}${newPath}`,
+                `${output}/${newPath}`,
                 fs.readFileSync(`curriculum${img_addr}`)
             );
             processedPaths[newPath] = 1;
@@ -250,19 +239,25 @@ function processHTML (html, includeCSS) {
     });
 
     // Fix Snap! run links.
-    console.log('Found ', $('a').length, ' total urls.');
-    console.log('Transforming ', $('a.run').length, ' STARTER FILE urls.');
-    $('a.run').each(function (index, elm) {
-        var url = $(elm).attr('href');
-        $(elm).attr('href', util.transformURL(BASEURL, relPath, url)).attr('target', '_blank');
+    let allURLs = $('a');
+    let snapURLs = $('a.run');
+    console.log('Found ', allURLs.length, ' total urls.');
+    console.log('Transforming ', snapURLs.length, ' STARTER FILE urls.');
+    snapURLs.each(function (index, elm) {
+        var href = $(elm).attr('href');
+        $(elm).attr('target', '_blank').attr(
+            'href',
+            util.transformURL(BASEURL, relPath, href)
+        );
     });
-    $('a').each(function (index, elm) {
+    allURLs.each(function (index, elm) {
         var url = $(elm).attr('href'),
             path;
         if (!url) { return; }
         path = url.split('?')[0]; // remove the query string
         processCurriculumItem({url: path});
     });
+
     // Remove EDC's inline HTML comments. (Why is it there.....)
     [
         '.comment',
@@ -275,7 +270,8 @@ function processHTML (html, includeCSS) {
 
     outerHTML = wrap.replace(/CONTENT/, $.html());
 
-    if (!includeCSS) {
+    // TODO: This is really broken
+    if (includeCSS) {
         outerHTML = cssString + outerHTML;
     }
 
@@ -287,7 +283,7 @@ function processHTML (html, includeCSS) {
     at the top of the page.
     Typically this section only needs to appear once per edX 'vertical'
 */
-function HTMLPreamble() {
+function HTMLPreamble () {
 
 }
 
@@ -303,6 +299,26 @@ function splitFile (html, page, dir) {
 
     // EDC Puts an <h2> at the beginning of every page.
     title = $('h2').first().text();
+
+    // Stupid JS Headers
+    // TODO: Move to the 'preamble'
+    js_sections = $('script').each(function (index, elm) {
+        let contents = $(elm).html();
+        let hasContent = !$(elm).attr('src') && contents.length;
+        if (hasContent) {
+            console.log('Page has custom JS element');
+            let num = output.length + 1;
+            let file = page + '-' + num + '-' + title + '.js';
+            file = util.edXFileName(file);
+            output.push({
+                type: 'script',
+                title: num + '-' + title,
+                content: contents,
+                directory: 'html/',
+                path: file
+            });
+        }
+    })
 
     text = $('body').html()
     // parse quizes separately.
