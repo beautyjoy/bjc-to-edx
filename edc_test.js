@@ -225,9 +225,13 @@ function processHTML (html, includeCSS) {
             console.log(elm);
             return;
         }
-        
+
+        let external_link = img_addr.indexOf('://') !== -1;
+        if (external_link) {return; }
+
         newPath = util.transformURL(BASEURL, relPath, img_addr);
         $(elm).attr('src', newPath);
+        
         // Don't copy files more than once, minor optimization
         if (!processedPaths[newPath]) {
             fs.writeFileSync(
