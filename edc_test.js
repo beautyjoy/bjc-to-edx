@@ -231,7 +231,7 @@ function processHTML (html, includeCSS) {
 
         newPath = util.transformURL(BASEURL, relPath, img_addr);
         $(elm).attr('src', newPath);
-        
+
         // Don't copy files more than once, minor optimization
         if (!processedPaths[newPath]) {
             fs.writeFileSync(
