@@ -90,11 +90,11 @@ function doWork(unit) {
     mkdirp.sync(output);
     // edX static files directory.
     mkdirp.sync(`${output}/static`);
-    
+
     topic = fs.readFileSync(util.topicPath(curFolder, topic));
     topic = topic.toString();
     data = llab.parse(topic);
-    
+
     // TODO: Extract into preable section.
     CSS_FILE_NAME = 'bjc-edx.css';
     css_file = fs.openSync(output + '/' + CSS_FILE_NAME, 'w');
@@ -135,7 +135,7 @@ function parseSection (section, skip) {
     if (!PETER) {
         dir += `/${title}`;
     }
-    
+
     mkdirp.sync(dir);
     count = 0;
     section.contents.forEach(function (item) {
@@ -196,7 +196,7 @@ function processMarkdown (content) { return content; }
 function processScript (item) { return item.content; }
 
 function processHTMLSegment (htmlContent, transformations) {
-    
+
 }
 
 /** Does the work to modify a bunch of things to prep for edX
@@ -227,10 +227,15 @@ function processHTML (html, includeCSS) {
         }
 
         let external_link = img_addr.indexOf('://') !== -1;
-        if (external_link) {return; }
+        if (external_link) { return; }
 
         newPath = util.transformURL(BASEURL, relPath, img_addr);
         $(elm).attr('src', newPath);
+
+        let alt_text = $(elm).attr('alt');
+        if (!alt_text) {
+            console.error(`Image is missing alt text:\n\t${newPath}`);
+        }
 
         // Don't copy files more than once, minor optimization
         if (!processedPaths[newPath]) {
@@ -262,12 +267,15 @@ function processHTML (html, includeCSS) {
         processCurriculumItem({url: path});
     });
 
-    // Remove EDC's inline HTML comments. (Why is it there.....)
+    // Remove EDC's inline HTML comments.
     [
         '.comment',
         '.todo',
         '.commentBig'
     ].forEach(function (sel) { $(sel).remove(); });
+
+    // TODO: Insert headings at the top of each colored block
+
 
     // wrap content in div.llab-full
     wrap = '<div class="llab-full">CONTENT</div>';
@@ -303,8 +311,10 @@ function splitFile (html, page, dir) {
 
     // EDC Puts an <h2> at the beginning of every page.
     title = $('h2').first().text();
+    // Remove the title because edX flags this.
+    $('h2').first().remove()
 
-    // Stupid JS Headers
+    // Track inline JS in the header
     // TODO: Move to the 'preamble'
     js_sections = $('script').each(function (index, elm) {
         let contents = $(elm).html();
@@ -376,7 +386,8 @@ function splitFile (html, page, dir) {
     return output;
 }
 
-module.exports = function(path, sectionName, directory) {
+// TODO: Document...
+module.exports = function (path, sectionName, directory) {
     // Globals
     PETER = true;
     // util.topicPath(curFolder, path) == assuming we have some folder.
