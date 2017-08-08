@@ -146,7 +146,7 @@ function processCurriculumItem(item) {
 
   file = item.url.replace(BASEURL, curFolder);
   relPath = path.relative(curFolder, file);
-  console.info('Reading: ', file, 'Processing?', processedPaths[file] == 1);
+  console.info('Reading: ', file); // , 'Processing?', processedPaths[file] == 1
 
   if (!file.endsWith('.html') || processedPaths[file] == 1) {
     return;
@@ -358,9 +358,9 @@ function splitFile(html, page, dir) {
   // Remove the title because edX flags this.
   $('h2').first().remove()
 
-  // Track inline JS in the header
+  // Extract JS scripts from the head.
   // TODO: Move to the 'preamble'
-  js_sections = $('script').each(function(index, elm) {
+  $('head script').each(function(index, elm) {
     let contents = $(elm).html();
     let hasContent = !$(elm).attr('src') && contents.length;
     if (hasContent) {
@@ -381,7 +381,9 @@ function splitFile(html, page, dir) {
   text = $('body').html()
     // parse quizes separately.
   quizzes = $('div.assessment-data');
-  console.log('Found ', quizzes.length, ' quizzes.');
+  if (quizzes.length) {
+    console.log('Found ', quizzes.length, ' quizzes.');
+  }
   quizzes.each(function(index, elm) {
     qzHTML = $.html(elm); // like a call to outerHTML()
     command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
