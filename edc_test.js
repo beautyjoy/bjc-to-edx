@@ -276,8 +276,8 @@ function processHTML(html, includeCSS) {
   }
   let secetions = Object.keys(sectionHeadings);
   secetions.forEach(section => {
-    $(section).each(() => {
-      $(this).prepend(
+    $(section).each((_, elm) => {
+      $(elm).prepend(
         `<h3 class="sectionHeading">${sectionHeadings[section]}</h3>`
       )
     });
@@ -289,8 +289,8 @@ function processHTML(html, includeCSS) {
     '.vocabBig',
     '.vocabFullWidth'
   ].join(', ');
-  $(vocabSections).each(() => {
-    $(this).prepend('<span class="vocab-header">Vocabulary</span>');
+  $(vocabSections).each((_, elm) => {
+    $(elm).prepend('<span class="vocab-header">Vocabulary</span>');
   });
 
   // Fix Snap! run links.
