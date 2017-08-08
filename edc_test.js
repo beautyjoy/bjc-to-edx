@@ -41,6 +41,7 @@ var cssRelPath = path.relative(
   curFolder,
   'curriculum/bjc-r/llab/css/default.css'
 );
+
 var CSSOptions = {
   paths: [
     // TODO: Use newer llab stuff?
@@ -79,6 +80,8 @@ var PROCESS_FUNCTIONS = {
   script: processScript
 };
 
+// TODO: fixme (refactor to not make this a global)
+var cssString = '';
 
 function doWork(unit) {
   topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
@@ -100,9 +103,12 @@ function doWork(unit) {
   cssString = '<link rel="stylesheet" href="' + cssPath + '">';
   jsPath = util.edXPath('edx-llab-hack.js');
   cssString += '<script src="' + jsPath + '"></script>\n\n';
+  fs.writeSync(
+    fs.openSync(`${output}/edx-llab-hack.js`, 'w'),
+    fs.openSync('edx-llab-hack.js', 'r'));
 
   data.topics.forEach(parseTopic);
-  console.log(`Unit ${unit} conversion is done!`);
+  console.log(`Unit ${unit} conversion is done!\n=============\n`);
 }
 
 function loadFile(path) {}
@@ -111,11 +117,9 @@ function parseTopic(topic, args) {
   topic.contents.forEach(parseSection, args);
 }
 
-// TODO: Make this a config item`
+// TODO: Make this a config item
 function shouldParse(title) {
   return true;
-  return title.indexOf('Programming Lab') == 0 ||
-    title.indexOf('Investigation') == 0;
 }
 
 function parseSection(section, skip) {
@@ -133,9 +137,7 @@ function parseSection(section, skip) {
 
   mkdirp.sync(dir);
   count = 0;
-  section.contents.forEach(function(item) {
-    processCurriculumItem(item);
-  });
+  section.contents.forEach(item => processCurriculumItem(item));
 }
 
 // This needs renamed...
@@ -146,15 +148,15 @@ function processCurriculumItem(item) {
 
   file = item.url.replace(BASEURL, curFolder);
   relPath = path.relative(curFolder, file);
-  console.info('Reading: ', file); // , 'Processing?', processedPaths[file] == 1
 
   if (!file.endsWith('.html') || processedPaths[file] == 1) {
     return;
   }
 
+  console.info('Reading: ', file);
   count += 1;
-
   processedPaths[file] = 1;
+
   try {
     html = fs.readFileSync(file);
   } catch (err) {
@@ -227,8 +229,9 @@ function processHTML(html, includeCSS) {
   $('.button').removeClass('button');
 
   // Fix image URLs
-  $('img').each(function(index, elm) {
-    var img_addr = $(elm).attr('src') || $(elm).attr('data-gifffer'),
+  $('img').each((_, elm) => {
+    let $elm = $(elm);
+    var img_addr = $elm.attr('src') || $elm.attr('data-gifffer'),
       newPath;
 
     if (!img_addr) {
@@ -243,10 +246,10 @@ function processHTML(html, includeCSS) {
     }
 
     newPath = util.transformURL(BASEURL, relPath, img_addr);
-    $(elm).attr('src', newPath);
+    $elm.attr('src', newPath);
 
-    let alt_text = $(elm).attr('alt');
-    if (!alt_text) {
+    let altText = $elm.attr('alt');
+    if (!altText) {
       console.error(`Image is missing alt text:\n\t${newPath}`);
     }
 
@@ -360,9 +363,11 @@ function splitFile(html, page, dir) {
 
   // Extract JS scripts from the head.
   // TODO: Move to the 'preamble'
+  const giffer = 'window.onload = function() {Gifffer();}';
   $('head script').each(function(index, elm) {
     let contents = $(elm).html();
     let hasContent = !$(elm).attr('src') && contents.length;
+    if (contents == giffer) { return; }
     if (hasContent) {
       console.log('Page has custom JS element');
       let num = output.length + 1;
@@ -464,7 +469,7 @@ if (process.argv.length > 2) {
   var start = 2,
     end = process.argv.length;
   for (var arg = start; arg < end; arg += 1) {
-    var item = process.argv[arg]
+    var item = process.argv[arg];
     try {
       unit = parseInt(item);
       console.log(`Trying to convert Unit ${unit}`);

@@ -1,3 +1,5 @@
+window.onload = function() {Gifffer();}
+
 var llab = {};
 
 llab.snapRunURLBase = "http://snap.berkeley.edu/snapsource/snap.html#open:";
