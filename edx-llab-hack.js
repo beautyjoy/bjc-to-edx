@@ -1,24 +1,4 @@
 var llab = {};
-// CORS, joy.
-
-
-// these are used in llab.getSnapRunURL(), inside library.js
-
-llab.CORSproxy = "https://bjcredir.herokuapp.com/";
-
-llab.CORSCompliantServers = [];
-llab.CORSCompliantServers.push("bjc.berkeley.edu");
-llab.CORSCompliantServers.push("bjc.eecs.berkeley.edu");
-llab.CORSCompliantServers.push("snap.berkeley.edu");
-llab.CORSCompliantServers.push("inst.eecs.berkeley.edu");
-llab.CORSCompliantServers.push("cs10.berkeley.edu");
-llab.CORSCompliantServers.push("beautyjoy.github.io");
-llab.CORSCompliantServers.push("cs10.github.io");
-llab.CORSCompliantServers.push("localhost");
-llab.CORSCompliantServers.push("0.0.0.0");
-// Testing so that dev is like the server.
-llab.CORSCompliantServers.push("localhost:8000");
-
 
 llab.snapRunURLBase = "http://snap.berkeley.edu/snapsource/snap.html#open:";
 
@@ -35,9 +15,7 @@ llab.getSnapRunURL = function(targeturl) {
     // internal resource!
     var finalurl = llab.snapRunURLBase;
     var currdom = document.domain;
-    if (llab.CORSCompliantServers.indexOf(currdom) == -1) {
-        finalurl += llab.CORSproxy;
-    }
+
     // Make sure protocol exists incase https:// connections
     currdom = window.location.protocol + '//' + currdom;
     // || targeturl.indexOf(llab.rootURL) == -1
