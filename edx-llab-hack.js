@@ -1,5 +1,3 @@
-window.onload = function() {Gifffer();}
-
 var llab = {};
 
 llab.snapRunURLBase = "http://snap.berkeley.edu/snapsource/snap.html#open:";
@@ -33,6 +31,8 @@ llab.getSnapRunURL = function(targeturl) {
 };
 
 $(document).ready(function() {
+    Gifffer();
+
     // fix snap links so they run snap
     $("a.run").each(function() {
         $(this).attr("target", "_blank");
