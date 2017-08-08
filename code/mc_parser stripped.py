@@ -1,32 +1,5 @@
-#! /usr/bin/env python3
-
-from bs4 import BeautifulSoup
-import xml.etree.ElementTree as ET
-import pdb
-debug = pdb.set_trace
-import io
-import sys
-import util
-
 def make_quiz(source, destination=None):
-    """
-    Extracting from bjc file
-    """
-
-    filename = source.rsplit('/', 1)[1]
-    try:
-        soup = BeautifulSoup(open(source), "html.parser")
-    except (OSError, IOError):
-        if len(source) > 0:
-            try:
-                soup = BeautifulSoup(source, "html.parser")
-            except:
-                sys.exit(1)
-
-
-    """
-    make sure this is a multiple choice quiz
-    """
+    soup = BeautifulSoup(source, "html.parser")
 
     if soup.find("div", { "class" : "prompt" }) == None:
         sys.exit(1)
@@ -39,7 +12,6 @@ def make_quiz(source, destination=None):
     for snap in soup.find_all("span", {"class" : "snap"}):
         snap.replace_with("Snap")
         snap.append(exclamation_point)
-
 
     def content_string(tag):
         if tag is None:
@@ -60,10 +32,6 @@ def make_quiz(source, destination=None):
     feedback_list = []
     for f in feedback_list_unf:
         feedback_list.append("\n".join(f.stripped_strings))
-
-    """
-    Building xml output
-    """
 
     def temp_html(i):
         return "--- HTML TEXT {} ---".format(i)
@@ -86,8 +54,11 @@ def make_quiz(source, destination=None):
     prompt = ET.SubElement(problem, "p")
     prompt.text = get_temp_html()
     html_fill_list.append(prompt_text)
-    choices = ET.SubElement(ET.SubElement(problem, "multiplechoiceresponse"), "choicegroup",
-                            type = "MultipleChoice")
+    choices = ET.SubElement(
+        ET.SubElement(problem, "multiplechoiceresponse"),
+        "choicegroup",
+        type = "MultipleChoice"
+    )
     solution = ET.SubElement(ET.SubElement(problem, "solution"), "div",
                              attrib = {"class": "detailed-solution"})
     p1 = ET.SubElement(solution, "p")
@@ -111,24 +82,5 @@ def make_quiz(source, destination=None):
     temp_string = io.BytesIO()
     tree.write(temp_string)
     output_string = fill_html(temp_string.getvalue().decode(), html_fill_list)
-    ##################
-    if destination:
-        output_dest = destination + '/problem/' + filename[:-5] + ".xml"
-        with open(output_dest, "w+") as output_file:
-            output_file.write(output_string)
-    else:
-        sys.stdout.write(output_string)
 
-
-if __name__ == '__main__':
-    if sys.argv[1] == "-t":
-        make_quiz('curriculum/bjc-r/cur/programming/intro/snap/test-yourself-go-team.html', 'Course')
-    elif len(sys.argv) == 2:
-        make_quiz(sys.argv[1])
-    elif len(sys.argv) >= 3:
-        make_quiz(sys.argv[1], sys.argv[2])
-
-
-
-
-
+    sys.stdout.write(output_string)

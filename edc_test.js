@@ -173,7 +173,7 @@ function processCurriculumItem(item) {
       data = processItem(part, includeCSSLink),
       folder = `${dir}/${part.directory}`;
     mkdirp.sync(folder);
-    fs.writeFileSync(folder + part.path, data);
+    fs.writeFileSync(folder + part.path, data.content || data);
     // console.log('Wrote: ', folder + part.path);
   });
 };
@@ -222,7 +222,7 @@ function processHTMLSegment(htmlContent, transformations) {
  */
 // TODO: This needs to take in an array of functions.
 // TODO: rename this processHTMLSegment
-function processHTML(html, includeCSS) {
+function processHTML(html, writeCSS) {
   var $, outerHTML, wrap;
 
   $ = cheerio.load(html);
@@ -333,7 +333,7 @@ function processHTML(html, includeCSS) {
   outerHTML = wrap.replace(/CONTENT/, $.html());
 
   // TODO: This is really broken
-  if (includeCSS) {
+  if (writeCSS) {
     outerHTML = cssString + outerHTML;
   }
 
