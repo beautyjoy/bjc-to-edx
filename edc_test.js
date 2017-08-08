@@ -96,16 +96,19 @@ function doWork(unit) {
 
   // TODO: Extract into preable section.
   CSS_FILE_NAME = 'bjc-edx.css';
-  css_file = fs.openSync(output + '/' + CSS_FILE_NAME, 'w');
-  fs.writeSync(css_file, css(CSSOptions));
-
-  cssPath = util.edXPath(CSS_FILE_NAME);
-  cssString = '<link rel="stylesheet" href="' + cssPath + '">';
-  jsPath = util.edXPath('edx-llab-hack.js');
-  cssString += '<script src="' + jsPath + '"></script>\n\n';
   fs.writeSync(
-    fs.openSync(`${output}/edx-llab-hack.js`, 'w'),
-    fs.openSync('edx-llab-hack.js', 'r'));
+    fs.openSync(`${output}/static/${CSS_FILE_NAME}`, 'w'),
+    css(CSSOptions)
+  );
+
+  cssString = `
+    <link rel="stylesheet" href="${util.edXPath(CSS_FILE_NAME)}">
+    <script src="${util.edXPath('edx-llab-hack.js')}"></script>\n
+  `;
+  fs.writeSync(
+    fs.openSync(`${output}/static/edx-llab-hack.js`, 'w'),
+    fs.openSync('edx-llab-hack.js', 'r')
+  );
 
   data.topics.forEach(parseTopic);
   console.log(`Unit ${unit} conversion is done!\n=============\n`);
