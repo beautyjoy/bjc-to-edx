@@ -276,10 +276,12 @@ function processHTML(html, writeCSS) {
   }
   let secetions = Object.keys(sectionHeadings);
   secetions.forEach(section => {
-    $(section).each((_, elm) => {
-      $(elm).prepend(
-        `<h3 class="sectionHeading">${sectionHeadings[section]}</h3>`
-      )
+    $(section).each((index, elm) => {
+      let headingText = sectionHeadings[section];
+      if (index > 0) {
+        headingText += ` (Part ${index + 1})`;
+      }
+      $(elm).prepend(`<h3 class="sectionHeading">${headingText}</h3>`)
     });
   });
 
