@@ -324,9 +324,6 @@ function processHTML(html, writeCSS) {
     $(sel).remove();
   });
 
-  // TODO: Insert headings at the top of each colored block
-
-
   // wrap content in div.llab-full
   wrap = '<div class="llab-full">CONTENT</div>';
 
@@ -400,8 +397,12 @@ function splitFile(html, page, dir) {
     var before = text.slice(0, idx).trim();
 
     if (before.length) {
+      $before = cheerio.load(before);
+      console.log('$before text: ', $before().text().length);
+      console.log('$before', $before());
       num = output.length + 1;
       file = page + '-' + num + '-' + title + '.html';
+      console.log(`in file ${file}`);
       file = util.edXFileName(file);
       output.push({
         type: 'file',
@@ -426,7 +427,12 @@ function splitFile(html, page, dir) {
   });
 
   if (quizzes.length == 0) {
-    file = page + '-' + title + '.html';
+    file = `${page}-${title}.html`;
+  } else {
+    num = output.length + 1;
+    file = `${page}-${num}-${title}.html`;
+  }
+  if (text.length) {
     file = util.edXFileName(file);
     output.push({
       type: 'file',
