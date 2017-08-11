@@ -309,6 +309,11 @@ function processHTML(html, writeCSS) {
     var url = $(elm).attr('href'),
       path;
     if (!url) { return; }
+
+    if (!$(elm).attr('title')) {
+      console.log(`\tURL needs title: ${url}, ${$(elm).text()}`);
+    }
+
     path = url.split('?')[0]; // remove the query string
     processCurriculumItem({
       url: path
@@ -384,7 +389,7 @@ function splitFile(html, page, dir) {
   })
 
   text = $('body').html()
-    // parse quizes separately.
+  // parse quizes separately.
   quizzes = $('div.assessment-data');
   if (quizzes.length) {
     console.log('Found ', quizzes.length, ' quizzes.');
@@ -398,11 +403,8 @@ function splitFile(html, page, dir) {
 
     if (before.length) {
       $before = cheerio.load(before);
-      console.log('$before text: ', $before().text().length);
-      console.log('$before', $before());
       num = output.length + 1;
       file = page + '-' + num + '-' + title + '.html';
-      console.log(`in file ${file}`);
       file = util.edXFileName(file);
       output.push({
         type: 'file',
