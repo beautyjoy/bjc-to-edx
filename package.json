@@ -1,6 +1,6 @@
 {
   "name": "llab-to-edx",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Convert a llab based course to an edX one",
   "main": "code/index.js",
   "scripts": {
@@ -13,11 +13,11 @@
   "author": "Michael Ball",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/beautyjoy/bjc-to-edx/issues"
+    "url": "https://github.com/beautyjoy/llab-to-edx/issues"
   },
-  "homepage": "https://github.com/beautyjoy/bjc-to-edx",
+  "homepage": "https://github.com/beautyjoy/llab-to-edx",
   "dependencies": {
-    "cheerio": "^0.19.0",
+    "cheerio": "latest",
     "commander": "^2.8.1",
     "css": "^2.2.1",
     "elementtree": "^0.1.6",

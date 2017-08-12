@@ -96,8 +96,8 @@ function doWork(unit) {
 
   // TODO: Extract into preable section.
   CSS_FILE_NAME = 'bjc-edx.css';
-  fs.writeSync(
-    fs.openSync(`${output}/static/${CSS_FILE_NAME}`, 'w'),
+  fs.writeFileSync(
+    `${output}/static/${CSS_FILE_NAME}`,
     css(CSSOptions)
   );
 
@@ -105,8 +105,8 @@ function doWork(unit) {
     <link rel="stylesheet" href="${util.edXPath(CSS_FILE_NAME)}">
     <script src="${util.edXPath('edx-llab-hack.js')}"></script>\n
   `;
-  fs.writeSync(
-    fs.openSync(`${output}/static/edx-llab-hack.js`, 'w'),
+  fs.writeFileSync(
+    `${output}/static/edx-llab-hack.js`,
     fs.openSync('edx-llab-hack.js', 'r')
   );
 
@@ -225,7 +225,7 @@ function processHTMLSegment(htmlContent, transformations) {
 function processHTML(html, writeCSS) {
   var $, outerHTML, wrap;
 
-  $ = cheerio.load(html);
+  $ = cheerio.load(html, { normalizeWhitespace: true });
 
   // Fix some of the EDC image elements with .button
   // These conflict with edX.
@@ -273,7 +273,7 @@ function processHTML(html, writeCSS) {
     '.ifTime': 'If There Is Time...',
     '.takeItFurther': 'Take It Further',
     '.time': 'If you are short on time, you can skip...'
-  }
+  };
   let secetions = Object.keys(sectionHeadings);
   secetions.forEach(section => {
     $(section).each((index, elm) => {
@@ -299,29 +299,32 @@ function processHTML(html, writeCSS) {
   let allURLs = $('a');
   let snapURLs = $('a.run');
   allURLs.each(function(index, elm) {
-    var url = $(elm).attr('href'),
-      path;
-    if (!url) { return; }
+    let $elm = $(elm);
+    var href = $elm.attr('href');
+
+    if (!href) { return; }
 
     if (!$(elm).attr('title')) {
-      console.log(`\tURL needs title: ${url}, ${$(elm).text()}`);
+      console.log(`\tURL needs title: ${href}, "${$(elm).text()}"`);
+    }
+    // log URLs that need modified inside edx
+    if (href.indexOf(BASEURL) > -1 && href.indexOf('.html' > -1)) {
+      console.log(`\tNeed to fix path in edX: ${href}`);
     }
 
-    path = url.split('?')[0]; // remove the query string
-  });
-  // console.log('Found ', allURLs.length, ' total urls.');
-  // console.log('Transforming ', snapURLs.length, ' STARTER FILE urls.');
-  snapURLs.each(function(index, elm) {
-    var href = $(elm).attr('href');
-    let newPath = util.transformURL(BASEURL, relPath, href);
-    $(elm).attr('target', '_blank').attr('href', newPath);
+    // Handle Snap! URLs and projects.
+    if ($elm.hasClass('run')) {
+      let newPath = util.transformURL(BASEURL, relPath, href);
+      $elm.attr('target', '_blank').attr('href', newPath);
 
-    if (!processedPaths[newPath]) {
-      fs.writeFileSync(
-        `${output}/${newPath}`,
-        fs.readFileSync(`curriculum${href}`)
-      );
-      processedPaths[newPath] = 1;
+      // TODO: extract to copy file function
+      if (!processedPaths[newPath]) {
+        fs.writeFileSync(
+          `${output}/${newPath}`,
+          fs.readFileSync(`curriculum${href}`)
+        );
+        processedPaths[newPath] = 1;
+      }
     }
   });
 
@@ -386,7 +389,7 @@ function splitFile(html, page, dir) {
       output.push({
         type: 'script',
         title: num + '-' + title,
-        content: contents,
+        content: `<script type="text/javascript">\n${contents}\n</script>`,
         directory: 'html/',
         path: file
       });
