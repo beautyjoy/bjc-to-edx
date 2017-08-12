@@ -139,7 +139,6 @@ function parseSection(section, skip) {
   }
 
   mkdirp.sync(dir);
-  count = 0;
   section.contents.forEach(item => processCurriculumItem(item));
 }
 
@@ -225,7 +224,7 @@ function processHTMLSegment(htmlContent, transformations) {
 function processHTML(html, writeCSS) {
   var $, outerHTML, wrap;
 
-  $ = cheerio.load(html, { normalizeWhitespace: true });
+  $ = cheerio.load(html);
 
   // Fix some of the EDC image elements with .button
   // These conflict with edX.
