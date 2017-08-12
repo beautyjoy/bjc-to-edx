@@ -298,15 +298,6 @@ function processHTML(html, writeCSS) {
   // Fix Snap! run links.
   let allURLs = $('a');
   let snapURLs = $('a.run');
-  // console.log('Found ', allURLs.length, ' total urls.');
-  // console.log('Transforming ', snapURLs.length, ' STARTER FILE urls.');
-  snapURLs.each(function(index, elm) {
-    var href = $(elm).attr('href');
-    $(elm).attr('target', '_blank').attr(
-      'href',
-      util.transformURL(BASEURL, relPath, href)
-    );
-  });
   allURLs.each(function(index, elm) {
     var url = $(elm).attr('href'),
       path;
@@ -317,9 +308,21 @@ function processHTML(html, writeCSS) {
     }
 
     path = url.split('?')[0]; // remove the query string
-    processCurriculumItem({
-      url: path
-    });
+  });
+  // console.log('Found ', allURLs.length, ' total urls.');
+  // console.log('Transforming ', snapURLs.length, ' STARTER FILE urls.');
+  snapURLs.each(function(index, elm) {
+    var href = $(elm).attr('href');
+    let newPath = util.transformURL(BASEURL, relPath, href);
+    $(elm).attr('target', '_blank').attr('href', newPath);
+
+    if (!processedPaths[newPath]) {
+      fs.writeFileSync(
+        `${output}/${newPath}`,
+        fs.readFileSync(`curriculum${href}`)
+      );
+      processedPaths[newPath] = 1;
+    }
   });
 
   // Remove EDC's inline HTML comments.
