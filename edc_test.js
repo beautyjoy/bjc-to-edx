@@ -308,7 +308,7 @@ function processHTML(html, writeCSS) {
       console.log(`\tURL needs title: ${href}, "${$(elm).text()}"`);
     }
     // log URLs that need modified inside edx
-    if (href.indexOf(BASEURL) > -1 && href.indexOf('.html' > -1)) {
+    if (href.indexOf(BASEURL) == 0 && href.indexOf('.html') > 0) {
       console.log(`\tNeed to fix path in edX: ${href}`);
     }
 
