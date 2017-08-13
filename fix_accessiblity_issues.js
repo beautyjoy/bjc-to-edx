@@ -68,28 +68,25 @@ function processCurriculumItem(item) {
     return;
   }
 
-  file = item.url;
+  let file = item.url;
 
   if (!file.endsWith('.html')) { return; }
 
   console.info('Reading: ', file);
 
   try {
-    html = fs.readFileSync(`curriculum${file}`);
+    let html = fs.readFileSync(`curriculum${file}`);
   } catch (err) {
     console.log(err);
     return;
   }
 
-  data = processHTML(html),
-  fs.writeFileSync(`curriculum${file}`, data);
+  fs.writeFileSync(`curriculum${file}`, processHTML(html));
   console.log('Wrote: ', file);
 };
 
-function processHTML(html, writeCSS) {
-  var $, outerHTML, wrap;
-
-  $ = cheerio.load(html, {
+function processHTML(html) {
+  var $ = cheerio.load(html, {
     normalizeWhitespace: false
   });
 
@@ -103,14 +100,16 @@ function processHTML(html, writeCSS) {
       return;
     }
 
-    let external_link = address.indexOf('://') !== -1;
-    if (external_link) { return; }
-
     let altText = $elm.attr('alt');
     if (!altText) {
-      console.error(`Image is missing alt text:\n\t${address}`);
-      exec(`open curriculum/${address}`);
-      altText = prompt('enter alt text for the image');
+      console.log(`Image is missing alt text:\n\t${address}`);
+      console.log(`Context: ${$elm.parent().text()}`);
+      try {
+        exec(`open 'curriculum/${address}'`);
+      } catch {
+        console.error(`Unable to open ${address}`);
+      }
+      altText = prompt('enter alt text for the image: ');
       altText = altText.trim()
       $elm.attr('alt', altText).attr('title', altText);
     }
@@ -129,7 +128,14 @@ function processHTML(html, writeCSS) {
 
     if (!$(elm).attr('title')) {
       console.log(`\tURL needs title: ${href}, "${$(elm).text()}"`);
-      let titleText = prompt('enter alt text for the image');
+
+      if (href.indexOf('://') > -1) {
+        try {
+          exec(`open '${href}'`);
+        } catch {}
+      }
+
+      let titleText = prompt('enter title text for link:');
       titleText = titleText.trim();
       $elm.attr('title', titleText);
     }
