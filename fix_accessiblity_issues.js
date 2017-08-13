@@ -92,7 +92,11 @@ function processCurriculumItem(item) {
 function processHTML(html, writeCSS) {
   var $, outerHTML, wrap;
 
-  $ = cheerio.load(html);
+  $ = cheerio.load(html, {
+    normalizeWhitespace: true,
+    xmlMode: true,
+    decodeEntities: true
+  });
 
   $('img').each((_, elm) => {
     let $elm = $(elm);
