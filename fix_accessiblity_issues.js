@@ -10,11 +10,9 @@ let exec = require('child_process').execSync;
 let process = require('process');
 
 let cheerio = require('cheerio');
-let mkdirp = require('mkdirp');
-let prompt = require('prompt-sync')
+let prompt = require('prompt-sync')();
 
 let llab = require('./lib/llab');
-let util = require('./code/util');
 
 var BASEURL = '/bjc-r';
 
@@ -49,7 +47,7 @@ function doWork(unit) {
 
   topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
 
-  topic = fs.readFileSync(util.topicPath('curriculum/bjc-r/', topic));
+  topic = fs.readFileSync(`curriculum/bjc-r/topic/${topic}`);
   topic = topic.toString();
   data = llab.parse(topic);
 
@@ -83,7 +81,6 @@ function processCurriculumItem(item) {
     return;
   }
 
-
   data = processHTML(html),
   fs.writeFileSync(`curriculum${file}`, data);
   console.log('Wrote: ', file);
@@ -93,9 +90,7 @@ function processHTML(html, writeCSS) {
   var $, outerHTML, wrap;
 
   $ = cheerio.load(html, {
-    normalizeWhitespace: true,
-    xmlMode: true,
-    decodeEntities: true
+    normalizeWhitespace: false
   });
 
   $('img').each((_, elm) => {
@@ -114,6 +109,10 @@ function processHTML(html, writeCSS) {
     let altText = $elm.attr('alt');
     if (!altText) {
       console.error(`Image is missing alt text:\n\t${address}`);
+      exec(`open curriculum/${address}`);
+      altText = prompt('enter alt text for the image');
+      altText = altText.trim()
+      $elm.attr('alt', altText).attr('title', altText);
     }
   });
 
@@ -130,6 +129,9 @@ function processHTML(html, writeCSS) {
 
     if (!$(elm).attr('title')) {
       console.log(`\tURL needs title: ${href}, "${$(elm).text()}"`);
+      let titleText = prompt('enter alt text for the image');
+      titleText = titleText.trim();
+      $elm.attr('title', titleText);
     }
     // log URLs that need modified inside edx
     if (href.indexOf(BASEURL) == 0 && href.indexOf('.html') > 0) {
