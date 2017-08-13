@@ -74,8 +74,9 @@ function processCurriculumItem(item) {
 
   console.info('Reading: ', file);
 
+  let html;
   try {
-    let html = fs.readFileSync(`curriculum${file}`);
+    html = fs.readFileSync(`curriculum${file}`);
   } catch (err) {
     console.log(err);
     return;
@@ -105,8 +106,12 @@ function processHTML(html) {
       console.log(`Image is missing alt text:\n\t${address}`);
       console.log(`Context: ${$elm.parent().text()}`);
       try {
-        exec(`open 'curriculum/${address}'`);
-      } catch {
+        let flags = '-g';
+        if (address.indexOf('.gif') > 0) {
+          flags = '-g -a Safari';
+        }
+        exec(`open ${flags} 'curriculum/${address}'`);
+      } catch (e) {
         console.error(`Unable to open ${address}`);
       }
       altText = prompt('enter alt text for the image: ');
@@ -121,18 +126,21 @@ function processHTML(html) {
 
     if (!href) { return; }
 
-    // Handle Snap! URLs and projects.
-    if ($elm.hasClass('run')) {
-      console.log('Snap File');
-    }
-
     if (!$(elm).attr('title')) {
-      console.log(`\tURL needs title: ${href}, "${$(elm).text()}"`);
+      if ($elm.hasClass('run')) {
+        console.log('Snap File');
+      }
+
+      console.log(`
+        URL needs title: ${href}, "${$(elm).text()}
+        PARENT:
+        ${$(elm).parent().text}
+      `);
 
       if (href.indexOf('://') > -1) {
         try {
-          exec(`open '${href}'`);
-        } catch {}
+          exec(`open -g '${href}'`);
+        } catch (e) {}
       }
 
       let titleText = prompt('enter title text for link:');
