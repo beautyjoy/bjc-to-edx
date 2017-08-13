@@ -226,6 +226,13 @@ function processHTML(html, writeCSS) {
 
   $ = cheerio.load(html);
 
+  // Remove EDC's inline HTML comments.
+  [
+    '.comment',
+    '.todo',
+    '.commentBig'
+  ].forEach(sel => $(sel).remove());
+
   // Fix some of the EDC image elements with .button
   // These conflict with edX.
   $('.button').removeClass('button');
@@ -296,8 +303,7 @@ function processHTML(html, writeCSS) {
 
   // Fix Snap! run links.
   let allURLs = $('a');
-  let snapURLs = $('a.run');
-  allURLs.each(function(index, elm) {
+  allURLs.each((index, elm) {
     let $elm = $(elm);
     var href = $elm.attr('href');
 
@@ -327,17 +333,8 @@ function processHTML(html, writeCSS) {
     }
   });
 
-  // Remove EDC's inline HTML comments.
-  [
-    '.comment',
-    '.todo',
-    '.commentBig'
-  ].forEach(function(sel) {
-    $(sel).remove();
-  });
-
   // wrap content in div.llab-full
-  wrap = '<div class="llab-full">CONTENT</div>';
+  wrap = '<div class="llab-full">\nCONTENT\n</div>';
 
   outerHTML = wrap.replace(/CONTENT/, $.html());
 
