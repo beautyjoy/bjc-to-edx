@@ -15,6 +15,12 @@ let prompt = require('prompt-sync')();
 let llab = require('./lib/llab');
 
 var BASEURL = '/bjc-r';
+//
+var INTERACTIVE = 'interactive';
+var CSV = 'csv';
+var REPORT = 'report';
+//
+var MODE = REPORT;
 
 if (process.argv.length > 2) {
   var start = 2,
@@ -105,14 +111,20 @@ function processHTML(html) {
     if (!altText) {
       console.log(`Image is missing alt text:\n\t${address}`);
       console.log(`Context: ${$elm.parent().text()}`);
-      try {
-        let flags = '-g';
-        if (address.indexOf('.gif') > 0) {
-          flags = '-g -a Safari';
-        }
-        exec(`open ${flags} 'curriculum/${address}'`);
-      } catch (e) {
-        console.error(`Unable to open ${address}`);
+      switch (MODE) {
+      case REPORT: {
+          try {
+            let flags = '-g';
+            if (address.indexOf('.gif') > 0) {
+              flags = '-g -a Safari';
+            }
+            exec(`open ${flags} 'curriculum/${address}'`);
+          } catch (e) {
+            console.error(`Unable to open ${address}`);
+          }
+          break;
+      default:
+          break;
       }
       altText = prompt('enter alt text for the image: ');
       altText = altText.trim()
