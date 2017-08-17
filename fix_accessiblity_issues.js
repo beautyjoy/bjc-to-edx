@@ -1,5 +1,5 @@
 /*
-    A utility to interactive add alt text and title text.
+    A utility to interactively add alt text and title text.
 */
 
 
@@ -11,6 +11,7 @@ let process = require('process');
 
 let cheerio = require('cheerio');
 let prompt = require('prompt-sync')();
+let Babyparse = require('babyparse');
 
 let llab = require('./lib/llab');
 
@@ -22,25 +23,18 @@ var REPORT = 'report';
 //
 var MODE = REPORT;
 
-if (process.argv.length > 2) {
-  var start = 2,
-    end = process.argv.length;
-  for (var arg = start; arg < end; arg += 1) {
-    var item = process.argv[arg];
-    try {
-      unit = parseInt(item);
-      console.log(`Trying to convert Unit ${unit}`);
-      doWork(unit);
-    } catch (e) {
-      console.log(`Error encountered for item ${item}`);
-      console.log(e);
-    }
-  }
+// TODO: use optparse or something
+let args = process.argv;
+if (args.length > 2) {
+  let unit = parseInt(args[2]);
+  let csvPath = args.length > 3 ? args[3] : null
+  console.log(`Processing Unit ${unit}`);
+  doWork(unit, csvPath);
   console.log('Processed all items');
   process.exit(0);
 }
 
-function doWork(unit) {
+function doWork(unit, csvPath) {
   let unit_files = {
     1: 'intro-loops.topic',
     2: 'conditionals-abstraction.topic',
@@ -51,22 +45,30 @@ function doWork(unit) {
     7: 'recursive-reporters.topic'
   };
 
-  topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
+  let csvData = {};
+  if (csvPath) {
+    let csvFile = fs.readFileSync(csvPath).toString();
+    csvData = Babyparse.parse(csvFile).data;
+  }
 
+  topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
   topic = fs.readFileSync(`curriculum/bjc-r/topic/${topic}`);
   topic = topic.toString();
   data = llab.parse(topic);
 
-  data.topics.forEach(parseTopic);
-  console.log(`Unit ${unit} conversion is done!\n=============\n`);
+  data.topics.forEach(parseTopic, {
+    mode: MODE,
+    data: csvData
+  });
+  console.log(`Unit ${unit} processing is done!\n=============\n`);
 }
 
-function parseTopic(topic, args) {
-  topic.contents.forEach(parseSection, args);
+function parseTopic(topic, opts) {
+  topic.contents.forEach(parseSection, opts);
 }
 
-function parseSection(section, skip) {
-  section.contents.forEach(item => processCurriculumItem(item));
+function parseSection(section, opts) {
+  section.contents.forEach(item => processCurriculumItem(item, opts));
 }
 
 function processCurriculumItem(item) {
@@ -92,10 +94,20 @@ function processCurriculumItem(item) {
   console.log('Wrote: ', file);
 };
 
-function processHTML(html) {
-  var $ = cheerio.load(html, {
+// TODO extract this out into a library
+/*
+    options: {
+        mode: CSV|REPORT|INTERACTIVE,
+        data: a lookup table: {
+            'file/path': 'some alt text'
+        }
+    }
+*/
+function processHTML(html, options) {
+  let $ = cheerio.load(html, {
     normalizeWhitespace: false
   });
+  let options = options || {};
 
   $('img').each((_, elm) => {
     let $elm = $(elm);
@@ -111,7 +123,7 @@ function processHTML(html) {
     if (!altText) {
       console.log(`Image is missing alt text:\n\t${address}`);
       console.log(`Context: ${$elm.parent().text()}`);
-      switch (MODE) {
+      switch (options.mode) {
       case REPORT: {
           try {
             let flags = '-g';
@@ -139,26 +151,34 @@ function processHTML(html) {
     if (!href) { return; }
 
     if (!$(elm).attr('title')) {
-      if ($elm.hasClass('run')) {
-        console.log('Snap File');
-      }
+      switch (options.mode) {
+      case REPORT:
+        console.log(`URL needs title: ${href}, "${$(elm).text()}`);
+        break;
+      case INTERACTIVE: {
+        if ($elm.hasClass('run')) {
+          console.log('Snap File');
+        }
+        console.log(`
+          URL needs title: ${href}, "${$(elm).text()}
+          PARENT:
+          ${$(elm).parent().text}
+        `);
 
-      console.log(`
-        URL needs title: ${href}, "${$(elm).text()}
-        PARENT:
-        ${$(elm).parent().text}
-      `);
+        if (href.indexOf('://') > -1) {
+          try {
+            exec(`open -g '${href}'`);
+          } catch (e) {}
+        }
 
-      if (href.indexOf('://') > -1) {
-        try {
-          exec(`open -g '${href}'`);
-        } catch (e) {}
-      }
-
-      let titleText = prompt('enter title text for link:');
-      titleText = titleText.trim();
-      $elm.attr('title', titleText);
+        let titleText = prompt('enter title text for link:');
+        titleText = titleText.trim();
+        $elm.attr('title', titleText);
+        break;
+      default:
+        break;
     }
+
     // log URLs that need modified inside edx
     if (href.indexOf(BASEURL) == 0 && href.indexOf('.html') > 0) {
       console.log(`\tNeed to fix path in edX: ${href}`);

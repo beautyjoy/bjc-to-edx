@@ -17,13 +17,13 @@
   },
   "homepage": "https://github.com/beautyjoy/llab-to-edx",
   "dependencies": {
+    "babyparse": "^0.4.6",
     "cheerio": "0.22.x",
     "commander": "^2.8.1",
     "css": "^2.2.1",
     "elementtree": "^0.1.6",
     "js-yaml": "^3.3.1",
     "mkdirp": "^0.5.1",
-    "papaparse": "^4.3.5",
     "prompt-sync": "^4.1.5",
     "xml2js": "^0.4.9"
   }
