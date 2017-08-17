@@ -158,13 +158,14 @@ function processCurriculumItem(item) {
   file = item.url.replace(BASEURL, curFolder);
   relPath = path.relative(curFolder, file);
 
-  console.log(
-    `Process Curriculum Item:
-    url: ${item.url}
-    file: ${file}
-    relPath: ${relPath}
-    found?: ${processedPaths[file] == 1}
-    `);
+  // console.log(
+  //   `Process Curriculum Item:
+  //   url: ${item.url}
+  //   file: ${file}
+  //   relPath: ${relPath}
+  //   found?: ${processedPaths[file] == 1}
+  //   `);
+
   if (!file.endsWith('.html') || processedPaths[file] == 1) {
     return;
   }
