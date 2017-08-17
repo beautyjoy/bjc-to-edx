@@ -20,7 +20,7 @@ var BASEURL = '/bjc-r';
 var INTERACTIVE = 'interactive';
 var CSV = 'csv';
 var REPORT = 'report';
-var MODE = REPORT;
+var MODE = CSV;
 
 // TODO: use optparse or something
 let args = process.argv;
@@ -55,15 +55,15 @@ function doWork(unit, csvPath) {
   topic = topic.toString();
   data = llab.parse(topic);
 
-  data.topics.forEach(parseTopic, {
+  data.topics.forEach(topic => parseTopic(topic, {
     mode: MODE,
     data: csvData
-  });
+  }));
   console.log(`Unit ${unit} processing is done!\n=============\n`);
 }
 
 function parseTopic(topic, opts) {
-  topic.contents.forEach(parseSection, opts);
+  topic.contents.forEach(section => parseSection(section, opts));
 }
 
 function parseSection(section, opts) {
@@ -97,6 +97,33 @@ function processCurriculumItem(item, options) {
   }
 };
 
+function trimQueryString(link) {
+    let queryIndex = link.indexOf('.html?');
+    if (link.indexOf('://') > -1 || queryIndex < 0) {
+        return link;
+    }
+
+    // trim query strings. MOVE TO A FUNCTION
+    if (queryIndex > -1) {
+      return link.slice(0, queryIndex + '.html'.length);
+    }
+    return link;
+}
+
+// TODO: Cache the map call / reformat the data
+// CSV data is an array of arrays
+function lookupText(link, csvData) {
+    link = trimQueryString(link);
+    let files = csvData.map(row => row[0]);
+    let found = files.indexOf(link);
+    if (found < 0) {
+        console.log(`No math for ${link}`);
+        return false;
+    } else {
+        return csvData[found][1];
+    }
+}
+
 // TODO extract this out into a library
 /*
     options: {
@@ -107,6 +134,7 @@ function processCurriculumItem(item, options) {
     }
 */
 function processHTML(html, options) {
+  console.log(`MODE: ${options.mode}`);
   let $ = cheerio.load(html, {
     normalizeWhitespace: false
   });
@@ -128,7 +156,7 @@ function processHTML(html, options) {
       if (options.mode !== CSV) {
         console.log(`Image is missing alt text:\n\t${address}`);
       } else {
-        let text = options.data[address];
+        let text = lookupText(address, options.data);
         if (text) {
           $elm.attr('alt', text).attr('title', text);
         }
@@ -162,8 +190,9 @@ function processHTML(html, options) {
       if (options.mode !== CSV) {
         console.log(`URL needs title: ${href}, "${$(elm).text()}`);
       } else {
-        if (options.data[href]) {
-          $elm.attr('title', options.data[href]);
+        let text = lookupText(href, options.data);
+        if (text) {
+          $elm.attr('title', text);
         }
       }
       if (options.mode == INTERACTIVE) {

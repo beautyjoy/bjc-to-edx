@@ -340,7 +340,7 @@ function processHTML(html, writeCSS) {
       $elm.attr('target', '_blank').attr('href', newPath);
 
       // TODO: extract to copy file function
-      if (!processedPaths[newPath]) {
+      if (newPath.indexOf('://') < 0 && !processedPaths[newPath]) {
         fs.writeFileSync(
           `${output}/${newPath}`,
           fs.readFileSync(`curriculum${href}`)
@@ -394,10 +394,11 @@ function splitFile(html, page, dir) {
   // Extract JS scripts from the head.
   // TODO: Move to the 'preamble'
   const giffer = 'window.onload = function() {Gifffer();}';
-  $('head script').each(function(index, elm) {
+  $('script').each(function(index, elm) {
+    // console.log('SCRIPT ELEMENT', $(elm).parent().name);
     let contents = $(elm).html();
     let hasContent = !$(elm).attr('src') && contents.length;
-    if (contents == giffer) { return; }
+    if (contents === giffer) { return; }
     if (hasContent) {
       console.log('Page has custom JS element');
       num = output.length + 1;
