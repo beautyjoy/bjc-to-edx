@@ -139,6 +139,7 @@ function parseSection(section, skip) {
   }
 
   mkdirp.sync(dir);
+  count = 0;
   section.contents.forEach(item => processCurriculumItem(item));
 }
 
@@ -303,7 +304,7 @@ function processHTML(html, writeCSS) {
 
   // Fix Snap! run links.
   let allURLs = $('a');
-  allURLs.each((index, elm) {
+  allURLs.each((index, elm) => {
     let $elm = $(elm);
     var href = $elm.attr('href');
 
@@ -362,7 +363,10 @@ function HTMLPreamble() {
 function splitFile(html, page, dir) {
   var $, output, title, quizzes, qzHTML, text;
 
+  console.log('SPLIT FILE', page);
+  // TODO: Move this to an object that manages the count when writing files.
   output = [];
+  let num = output.length + 1;
   $ = cheerio.load(html);
 
   // EDC Puts an <h2> at the beginning of every page.
@@ -379,7 +383,7 @@ function splitFile(html, page, dir) {
     if (contents == giffer) { return; }
     if (hasContent) {
       console.log('Page has custom JS element');
-      let num = output.length + 1;
+      num = output.length + 1;
       let file = page + '-' + num + '-' + title + '.js';
       file = util.edXFileName(file);
       output.push({
@@ -395,59 +399,67 @@ function splitFile(html, page, dir) {
   text = $('body').html()
   // parse quizes separately.
   quizzes = $('div.assessment-data');
+  console.log('Found ', quizzes.length, ' quizzes.');
   if (quizzes.length) {
-    console.log('Found ', quizzes.length, ' quizzes.');
-  }
-  quizzes.each(function(index, elm) {
-    qzHTML = $.html(elm); // like a call to outerHTML()
-    command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
-    xml = exec(command).toString();
-    var idx = text.indexOf(qzHTML);
-    var before = text.slice(0, idx).trim();
+    file = `${page}-${num}-${title}.html`;
+    quizzes.each(function(index, elm) {
+      qzHTML = $.html(elm); // like a call to outerHTML()
+      command = 'python3 code/mc_parser.py \'' + qzHTML + '\'';
+      xml = exec(command).toString();
+      var idx = text.indexOf(qzHTML);
+      var before = text.slice(0, idx).trim();
 
-    if (before.length) {
-      $before = cheerio.load(before);
+      if (before.length) {
+        $before = cheerio.load(before);
+        num = output.length + 1;
+        file = page + '-' + num + '-' + title + '.html';
+        file = util.edXFileName(file);
+        output.push({
+          type: 'file',
+          title: num + '-' + title,
+          content: before,
+          directory: 'html/',
+          path: file
+        }); // part before quiz
+      }
+
       num = output.length + 1;
-      file = page + '-' + num + '-' + title + '.html';
+      file = page + '-' + num + '-' + title + '.xml';
+      file = util.edXFileName(file);
+      output.push({
+        type: 'quiz',
+        title: num + '-' + 'Quiz-' + title,
+        content: xml,
+        directory: 'problem/',
+        path: file
+      }); // push quiz
+      text = text.slice(idx + qzHTML.length);
+    });
+
+    // Write any remaining content.
+    if (text.length) {
       file = util.edXFileName(file);
       output.push({
         type: 'file',
-        title: num + '-' + title,
-        content: before,
+        title: title,
+        content: text,
         directory: 'html/',
         path: file
-      }); // part before quiz
+      });
     }
-
-    num = output.length + 1;
-    file = page + '-' + num + '-' + title + '.xml';
-    file = util.edXFileName(file);
-    output.push({
-      type: 'quiz',
-      title: num + '-' + 'Quiz-' + title,
-      content: xml,
-      directory: 'problem/',
-      path: file
-    }); // push quiz
-    text = text.slice(idx + qzHTML.length);
-  });
-
-  if (quizzes.length == 0) {
-    file = `${page}-${title}.html`;
   } else {
-    num = output.length + 1;
-    file = `${page}-${num}-${title}.html`;
+    console.log('NO QUIZZES');
+    file = `${page}-${title}.html`;
   }
-  if (text.length) {
-    file = util.edXFileName(file);
-    output.push({
-      type: 'file',
-      title: title,
-      content: text,
-      directory: 'html/',
-      path: file
-    });
-  }
+
+  file = util.edXFileName(file);
+  output.push({
+    type: 'file',
+    title: title,
+    content: text,
+    directory: 'html/',
+    path: file
+  });
 
   return output;
 }
