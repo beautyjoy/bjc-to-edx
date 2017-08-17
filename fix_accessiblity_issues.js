@@ -90,8 +90,10 @@ function processCurriculumItem(item) {
     return;
   }
 
-  fs.writeFileSync(`curriculum${file}`, processHTML(html));
-  console.log('Wrote: ', file);
+  if (MODE !== REPORT) {
+    fs.writeFileSync(`curriculum${file}`, processHTML(html));
+    console.log('Wrote: ', file);
+  }
 };
 
 // TODO extract this out into a library
@@ -107,7 +109,8 @@ function processHTML(html, options) {
   let $ = cheerio.load(html, {
     normalizeWhitespace: false
   });
-  let options = options || {};
+
+  options = options || {};
 
   $('img').each((_, elm) => {
     let $elm = $(elm);
@@ -121,26 +124,30 @@ function processHTML(html, options) {
 
     let altText = $elm.attr('alt');
     if (!altText) {
-      console.log(`Image is missing alt text:\n\t${address}`);
-      console.log(`Context: ${$elm.parent().text()}`);
-      switch (options.mode) {
-      case REPORT: {
-          try {
-            let flags = '-g';
-            if (address.indexOf('.gif') > 0) {
-              flags = '-g -a Safari';
-            }
-            exec(`open ${flags} 'curriculum/${address}'`);
-          } catch (e) {
-            console.error(`Unable to open ${address}`);
-          }
-          break;
-      default:
-          break;
+      if (options.mode !== CSV) {
+        console.log(`Image is missing alt text:\n\t${address}`);
+      } else {
+        let text = options.data[address];
+        if (text) {
+          $elm.attr('alt', text).attr('title', text);
+        }
       }
-      altText = prompt('enter alt text for the image: ');
-      altText = altText.trim()
-      $elm.attr('alt', altText).attr('title', altText);
+
+      if (options.mode === INTERACTIVE) {
+        console.log(`Context: ${$elm.parent().text()}`);
+        try {
+          let flags = '-g';
+          if (address.indexOf('.gif') > 0) {
+            flags = '-g -a Safari';
+          }
+          exec(`open ${flags} 'curriculum/${address}'`);
+        } catch (e) {
+          console.error(`Unable to open ${address}`);
+        }
+        altText = prompt('enter alt text for the image: ');
+        altText = altText.trim()
+        $elm.attr('alt', altText).attr('title', altText);
+      }
     }
   });
 
@@ -150,15 +157,19 @@ function processHTML(html, options) {
 
     if (!href) { return; }
 
-    if (!$(elm).attr('title')) {
-      switch (options.mode) {
-      case REPORT:
+    if (!$elm.attr('title')) {
+      if (options.mode !== CSV) {
         console.log(`URL needs title: ${href}, "${$(elm).text()}`);
-        break;
-      case INTERACTIVE: {
+      } else {
+        if (options.data[href]) {
+          $elm.attr('title', options.data[href]);
+        }
+      }
+      if (options.mode == INTERACTIVE) {
         if ($elm.hasClass('run')) {
           console.log('Snap File');
         }
+
         console.log(`
           URL needs title: ${href}, "${$(elm).text()}
           PARENT:
@@ -168,15 +179,15 @@ function processHTML(html, options) {
         if (href.indexOf('://') > -1) {
           try {
             exec(`open -g '${href}'`);
-          } catch (e) {}
+          } catch (e) {
+
+          }
         }
 
         let titleText = prompt('enter title text for link:');
         titleText = titleText.trim();
         $elm.attr('title', titleText);
-        break;
-      default:
-        break;
+      }
     }
 
     // log URLs that need modified inside edx
