@@ -20,7 +20,6 @@ var BASEURL = '/bjc-r';
 var INTERACTIVE = 'interactive';
 var CSV = 'csv';
 var REPORT = 'report';
-//
 var MODE = REPORT;
 
 // TODO: use optparse or something
@@ -71,7 +70,7 @@ function parseSection(section, opts) {
   section.contents.forEach(item => processCurriculumItem(item, opts));
 }
 
-function processCurriculumItem(item) {
+function processCurriculumItem(item, options) {
   if (!item.url || !item.url.startsWith(BASEURL)) {
     return;
   }
@@ -90,8 +89,10 @@ function processCurriculumItem(item) {
     return;
   }
 
+  let output = processHTML(html, options);
+
   if (MODE !== REPORT) {
-    fs.writeFileSync(`curriculum${file}`, processHTML(html));
+    fs.writeFileSync(`curriculum${file}`, output);
     console.log('Wrote: ', file);
   }
 };
