@@ -149,9 +149,22 @@ function processCurriculumItem(item) {
     return;
   }
 
+  // trim query strings. MOVE TO A FUNCTION
+  let queryIndex = item.url.indexOf('.html?');
+  if (queryIndex > 0) {
+    item.url = item.url.slice(0, queryIndex + '.html'.length);
+  }
+
   file = item.url.replace(BASEURL, curFolder);
   relPath = path.relative(curFolder, file);
 
+  console.log(
+    `Process Curriculum Item:
+    url: ${item.url}
+    file: ${file}
+    relPath: ${relPath}
+    found?: ${processedPaths[file] == 1}
+    `);
   if (!file.endsWith('.html') || processedPaths[file] == 1) {
     return;
   }
@@ -313,9 +326,11 @@ function processHTML(html, writeCSS) {
     if (!$(elm).attr('title')) {
       console.log(`\tURL needs title: ${href}, "${$(elm).text()}"`);
     }
+
     // log URLs that need modified inside edx
     if (href.indexOf(BASEURL) == 0 && href.indexOf('.html') > 0) {
       console.log(`\tNeed to fix path in edX: ${href}`);
+      processCurriculumItem({url: href});
     }
 
     // Handle Snap! URLs and projects.
@@ -360,13 +375,14 @@ function HTMLPreamble() {
  *
  * @param {string} the raw HTML file to be processed
  */
+// TODO: Refactor this to return _less_ into.
+// title:
+// sections: {type:, content: }
 function splitFile(html, page, dir) {
   var $, output, title, quizzes, qzHTML, text;
 
-  console.log('SPLIT FILE', page);
   // TODO: Move this to an object that manages the count when writing files.
   output = [];
-  let num = output.length + 1;
   $ = cheerio.load(html);
 
   // EDC Puts an <h2> at the beginning of every page.
@@ -398,9 +414,10 @@ function splitFile(html, page, dir) {
 
   text = $('body').html()
   // parse quizes separately.
-  quizzes = $('div.assessment-data');
-  console.log('Found ', quizzes.length, ' quizzes.');
+  quizzes = $('.assessment-data');
   if (quizzes.length) {
+    console.log(`Found ${quizzes.length} quizzes.`);
+    let num = output.length + 1;
     file = `${page}-${num}-${title}.html`;
     quizzes.each(function(index, elm) {
       qzHTML = $.html(elm); // like a call to outerHTML()
@@ -448,7 +465,6 @@ function splitFile(html, page, dir) {
       });
     }
   } else {
-    console.log('NO QUIZZES');
     file = `${page}-${title}.html`;
   }
 
