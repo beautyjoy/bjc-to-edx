@@ -74,7 +74,7 @@ var CSSOptions = {
 // GLOBAL -- FIXME
 var relPath;
 var dir;
-var GROUP_BY_LAB = false;
+var GROUP_BY_LAB = true;
 
 // TODO: This seems redundant, mostly.
 var PROCESS_FUNCTIONS = {
@@ -140,7 +140,7 @@ function parseSection(section, skip) {
   }
 
   dir = output;
-  if (!GROUP_BY_LAB) {
+  if (GROUP_BY_LAB) {
     dir += `/${title}`;
   }
 
@@ -488,7 +488,7 @@ function splitFile(html, page, dir) {
 // TODO: Document...
 module.exports = function(path, sectionName, directory) {
   // Globals
-  GROUP_BY_LAB = true;
+  GROUP_BY_LAB = false;
   // util.topicPath(curFolder, path) == assuming we have some folder.
   topic = fs.readFileSync(path).toString();
   data = llab.parse(topic);
