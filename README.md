@@ -1,16 +1,40 @@
 # llab-to-edx
-> But really, this is a generic edX course building tool.
+
+This too takes in course content from our ["llab"][llab] formatted courses
+and mostly turns them into something usable for uploading to [edX][edx].
+
+[llab]: https://github.com/beautyjoy/llab
+[edx]: https://edx.org
 
 ## TOC -- coming someday.
 
 ## Overview
-This builds a course from a set of YAML [TODO: link] files.
-There are two YAML files per course:
 
-* A course outline, typically `outline.yml`
-* A configuration file, typically `settings.yml`
+Right now there are a bunch of single-use style scripts:
 
-These are the default names which the tool expects, but you can always change them.
+	* apcsa_simple_edx_build.js
+	* apcsa_test.js
+	* edc_test.js (start with this, probably)
+
+These do various content transformations, and are somewhat specific to our needs.
+
+Basically, the scripts in a topic file, which is a list of HTML pages organized into sections. The script will process each HTML file, and modify the content as necessary to work in edX. There are a few common modifications:
+
+Each HTML file is designed to be 1 page in edX. Some HTML pages are split in "sections" in edX, because that have interactive quizzes.
+
+* CSS mods:
+	* We "compile" the llab CSS into 1 file, and link that at the top of each course page in edX.
+* JS Mods:
+	* A JS file `edx-llab-hack.js` is inserted at the top of each page.
+* Quizzes:
+	* LLAB includes an HTML-style quiz. There's a set of Python tools that translate this to the edXML / OLX formatted XML.
+* URL transformations:
+	* all the images and files we link to will have different URLs on edX.
+	* The inline-replaces those URLs with ones edX will translate correctly.
+	* Some URLs (like in-course content links) still need to be manually translated.
+* Section Headings:
+	* Removing the first `<h2>` page title
+	* Inserts section heading text.
 
 ## Running The Builder
 
@@ -21,8 +45,9 @@ DO:
 node edc_test.js <unit-num> <unit-num...>
 ```
 
-THIS DOES NOT WORK:
-`./build-course OPTIONS`
+### Accessibility Fixes
+
+## Example Courses
 
 ## Misc. Notes
 
@@ -33,7 +58,9 @@ THIS DOES NOT WORK:
 
 
 ## Requirements
-* node.js > 0.12 (but 4.2+ is recommended)
+* node.js > 6.4.0, lastest recommended
+	* There's a number of ES6 features used.
+	* Dependencies can be installed with `npm install`
 * Python 3 and BeautifulSoup
 	* See http://www.crummy.com/software/BeautifulSoup/bs4/doc/#installing-beautiful-soup
 * Patience!
