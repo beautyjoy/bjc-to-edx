@@ -9,8 +9,12 @@
  */
 
 var fs = require('fs');
+var path = require('path');
+var url = require('url');
 
+// TODO: Migrate to postCSS
 var css = require('css');
+var mkdirp = require('mkdirp');
 
 var util = require('./util.js');
 
@@ -51,10 +55,11 @@ function proccessCSSFiles (options) {
 
 module.exports = proccessCSSFiles;
 
-function transfromFile (path, rules) {
+function transfromFile (filePath, rules) {
     var contents, ast;
 
-    contents = fs.readFileSync(path).toString();
+    contents = fs.readFileSync(filePath).toString();
+    // TODO: Migrate to postCSS
     ast = css.parse(contents);
     // Successively update the AST with each rule.
     rules.forEach(function (rule) {
@@ -139,35 +144,65 @@ function rules(ast) {
 
 function transformURLs (ast, baseURL, filePath) {
     var urlPattern = /url\(['"]?([./?#\-\w]+)['"]?\)/g;
+    // \
     // THIS IS A WORKAROUND --
     // The above regex does not generate a $1 grouping. (Why??)
     // Use these to make the entire url() set, then use String::slice
-    var from = 4, to = -1;
-    var matches, url, newUrl;
+    var startIdx = 4, endIdx = -1;
     // TODO: Search for rules with a url() in `value`
     // TODO: need to figure out a reliable way to parse CSS URL rules
     // TODO: need to figure out path to CSS images. :(
     // TODO: make the forEach a map
     rules(ast).forEach(function (rule, i, arr) {
-        if (rule.declarations) {
-            rule.declarations.forEach( function (declare, j, arr2) {
-                if (declare.value && declare.value.indexOf('url') != -1) {
-                    matches = declare.value.match(urlPattern);
-                    if (matches) {
-                        matches.forEach(function(m) {
-                            if (m[from] == '\'' || m[from] == '"') {
-                                from += 1;
-                                to -= 1;
-                            }
-                            url = m.slice(from, to);
-                            newUrl = util.staticTransformURL(baseURL, filePath, url);
-                            // FIXME -- there has got to be a better way....
-                            arr[i].declarations[j].value = declare.value.replace(url, newUrl);
-                        });
-                    }
-                }
-            });
+        if (!rule.declarations) {
+            return;
         }
+        rule.declarations.forEach(function (declare, j, arr2) {
+            if (declare.value && declare.value.indexOf('url') != -1) {
+                var matches, address, newUrl;
+                matches = declare.value.match(urlPattern);
+                if (!matches) { return; }
+                matches.forEach(function(m) {
+                    if (m[startIdx] == '\'' || m[startIdx] == '"') {
+                        startIdx += 1;
+                        endIdx -= 1;
+                    }
+                    address = m.slice(startIdx, endIdx);
+                    address = url.parse(address).pathname;
+                    var localPath = path.resolve(
+                        `curriculum/bjc-r/llab/css/${address}`
+                    );
+                    let fileData = fs.readFileSync(localPath);
+                    let hash = util.md5Hash(fileData);
+                    newUrl = util.staticTransformURL(
+                        baseURL, filePath, address, hash
+                    );
+                    // TODO: Extract and make generic
+                    // Copy files to output folders w/ proper names
+                    try {
+                        var outURL = util.transformURL(
+                            baseURL, filePath, address
+                        );
+                        mkdirp('tmp/static/');
+                        fs.writeFileSync(
+                            `tmp/${outURL}`,
+                            fileData
+                        );
+                    } catch (e) {
+                        console.log('Copy URL failed');
+                        console.log(`URL: ${address}`);
+                        console.log(`Local Path: ${localPath}`);
+                        console.log(`New URL: ${outURL}`);
+                        console.log(e);
+                        process.exit(2);
+                    }
+                    // FIXME -- there has got to be a better way....
+                    arr[i].declarations[j].value = declare.value.replace(
+                        address, newUrl
+                    );
+                });
+            }
+        });
     });
     return ast;
 }

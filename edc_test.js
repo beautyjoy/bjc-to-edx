@@ -114,7 +114,7 @@ function doWork(unit) {
   `;
   fs.writeFileSync(
     `${output}/static/edx-llab-hack.js`,
-    fs.openSync('edx-llab-hack.js', 'r')
+    fs.readFileSync('edx-llab-hack.js')
   );
 
   data.topics.forEach(parseTopic);

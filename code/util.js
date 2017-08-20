@@ -1,5 +1,6 @@
 // Util functions for dealing with paths and images.
 
+var crypto = require('crypto');
 var path = require('path');
 
 var util = {};
@@ -11,11 +12,18 @@ util.topicPath = function (baseURL, topicURL) {
 }
 
 /*
+    Remove the query string or hash from a URL (or path)
+*/
+util.removeQuerystring = (string) => {
+    return string
+}
+
+/*
  *
  */
 util.edXPath = function (url) {
     url = url[0] == '/' ? url.slice(1) : url;
-    return '/static/' + url.replace(/\//g, '_');
+    return '/static/' + url.replace(/\//g, '_'); //
 }
 
 /* Transform a path into an edX-friendly URL that can be used in edX Studio!
@@ -49,19 +57,23 @@ util.transformURL = function (baseURL, filePath, url) {
 
 
 /* Transforms a URL into a "direct" edX URL to be used in static files.
+ * (i.e.) CSS files that aren't processed by edX.
  * @param {string}
  * FIXME -- this breaks if passed in a full URL! http:// gahhhhhh
  */
-util.staticTransformURL = function (baseURL, filePath, url, edXOrg, courseID) {
+util.staticTransformURL = function (baseURL, filePath, url, hash) {
     // Generate a proper /static URL and then direct it to edx "contentstore"
     var tempURL = util.transformURL(baseURL, filePath, url);
     // See: http://bjc.link/1hnrR9Q (edX Source Code)
     // FIXME == this is super hacky!!
-    tempURL = tempURL.replace('/static', '/c4x/BerkeleyX/BJC.34x/asset');
+    let oldedx = '/c4x/BerkeleyX/BJC.34x/asset';
+    let bjc12x = `/assets/courseware/v1/${hash}/asset-v1:BerkeleyX+BJC.12x+3T2017+type@asset+block`;
+    tempURL = tempURL.replace('/static', bjc12x);
     return tempURL;
 }
 
 
+util.md5Hash = (data) => crypto.createHash('md5').update(data).digest('hex');
 
 /** Normalize spaces and other special chars in filenames.
  *  Warning: Don't pass this a full path as it removes /
@@ -73,6 +85,10 @@ util.edXFileName =  function fileName (name) {
     return name.replace(/[\s+/:|*\\<>?"!,';&^]/g, '_');
 }
 
+
+/*
+    TODO: Replace with a real library...
+*/
 function BasicLogger (level) {
     this.level = level;
 }

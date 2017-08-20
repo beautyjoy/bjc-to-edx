@@ -7,31 +7,24 @@ llab.snapRunURLBase = "http://snap.berkeley.edu/snapsource/snap.html#open:";
 llab.getSnapRunURL = function(targeturl) {
     if (!targeturl) { return ''; }
 
-    if (targeturl.indexOf('http') == 0 || targeturl.indexOf('//') == 0) {
-        // pointing to some non-local resource...  do nothing!!
-        return targeturl;
-    }
+    var finalurl =  llab.snapRunURLBase,
+        edc_gh = 'https://bjc-edc-2017-18.github.io/bjc-r/',
+        url_parts = targeturl.split('/'),
+        xmlPath = url_parts[url_parts.length - 1].replace(/_/g, '/');
 
-    // internal resource!
-    var finalurl = llab.snapRunURLBase;
-    var currdom = document.domain;
-
-    // Make sure protocol exists incase https:// connections
-    currdom = window.location.protocol + '//' + currdom;
-    // || targeturl.indexOf(llab.rootURL) == -1
-    if (targeturl.indexOf("..") != -1) {
-        var path = window.location.pathname;
-        path = path.split("?")[0];
-        path = path.substring(0, path.lastIndexOf("/") + 1);
-        currdom += path;
-    }
-    finalurl = finalurl + currdom + targeturl;
-
-    return finalurl;
+    return finalurl + edc_gh + xmlPath;
 };
 
 $(document).ready(function() {
-    Gifffer();
+    if (typeof Giffer !== 'undefined') {
+        Gifffer();
+    } else {
+        var gif = $('<script>').attr(
+            'src',
+        'https://cdnjs.cloudflare.com/ajax/libs/gifffer/1.5.0/gifffer.min.js'
+        ).on('load', 'function() {Giffer(); }');
+        $('head').append(gif);
+    }
 
     // fix snap links so they run snap
     $("a.run").each(function() {
