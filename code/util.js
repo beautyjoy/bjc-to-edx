@@ -2,6 +2,7 @@
 
 var crypto = require('crypto');
 var path = require('path');
+var url = require('url');
 
 var util = {};
 
@@ -74,6 +75,15 @@ util.staticTransformURL = function (baseURL, filePath, url, hash) {
 
 
 util.md5Hash = (data) => crypto.createHash('md5').update(data).digest('hex');
+
+// TODO: Migrate to v7.5 URL API
+util.trimQuerystring = (str) => {
+    let urlObject = url.parse(str);
+    urlObject.query = null;
+    urlObject.search = null;
+    urlObject.hash = null;
+    return urlObject.format();
+}
 
 /** Normalize spaces and other special chars in filenames.
  *  Warning: Don't pass this a full path as it removes /

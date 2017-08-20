@@ -73,9 +73,8 @@ var CSSOptions = {
 
 // GLOBAL -- FIXME
 var relPath;
-var count;
 var dir;
-var PETER = false;
+var GROUP_BY_LAB = false;
 
 // TODO: This seems redundant, mostly.
 var PROCESS_FUNCTIONS = {
@@ -141,28 +140,21 @@ function parseSection(section, skip) {
   }
 
   dir = output;
-  // The manual builder should group files by "lab"
-  if (!PETER) {
+  if (!GROUP_BY_LAB) {
     dir += `/${title}`;
   }
 
   mkdirp.sync(dir);
-  count = 0;
-  section.contents.forEach(item => processCurriculumItem(item));
+  section.contents.forEach((item, index) => processCurriculumItem(item, index));
 }
 
 // This needs renamed...
-function processCurriculumItem(item) {
+function processCurriculumItem(item, index) {
   if (!item.url || !item.url.startsWith(BASEURL)) {
     return;
   }
 
-  // trim query strings. MOVE TO A FUNCTION
-  let queryIndex = item.url.indexOf('.html?');
-  if (queryIndex > 0) {
-    item.url = item.url.slice(0, queryIndex + '.html'.length);
-  }
-
+  item.url = util.trimQuerystring(item.url);
   file = item.url.replace(BASEURL, curFolder);
   relPath = path.relative(curFolder, file);
 
@@ -174,12 +166,12 @@ function processCurriculumItem(item) {
   //   found?: ${processedPaths[file] == 1}
   //   `);
 
+  // TODO: Why the first check??
   if (!file.endsWith('.html') || processedPaths[file] == 1) {
     return;
   }
 
   console.info('Reading: ', file);
-  count += 1;
   processedPaths[file] = 1;
 
   try {
@@ -189,9 +181,9 @@ function processCurriculumItem(item) {
     return;
   }
 
-  parts = splitFile(html, count, dir);
-  parts.forEach((part, index) => {
-    var includeCSSLink = (index === 0),
+  parts = splitFile(html, index + 1, dir);
+  parts.forEach((part, partIdx) => {
+    var includeCSSLink = (partIdx === 0),
       data = processItem(part, includeCSSLink),
       folder = `${dir}/${part.directory}`;
     mkdirp.sync(folder);
@@ -363,11 +355,10 @@ function processHTML(html, writeCSS) {
   });
 
   // wrap content in div.llab-full
+  // TODO: Replace with cheerio called
   wrap = '<div class="llab-full">\nCONTENT\n</div>';
-
   outerHTML = wrap.replace(/CONTENT/, $.html());
 
-  // TODO: This is really broken
   if (writeCSS) {
     outerHTML = cssString + outerHTML;
   }
@@ -497,7 +488,7 @@ function splitFile(html, page, dir) {
 // TODO: Document...
 module.exports = function(path, sectionName, directory) {
   // Globals
-  PETER = true;
+  GROUP_BY_LAB = true;
   // util.topicPath(curFolder, path) == assuming we have some folder.
   topic = fs.readFileSync(path).toString();
   data = llab.parse(topic);
