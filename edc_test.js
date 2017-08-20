@@ -4,6 +4,13 @@
  *  run with `node edc_test.js UNIT_NUM`
  */
 
+/*
+    Restructuring ideas:
+
+    - could use an object to hold global data?
+       - queue to write and process files
+*/
+
 // Default Node modules
 var fs = require('fs');
 var path = require('path');
@@ -134,6 +141,7 @@ function parseSection(section, skip) {
   }
 
   dir = output;
+  // The manual builder should group files by "lab"
   if (!PETER) {
     dir += `/${title}`;
   }
@@ -182,8 +190,8 @@ function processCurriculumItem(item) {
   }
 
   parts = splitFile(html, count, dir);
-  parts.forEach(function(part, index) {
-    var includeCSSLink = index === 0,
+  parts.forEach((part, index) => {
+    var includeCSSLink = (index === 0),
       data = processItem(part, includeCSSLink),
       folder = `${dir}/${part.directory}`;
     mkdirp.sync(folder);
@@ -203,7 +211,7 @@ function processFile(item, options) {
 
 
 // TODO: These are simplifications.
-// They are just ID functions
+// Some are just ID functions
 // Rethink?
 function processTxt(content) {
   return content;
@@ -213,6 +221,7 @@ function processExternal(content) {
   return content;
 }
 
+// TODO: This should take in quiz HTML
 function processQuiz(content) {
   return content;
 }
@@ -331,7 +340,10 @@ function processHTML(html, writeCSS) {
     // log URLs that need modified inside edx
     if (href.indexOf(BASEURL) == 0 && href.indexOf('.html') > 0) {
       console.log(`\tNeed to fix path in edX: ${href}`);
-      processCurriculumItem({url: href});
+      processCurriculumItem({
+        url: href,
+        directory: 'extra-pages/',
+      });
     }
 
     // Handle Snap! URLs and projects.

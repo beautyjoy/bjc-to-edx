@@ -5,9 +5,7 @@ var path = require('path');
 var util = {};
 
 // TODO: migrate to llab.
-/* Retun the path to a topic file.
-
- */
+/* Retun the path to a topic file. */
 util.topicPath = function (baseURL, topicURL) {
     return baseURL + 'topic/' + topicURL;
 }

@@ -27,6 +27,7 @@ module.exports = {
     ],
     // These are functions which can use Cheerio to modify page html.
     // They are executed in this order.
+    // TODO: Should these take in a selector: function pair?
     htmlTransforms: [
         rewriteImageURLs,
         rewriteSnapURLs,

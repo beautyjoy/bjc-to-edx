@@ -134,7 +134,7 @@ function lookupText(link, csvData) {
     }
 */
 function processHTML(html, options) {
-  console.log(`MODE: ${options.mode}`);
+  // console.log(`MODE: ${options.mode}`);
   let $ = cheerio.load(html, {
     normalizeWhitespace: false
   });
@@ -158,6 +158,7 @@ function processHTML(html, options) {
       } else {
         let text = lookupText(address, options.data);
         if (text) {
+          console.log(`Setting alt text: ${text}`);
           $elm.attr('alt', text).attr('title', text);
         }
       }
@@ -192,6 +193,7 @@ function processHTML(html, options) {
       } else {
         let text = lookupText(href, options.data);
         if (text) {
+            console.log(`Setting title text: ${text}`);
           $elm.attr('title', text);
         }
       }
@@ -218,6 +220,8 @@ function processHTML(html, options) {
         titleText = titleText.trim();
         $elm.attr('title', titleText);
       }
+    } else {
+        console.log('image has alt text');
     }
 
     // log URLs that need modified inside edx
