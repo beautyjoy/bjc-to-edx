@@ -458,6 +458,7 @@ function splitFile(html, page, dir) {
       text = text.slice(idx + qzHTML.length);
     });
 
+    text = text.trim();
     // Write any remaining content.
     if (text.length) {
       file = util.edXFileName(file);

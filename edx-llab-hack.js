@@ -25,7 +25,9 @@ $(document).ready(function() {
         ).on('load', 'function() {Giffer(); }');
         $('head').append(gif);
     }
-
+    $('head').append($('<script>').attr(
+        {src: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'}
+    ));
     // fix snap links so they run snap
     $("a.run").each(function() {
         $(this).attr("target", "_blank");
