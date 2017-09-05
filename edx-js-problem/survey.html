@@ -17,7 +17,7 @@
         <script type="text/javascript">
 	var uid = parent.document.getElementById("UID").href.split("=")[1];
 	var url = "https://berkeley.qualtrics.com/SE/?SID=SV_cMbj7MPasSJUEip";
-	url = url + "&uid=" + uid;
+	url = url + "?uid=" + uid;
         var survey = document.getElementById("qualtrics");
 	survey.src = url;
 	var checkFunction = function() {
