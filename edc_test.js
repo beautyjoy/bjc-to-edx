@@ -345,6 +345,7 @@ function processHTML(html, writeCSS) {
 
       // TODO: extract to copy file function
       if (newPath.indexOf('://') < 0 && !processedPaths[newPath]) {
+        href = util.trimQuerystring(href);
         fs.writeFileSync(
           `${output}/${newPath}`,
           fs.readFileSync(`curriculum${href}`)

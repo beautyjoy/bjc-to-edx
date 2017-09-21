@@ -13,13 +13,6 @@ util.topicPath = function (baseURL, topicURL) {
 }
 
 /*
-    Remove the query string or hash from a URL (or path)
-*/
-util.removeQuerystring = (string) => {
-    return string
-}
-
-/*
  *
  */
 util.edXPath = function (url) {

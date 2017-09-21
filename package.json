@@ -24,10 +24,11 @@
     "elementtree": "^0.1.6",
     "js-yaml": "^3.3.1",
     "mkdirp": "^0.5.1",
+    "mocha": "^3.5.0",
     "prompt-sync": "^4.1.5",
     "xml2js": "^0.4.9"
   },
   "engines": {
-      "node": ">=6.4.0"
+    "node": ">=6.4.0"
   }
 }
