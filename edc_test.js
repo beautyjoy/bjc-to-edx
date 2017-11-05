@@ -34,14 +34,19 @@ curFolder = `curriculum${BASEURL}/`;
 // This is where the edX XML folder will be.
 baseOutput = './tmp';
 
-let unit_files = {
-  1: 'intro-loops.topic',
-  2: 'conditionals-abstraction.topic',
-  3: 'lists.topic',
-  4: 'internet.topic',
-  5: 'algorithms.topic',
-  6: 'recursion-trees-fractals.topic',
-  7: 'recursive-reporters.topic'
+function unitTopicFile(number) {
+    let unit_files = {
+      1: 'intro-loops',
+      2: 'conditionals-abstraction',
+      3: 'lists',
+      4: 'internet',
+      5: 'algorithms',
+      6: 'how-computers-work',
+      7: 'recursion-trees-fractals',
+      8: 'recursive-reporters',
+    };
+
+    return `${unit}-${unit_files[unit]}.topic`;
 };
 
 var cssRelPath = path.relative(
@@ -90,7 +95,7 @@ var PROCESS_FUNCTIONS = {
 var cssString = '';
 
 function doWork(unit) {
-  topic = `nyc_bjc/${unit}-${unit_files[unit]}`;
+  topic = `nyc_bjc/${unitTopicFile(unit)}`;
   output = `${baseOutput}/U${unit}`;
   mkdirp.sync(output);
   // edX static files directory.
