@@ -16,6 +16,9 @@
     "url": "https://github.com/beautyjoy/llab-to-edx/issues"
   },
   "homepage": "https://github.com/beautyjoy/llab-to-edx",
+  "scripts": {
+    "clean": "rm -rf tmp/* && touch tmp/.keep"
+  },
   "dependencies": {
     "babyparse": "^0.4.6",
     "cheerio": "0.22.x",
