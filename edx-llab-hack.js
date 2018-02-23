@@ -42,13 +42,13 @@ llab.paths.css_files.math_katex_css = "//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.
 //
 
 // Extracted from llab/library
-llab.snapRunURLBase = "http://snap.berkeley.edu/snapsource/snap.html#open:";
+llab.snapRunURLBase = "https://snap.berkeley.edu/snapsource/snap.html#open:";
 
 llab.getSnapRunURL = function(targeturl) {
     if (!targeturl) { return ''; }
 
     var finalurl =  llab.snapRunURLBase,
-        edc_gh = 'https://bjc-edc-2017-18.github.io/bjc-r/',
+        edc_gh = 'https://bjc.edc.org/bjc-r/',
         url_parts = targeturl.split('/'),
         xmlPath = url_parts[url_parts.length - 1].replace(/_/g, '/');
 
